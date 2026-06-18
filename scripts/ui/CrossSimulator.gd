@@ -39,7 +39,10 @@ func _ready() -> void:
 		_mother_opt.add_item(m["label"])
 	for f in FATHERS:
 		_father_opt.add_item(f["label"])
+	# The 1000-offspring option requires the high-throughput crosser upgrade.
 	for c in COUNTS:
+		if c >= 1000 and not Economy.is_unlocked("large_cross"):
+			continue
 		_count_opt.add_item("%d offspring" % c)
 	# Default to the classic monohybrid cross (vg/+ × vg/+, 100 offspring).
 	_mother_opt.select(1)

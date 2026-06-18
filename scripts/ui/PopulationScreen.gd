@@ -32,7 +32,10 @@ func _ready() -> void:
 		_founder_opt.add_item(f["label"])
 	for s in SELECTIONS:
 		_selection_opt.add_item(s["label"])
+	# 20-generation runs require the long-term culture chamber upgrade.
 	for g in GENERATION_OPTS:
+		if g >= 20 and not Economy.is_unlocked("long_term_culture"):
+			continue
 		_gen_opt.add_item("%d generations" % g)
 	_temp_slider.value_changed.connect(func(v): _temp_label.text = "Temperature: %.0f °C" % v)
 	_founder_opt.select(0)

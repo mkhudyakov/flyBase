@@ -20,6 +20,7 @@ const DATA_FILES := {
 	"epistasis_rules": "epistasis_rules.json",
 	"development_stages": "development_stages.json",
 	"scenarios": "scenarios.json",
+	"equipment": "equipment.json",
 }
 
 ## Cache of parsed file contents keyed by the logical name above.

@@ -3,6 +3,34 @@
 All notable changes to the Drosophila Genetics Lab Simulator are documented
 here, phase by phase (see SPECS.md section 24).
 
+## Phase 11 — Game economy & progression
+
+Added constraints and a progression loop on top of the sandbox.
+
+### Added
+- `scripts/game/Economy.gd` (autoload `Economy`) — research points, budget,
+  reputation, publication score; breeding/vial costs; scenario rewards; a publish
+  payout; equipment unlock tree with prerequisite gating; JSON persistence.
+- `data/equipment.json` — 5 upgrades (stats suite, high-throughput crosser,
+  long-term culture chamber, carrier scanner, automation).
+- `scenes/EquipmentScreen.tscn` + `scripts/ui/EquipmentScreen.gd` — buy upgrades
+  with RP; shows costs, ownership, and unmet prerequisites.
+- Scenario `reward` fields in `data/scenarios.json`; `Campaign.complete_current`
+  now awards the economy.
+- Dashboard: live `$ / RP / Rep / Pubs` bar; breeding and new vials cost budget;
+  the fly list shows only the visible phenotype unless the **carrier scanner** is
+  unlocked (then it reveals hidden genotypes); added an *Equipment* tool.
+- Notebook: *Publish selected* pays out and marks entries published.
+- Unlock-gated UI: 1000-offspring crosses (high-throughput crosser), 20-generation
+  population runs (long-term culture), extra histogram traits (stats suite).
+- `scenes/Phase11Tests.tscn` + `scripts/tests/Phase11Tests.gd` — 18-check suite.
+
+### Definition of Done
+- Completing scenarios rewards progress ✓ (RP/budget/reputation per scenario)
+- Better tools unlock deeper analysis ✓ (carrier scanner, big crosses, long runs)
+- Player has meaningful constraints ✓ (budget gates breeding/vials)
+- Game has progression beyond sandbox ✓ (earn → unlock → bigger experiments)
+
 ## Phase 10 — Population simulation
 
 Added long-term, multi-generation population experiments.

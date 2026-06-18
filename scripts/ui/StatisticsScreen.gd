@@ -3,7 +3,9 @@ extends Control
 ## histograms for a chosen vial's flies, using the StatisticsEngine.
 
 const LAB_DASHBOARD_SCENE := "res://scenes/LabDashboard.tscn"
-const HIST_TRAITS := ["body_size", "flight_ability", "lifespan_days", "wing_size", "viability_score"]
+const BASE_TRAITS := ["body_size", "flight_ability", "wing_size"]
+const SUITE_TRAITS := ["lifespan_days", "viability_score"]  # require stats_suite upgrade
+var HIST_TRAITS: Array = []
 
 @onready var _vial_opt: OptionButton = %VialOption
 @onready var _trait_opt: OptionButton = %TraitOption
@@ -15,6 +17,9 @@ func _ready() -> void:
 	for v in Lab.active_vials():
 		_vial_opt.add_item("%s (%d)" % [v.name, v.population()])
 		_vial_ids.append(v.id)
+	HIST_TRAITS = BASE_TRAITS.duplicate()
+	if Economy.is_unlocked("stats_suite"):
+		HIST_TRAITS.append_array(SUITE_TRAITS)
 	for t in HIST_TRAITS:
 		var tr: TraitRule = Catalog.get_trait_rule(t)
 		_trait_opt.add_item(tr.label if tr != null else t)

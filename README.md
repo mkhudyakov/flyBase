@@ -16,29 +16,33 @@ APIs, no real genome database.
 
 ---
 
-## Current status: Phase 10 — Population simulation
+## Current status: Phase 11 — Game economy & progression
 
-Long-term, evolution-flavored experiments over many generations. What works:
+Constraints and a progression loop turn the sandbox into a game. What works:
 
-- Everything from Phases 0–9 (full simulation, lab, campaign, advanced genetics).
-- **PopulationEngine** (`scripts/sim/PopulationEngine.gd`) runs 10–20 generations:
-  each generation the adults breed (brood scales with female count), offspring
-  develop (viability filters them), **truncation selection** optionally keeps/culls
-  by phenotype, and a carrying capacity / **bottleneck** randomly samples survivors
-  (**drift**). It records per-generation allele frequencies, trait means, and a
-  **line-stability** score.
-- **Population screen** (Dashboard → *Population*): pick a founder stock, a
-  selection rule, generation count, temperature, and an optional bottleneck; the
-  result shows a generational trend table, allele-frequency sparklines, the
-  stability score, and an explanation.
-- Demonstrable: selection drives an allele toward fixation (vg 50%→100%), a
-  lethal environment collapses the line to extinction, and drift/bottlenecks
-  wobble frequencies. Reproducible by seed. `Phase10Tests.tscn` (13 checks).
+- Everything from Phases 0–10 (full simulation, lab, campaign, population sim).
+- **Economy** singleton (`scripts/game/Economy.gd`): research points, budget,
+  reputation, and publication score, with JSON persistence.
+- **Meaningful constraints**: breeding and new vials cost budget; run out and you
+  must earn more before continuing.
+- **Earning loop**: completing campaign scenarios grants RP/budget/reputation
+  (data-driven `reward` per scenario), and **publishing** a notebook experiment
+  (Notebook → *Publish selected*) pays out RP + budget + reputation.
+- **Equipment unlock tree** (`data/equipment.json`, *Equipment* screen): spend RP
+  on upgrades with prerequisite gating, each with a real effect — *carrier
+  scanner* reveals hidden genotypes in the vial list (otherwise you only see the
+  visible phenotype), *high-throughput crosser* enables 1000-offspring crosses,
+  *long-term culture* enables 20-generation runs, *automation* cuts breeding cost.
+- The dashboard shows live `$ / RP / Rep / Pubs`. `Phase11Tests.tscn` (18 checks).
 
-> Game economy & progression (research points, budget, unlock tree) is Phase 11.
+> Final phase (12) is polish & productization: settings, audio, accessibility,
+> macOS export, balancing.
 
 ### Earlier phases recap
 
+- **Phase 10 — population**: `PopulationEngine` runs 10–20 generations with
+  truncation selection, bottlenecks, and drift; tracks allele frequencies and a
+  line-stability score (*Population* screen).
 - **Phase 9 — advanced genetics**: epistasis (gene masking), suppressor/enhancer
   modifiers, polygenic body size, temperature-sensitive alleles, + 3 advanced
   challenges. Per-individual variation via `Fly.roll_seed`.
@@ -108,6 +112,7 @@ GODOT=/Applications/Godot.app/Contents/MacOS/Godot
 "$GODOT" --headless --path . res://scenes/Phase8Tests.tscn --quit-after 15
 "$GODOT" --headless --path . res://scenes/Phase9Tests.tscn --quit-after 15
 "$GODOT" --headless --path . res://scenes/Phase10Tests.tscn --quit-after 30
+"$GODOT" --headless --path . res://scenes/Phase11Tests.tscn --quit-after 15
 ```
 
 The first command is only needed once after new `class_name` scripts are added
@@ -132,7 +137,8 @@ flyBase/
 │   ├── trait_rules.json       # 21 traits (baselines + normal ranges)
 │   ├── development_stages.json # 10 egg→adult stages
 │   ├── epistasis_rules.json   # gene-masking rules
-│   └── scenarios.json         # 8 campaign scenarios
+│   ├── scenarios.json         # 8 campaign scenarios
+│   └── equipment.json         # purchasable upgrades
 ├── scenes/                    # Godot scenes (.tscn)
 │   ├── MainMenu.tscn
 │   ├── LabDashboard.tscn
@@ -145,6 +151,7 @@ flyBase/
 │   ├── NotebookScreen.tscn
 │   ├── CampaignScreen.tscn
 │   ├── PopulationScreen.tscn
+│   ├── EquipmentScreen.tscn
 │   ├── Phase1Tests.tscn       # headless test scenes
 │   ├── Phase2Tests.tscn
 │   ├── Phase4Tests.tscn
@@ -153,7 +160,8 @@ flyBase/
 │   ├── Phase7Tests.tscn
 │   ├── Phase8Tests.tscn
 │   ├── Phase9Tests.tscn
-│   └── Phase10Tests.tscn
+│   ├── Phase10Tests.tscn
+│   └── Phase11Tests.tscn
 └── scripts/
     ├── autoload/              # Singletons (registered in project.godot)
     │   ├── DataLoader.gd
@@ -162,6 +170,7 @@ flyBase/
     ├── game/                  # Game-layer state (vials, incubators, lab)
     │   ├── Lab.gd             # autoload: central lab state + operations
     │   ├── Campaign.gd        # autoload: scenarios, objectives, unlocks
+    │   ├── Economy.gd         # autoload: budget, RP, reputation, equipment
     │   ├── Vial.gd
     │   └── Incubator.gd
     ├── sim/                   # Simulation classes (no UI dependencies)
@@ -192,7 +201,8 @@ flyBase/
     │   ├── Phase7Tests.gd
     │   ├── Phase8Tests.gd
     │   ├── Phase9Tests.gd
-    │   └── Phase10Tests.gd
+    │   ├── Phase10Tests.gd
+    │   └── Phase11Tests.gd
     └── ui/                    # UI controllers (kept separate from sim code)
         ├── MainMenu.gd
         ├── LabDashboard.gd
@@ -205,7 +215,8 @@ flyBase/
         ├── StatisticsScreen.gd
         ├── NotebookScreen.gd
         ├── CampaignScreen.gd
-        └── PopulationScreen.gd
+        ├── PopulationScreen.gd
+        └── EquipmentScreen.gd
 ```
 
 Simulation code lives in `scripts/sim/` separately from UI code, per the

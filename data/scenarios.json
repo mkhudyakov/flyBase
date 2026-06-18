@@ -7,7 +7,9 @@
       "title": "1. Foundations of inheritance",
       "briefing": "Two normal-looking flies carry a hidden recessive 'vestigial' wing allele (vg/+). Breed them and watch a recessive trait reappear in the next generation.",
       "requires": [],
-      "unlocks": ["eye_color_mystery"],
+      "unlocks": [
+        "eye_color_mystery"
+      ],
       "tutorial": [
         "Welcome to your dry-lab. Flies live in vials; vials sit in temperature-controlled incubators.",
         "On the dashboard, select a vial and press Breed (50) to cross the first living female and male inside it.",
@@ -15,150 +17,419 @@
         "Objective: breed the carriers and produce vestigial-winged offspring."
       ],
       "starting_vials": [
-        {"name": "vestigial carriers (vg/+)", "incubator": 1, "flies": [
-          {"gene": "vg", "allele": "vg_strong_loss", "zyg": "het", "sex": "female", "count": 1},
-          {"gene": "vg", "allele": "vg_strong_loss", "zyg": "het", "sex": "male", "count": 1}
-        ]}
+        {
+          "name": "vestigial carriers (vg/+)",
+          "incubator": 1,
+          "flies": [
+            {
+              "gene": "vg",
+              "allele": "vg_strong_loss",
+              "zyg": "het",
+              "sex": "female",
+              "count": 1
+            },
+            {
+              "gene": "vg",
+              "allele": "vg_strong_loss",
+              "zyg": "het",
+              "sex": "male",
+              "count": 1
+            }
+          ]
+        }
       ],
       "objectives": [
-        {"type": "phenotype_count", "desc": "Produce at least 10 vestigial-winged offspring", "predicate": {"trait": "wing_size", "op": "lt", "value": 0.4}, "count": 10}
-      ]
+        {
+          "type": "phenotype_count",
+          "desc": "Produce at least 10 vestigial-winged offspring",
+          "predicate": {
+            "trait": "wing_size",
+            "op": "lt",
+            "value": 0.4
+          },
+          "count": 10
+        }
+      ],
+      "reward": {
+        "research_points": 10,
+        "budget": 40,
+        "reputation": 1
+      }
     },
     {
       "id": "eye_color_mystery",
       "title": "2. The eye-color mystery",
       "briefing": "A white-eyed female is crossed with a wild-type male. The white allele sits on the X chromosome. Predict how eye color is inherited between sons and daughters.",
-      "requires": ["foundations"],
-      "unlocks": ["hidden_carriers"],
+      "requires": [
+        "foundations"
+      ],
+      "unlocks": [
+        "hidden_carriers"
+      ],
       "tutorial": [
         "The white (w) gene is on the X chromosome. Females are XX, males XY.",
-        "A white-eyed mother (w/w) crossed to a wild-type father gives carrier daughters and white-eyed sons — the classic criss-cross pattern.",
+        "A white-eyed mother (w/w) crossed to a wild-type father gives carrier daughters and white-eyed sons \u2014 the classic criss-cross pattern.",
         "Objective: produce white-eyed offspring, then answer the inheritance question."
       ],
       "starting_vials": [
-        {"name": "white stock", "incubator": 1, "flies": [
-          {"gene": "w", "allele": "w_null", "zyg": "hom", "sex": "female", "count": 1},
-          {"wild": true, "sex": "male", "count": 1}
-        ]}
+        {
+          "name": "white stock",
+          "incubator": 1,
+          "flies": [
+            {
+              "gene": "w",
+              "allele": "w_null",
+              "zyg": "hom",
+              "sex": "female",
+              "count": 1
+            },
+            {
+              "wild": true,
+              "sex": "male",
+              "count": 1
+            }
+          ]
+        }
       ],
       "objectives": [
-        {"type": "phenotype_count", "desc": "Produce at least 10 white-eyed offspring", "predicate": {"trait": "eye_color", "op": "lt", "value": 0.3}, "count": 10},
-        {"type": "quiz", "desc": "Answer: is the white allele dominant or recessive?", "question": "A heterozygous carrier daughter (w/+) has red eyes. The white allele is therefore...", "options": ["Dominant", "Recessive", "Codominant"], "answer": 1}
-      ]
+        {
+          "type": "phenotype_count",
+          "desc": "Produce at least 10 white-eyed offspring",
+          "predicate": {
+            "trait": "eye_color",
+            "op": "lt",
+            "value": 0.3
+          },
+          "count": 10
+        },
+        {
+          "type": "quiz",
+          "desc": "Answer: is the white allele dominant or recessive?",
+          "question": "A heterozygous carrier daughter (w/+) has red eyes. The white allele is therefore...",
+          "options": [
+            "Dominant",
+            "Recessive",
+            "Codominant"
+          ],
+          "answer": 1
+        }
+      ],
+      "reward": {
+        "research_points": 12,
+        "budget": 40,
+        "reputation": 2
+      }
     },
     {
       "id": "hidden_carriers",
       "title": "3. Hidden carriers",
       "briefing": "This stock looks completely normal, but a recessive allele may be hiding in it. Breed within the stock to expose any hidden carriers.",
-      "requires": ["eye_color_mystery"],
-      "unlocks": ["lethal_recessive"],
+      "requires": [
+        "eye_color_mystery"
+      ],
+      "unlocks": [
+        "lethal_recessive"
+      ],
       "tutorial": [
-        "A heterozygous fly (vg/+) looks wild-type but secretly carries a recessive allele — a hidden carrier.",
+        "A heterozygous fly (vg/+) looks wild-type but secretly carries a recessive allele \u2014 a hidden carrier.",
         "You cannot see carriers directly. You reveal them by breeding: if recessive offspring appear, the parents were carriers.",
         "Objective: breed the stock and expose the hidden allele by producing vestigial offspring."
       ],
       "starting_vials": [
-        {"name": "mystery stock", "incubator": 1, "flies": [
-          {"gene": "vg", "allele": "vg_strong_loss", "zyg": "het", "sex": "female", "count": 2},
-          {"gene": "vg", "allele": "vg_strong_loss", "zyg": "het", "sex": "male", "count": 2}
-        ]}
+        {
+          "name": "mystery stock",
+          "incubator": 1,
+          "flies": [
+            {
+              "gene": "vg",
+              "allele": "vg_strong_loss",
+              "zyg": "het",
+              "sex": "female",
+              "count": 2
+            },
+            {
+              "gene": "vg",
+              "allele": "vg_strong_loss",
+              "zyg": "het",
+              "sex": "male",
+              "count": 2
+            }
+          ]
+        }
       ],
       "objectives": [
-        {"type": "phenotype_count", "desc": "Expose the carriers: produce at least 5 vestigial-winged offspring", "predicate": {"trait": "wing_size", "op": "lt", "value": 0.4}, "count": 5}
-      ]
+        {
+          "type": "phenotype_count",
+          "desc": "Expose the carriers: produce at least 5 vestigial-winged offspring",
+          "predicate": {
+            "trait": "wing_size",
+            "op": "lt",
+            "value": 0.4
+          },
+          "count": 5
+        }
+      ],
+      "reward": {
+        "research_points": 14,
+        "budget": 45,
+        "reputation": 2
+      }
     },
     {
       "id": "lethal_recessive",
       "title": "4. Lethal recessives",
       "briefing": "These flies carry a recessive allele that is lethal when homozygous. Run a large cross and explain why the expected 3:1 ratio fails.",
-      "requires": ["hidden_carriers"],
-      "unlocks": ["build_flightless"],
+      "requires": [
+        "hidden_carriers"
+      ],
+      "unlocks": [
+        "build_flightless"
+      ],
       "tutorial": [
         "Some genotypes never reach adulthood. A recessive-lethal allele kills homozygotes during development.",
-        "When you cross two carriers, ~1/4 of the offspring are homozygous — and they die — so fewer than expected survive and the adult ratio is skewed.",
-        "Objective: run a 100+ offspring cross at 25°C and observe survival drop below 85%, then answer the question."
+        "When you cross two carriers, ~1/4 of the offspring are homozygous \u2014 and they die \u2014 so fewer than expected survive and the adult ratio is skewed.",
+        "Objective: run a 100+ offspring cross at 25\u00b0C and observe survival drop below 85%, then answer the question."
       ],
       "starting_vials": [
-        {"name": "bicoid carriers (bcd/+)", "incubator": 1, "flies": [
-          {"gene": "bcd", "allele": "bcd_loss", "zyg": "het", "sex": "female", "count": 1},
-          {"gene": "bcd", "allele": "bcd_loss", "zyg": "het", "sex": "male", "count": 1}
-        ]}
+        {
+          "name": "bicoid carriers (bcd/+)",
+          "incubator": 1,
+          "flies": [
+            {
+              "gene": "bcd",
+              "allele": "bcd_loss",
+              "zyg": "het",
+              "sex": "female",
+              "count": 1
+            },
+            {
+              "gene": "bcd",
+              "allele": "bcd_loss",
+              "zyg": "het",
+              "sex": "male",
+              "count": 1
+            }
+          ]
+        }
       ],
       "objectives": [
-        {"type": "cross_survival_below", "desc": "Run a 100+ offspring cross with under 85% survival", "threshold": 0.85, "min_n": 100},
-        {"type": "quiz", "desc": "Answer: why did the expected 3:1 ratio fail?", "question": "Fewer offspring survived than a simple 3:1 predicts. The best explanation is...", "options": ["The mutation became dominant", "Homozygous mutants died before adulthood", "Recombination changed the ratio"], "answer": 1}
-      ]
+        {
+          "type": "cross_survival_below",
+          "desc": "Run a 100+ offspring cross with under 85% survival",
+          "threshold": 0.85,
+          "min_n": 100
+        },
+        {
+          "type": "quiz",
+          "desc": "Answer: why did the expected 3:1 ratio fail?",
+          "question": "Fewer offspring survived than a simple 3:1 predicts. The best explanation is...",
+          "options": [
+            "The mutation became dominant",
+            "Homozygous mutants died before adulthood",
+            "Recombination changed the ratio"
+          ],
+          "answer": 1
+        }
+      ],
+      "reward": {
+        "research_points": 16,
+        "budget": 50,
+        "reputation": 3
+      }
     },
     {
       "id": "build_flightless",
       "title": "5. Build a stable flightless line",
       "briefing": "Establish a true-breeding vestigial (flightless) stock: a vial where every fly is vestigial-winged, so the line breeds true.",
-      "requires": ["lethal_recessive"],
+      "requires": [
+        "lethal_recessive"
+      ],
       "unlocks": [],
       "tutorial": [
-        "Vestigial-winged flies are homozygous (vg/vg). If you breed two of them together, all their offspring are vestigial too — a true-breeding line.",
+        "Vestigial-winged flies are homozygous (vg/vg). If you breed two of them together, all their offspring are vestigial too \u2014 a true-breeding line.",
         "Breed the carriers, then move a vestigial female and a vestigial male into a fresh vial and breed them.",
         "Objective: build a vial with at least 20 living flies that are (almost) all vestigial-winged."
       ],
       "starting_vials": [
-        {"name": "vestigial carriers (vg/+)", "incubator": 1, "flies": [
-          {"gene": "vg", "allele": "vg_strong_loss", "zyg": "het", "sex": "female", "count": 1},
-          {"gene": "vg", "allele": "vg_strong_loss", "zyg": "het", "sex": "male", "count": 1}
-        ]}
+        {
+          "name": "vestigial carriers (vg/+)",
+          "incubator": 1,
+          "flies": [
+            {
+              "gene": "vg",
+              "allele": "vg_strong_loss",
+              "zyg": "het",
+              "sex": "female",
+              "count": 1
+            },
+            {
+              "gene": "vg",
+              "allele": "vg_strong_loss",
+              "zyg": "het",
+              "sex": "male",
+              "count": 1
+            }
+          ]
+        }
       ],
       "objectives": [
-        {"type": "vial_uniform_phenotype", "desc": "A vial with >=20 living flies, >=85% flightless (reduced flight)", "predicate": {"trait": "flight_ability", "op": "lt", "value": 0.5}, "count": 20, "min_fraction": 0.85}
-      ]
+        {
+          "type": "vial_uniform_phenotype",
+          "desc": "A vial with >=20 living flies, >=85% flightless (reduced flight)",
+          "predicate": {
+            "trait": "flight_ability",
+            "op": "lt",
+            "value": 0.5
+          },
+          "count": 20,
+          "min_fraction": 0.85
+        }
+      ],
+      "reward": {
+        "research_points": 18,
+        "budget": 55,
+        "reputation": 3
+      }
     },
     {
       "id": "epistasis_eye",
       "title": "6. Epistasis: the hidden eye color",
-      "briefing": "These flies carry the recessive 'eyeless' allele. When a fly has no eyes, you cannot read its eye color at all — one gene masks another. Produce eyeless offspring and explain why eye color disappears.",
-      "requires": ["build_flightless"],
-      "unlocks": ["temperature_challenge"],
+      "briefing": "These flies carry the recessive 'eyeless' allele. When a fly has no eyes, you cannot read its eye color at all \u2014 one gene masks another. Produce eyeless offspring and explain why eye color disappears.",
+      "requires": [
+        "build_flightless"
+      ],
+      "unlocks": [
+        "temperature_challenge"
+      ],
       "tutorial": [
-        "Epistasis: one gene can hide the effect of another. If eye development fails, eye pigment has nothing to colour — so the eye-color genotype becomes invisible.",
+        "Epistasis: one gene can hide the effect of another. If eye development fails, eye pigment has nothing to colour \u2014 so the eye-color genotype becomes invisible.",
         "Breed the eyeless carriers. About 1/4 of offspring will be eyeless, and in those flies eye color cannot be observed.",
         "Objective: produce eyeless offspring, then answer the question."
       ],
       "starting_vials": [
-        {"name": "eyeless carriers (ey/+)", "incubator": 1, "flies": [
-          {"gene": "ey", "allele": "ey_loss", "zyg": "het", "sex": "female", "count": 1},
-          {"gene": "ey", "allele": "ey_loss", "zyg": "het", "sex": "male", "count": 1}
-        ]}
+        {
+          "name": "eyeless carriers (ey/+)",
+          "incubator": 1,
+          "flies": [
+            {
+              "gene": "ey",
+              "allele": "ey_loss",
+              "zyg": "het",
+              "sex": "female",
+              "count": 1
+            },
+            {
+              "gene": "ey",
+              "allele": "ey_loss",
+              "zyg": "het",
+              "sex": "male",
+              "count": 1
+            }
+          ]
+        }
       ],
       "objectives": [
-        {"type": "phenotype_count", "desc": "Produce at least 5 eyeless offspring", "predicate": {"trait": "eye_size", "op": "lt", "value": 0.25}, "count": 5},
-        {"type": "quiz", "desc": "Answer: why can't you tell the eye color of an eyeless fly?", "question": "An eyeless fly's eye-color genotype is unreadable because...", "options": ["Eye color genes were deleted", "There is no eye to display pigment (epistasis)", "The fly is colorblind"], "answer": 1}
-      ]
+        {
+          "type": "phenotype_count",
+          "desc": "Produce at least 5 eyeless offspring",
+          "predicate": {
+            "trait": "eye_size",
+            "op": "lt",
+            "value": 0.25
+          },
+          "count": 5
+        },
+        {
+          "type": "quiz",
+          "desc": "Answer: why can't you tell the eye color of an eyeless fly?",
+          "question": "An eyeless fly's eye-color genotype is unreadable because...",
+          "options": [
+            "Eye color genes were deleted",
+            "There is no eye to display pigment (epistasis)",
+            "The fly is colorblind"
+          ],
+          "answer": 1
+        }
+      ],
+      "reward": {
+        "research_points": 20,
+        "budget": 60,
+        "reputation": 4
+      }
     },
     {
       "id": "temperature_challenge",
       "title": "7. The temperature-sensitive mutant",
-      "briefing": "This stock looks perfectly normal at 25°C, yet it hides a temperature-sensitive allele. Find the environmental trigger: rear the flies warm and watch the phenotype appear.",
-      "requires": ["epistasis_eye"],
-      "unlocks": ["polygenic_size"],
+      "briefing": "This stock looks perfectly normal at 25\u00b0C, yet it hides a temperature-sensitive allele. Find the environmental trigger: rear the flies warm and watch the phenotype appear.",
+      "requires": [
+        "epistasis_eye"
+      ],
+      "unlocks": [
+        "polygenic_size"
+      ],
       "tutorial": [
         "Some alleles are temperature-sensitive: the phenotype only appears within a certain temperature range.",
-        "Move the vial to the 29°C incubator (or raise an incubator's temperature) before breeding. At cool temperatures the flies look normal; warm rearing reveals the defect.",
+        "Move the vial to the 29\u00b0C incubator (or raise an incubator's temperature) before breeding. At cool temperatures the flies look normal; warm rearing reveals the defect.",
         "Objective: produce flightless offspring by rearing warm, then answer the question."
       ],
       "starting_vials": [
-        {"name": "ts stock (looks normal at 25°C)", "incubator": 1, "flies": [
-          {"gene": "vg", "allele": "vg_ts", "zyg": "hom", "sex": "female", "count": 1},
-          {"gene": "vg", "allele": "vg_ts", "zyg": "hom", "sex": "male", "count": 1}
-        ]}
+        {
+          "name": "ts stock (looks normal at 25\u00b0C)",
+          "incubator": 1,
+          "flies": [
+            {
+              "gene": "vg",
+              "allele": "vg_ts",
+              "zyg": "hom",
+              "sex": "female",
+              "count": 1
+            },
+            {
+              "gene": "vg",
+              "allele": "vg_ts",
+              "zyg": "hom",
+              "sex": "male",
+              "count": 1
+            }
+          ]
+        }
       ],
       "objectives": [
-        {"type": "phenotype_count", "desc": "Produce at least 5 flightless offspring (rear warm!)", "predicate": {"trait": "flight_ability", "op": "lt", "value": 0.5}, "count": 5},
-        {"type": "quiz", "desc": "Answer: what triggered the phenotype?", "question": "The flies were normal at 25°C but defective when reared warm. The trigger is...", "options": ["A new mutation", "High temperature (a temperature-sensitive allele)", "Crowding"], "answer": 1}
-      ]
+        {
+          "type": "phenotype_count",
+          "desc": "Produce at least 5 flightless offspring (rear warm!)",
+          "predicate": {
+            "trait": "flight_ability",
+            "op": "lt",
+            "value": 0.5
+          },
+          "count": 5
+        },
+        {
+          "type": "quiz",
+          "desc": "Answer: what triggered the phenotype?",
+          "question": "The flies were normal at 25\u00b0C but defective when reared warm. The trigger is...",
+          "options": [
+            "A new mutation",
+            "High temperature (a temperature-sensitive allele)",
+            "Crowding"
+          ],
+          "answer": 1
+        }
+      ],
+      "reward": {
+        "research_points": 22,
+        "budget": 60,
+        "reputation": 4
+      }
     },
     {
       "id": "polygenic_size",
       "title": "8. Polygenic body size",
       "briefing": "Body size is controlled by several genes at once. This stock carries 'large' variants at three body-size loci. Combine them through breeding to produce an unusually large fly.",
-      "requires": ["temperature_challenge"],
+      "requires": [
+        "temperature_challenge"
+      ],
       "unlocks": [],
       "tutorial": [
         "Polygenic traits depend on many genes, each contributing a small additive amount. No single gene makes a fly large.",
@@ -166,22 +437,72 @@
         "Objective: produce a fly with body size >= 1.15."
       ],
       "starting_vials": [
-        {"name": "large-variant stock", "incubator": 1, "flies": [
-          {"sex": "female", "count": 2, "loci": [
-            {"gene": "size_a", "allele": "size_a_large", "zyg": "het"},
-            {"gene": "size_b", "allele": "size_b_large", "zyg": "het"},
-            {"gene": "size_c", "allele": "size_c_large", "zyg": "het"}
-          ]},
-          {"sex": "male", "count": 2, "loci": [
-            {"gene": "size_a", "allele": "size_a_large", "zyg": "het"},
-            {"gene": "size_b", "allele": "size_b_large", "zyg": "het"},
-            {"gene": "size_c", "allele": "size_c_large", "zyg": "het"}
-          ]}
-        ]}
+        {
+          "name": "large-variant stock",
+          "incubator": 1,
+          "flies": [
+            {
+              "sex": "female",
+              "count": 2,
+              "loci": [
+                {
+                  "gene": "size_a",
+                  "allele": "size_a_large",
+                  "zyg": "het"
+                },
+                {
+                  "gene": "size_b",
+                  "allele": "size_b_large",
+                  "zyg": "het"
+                },
+                {
+                  "gene": "size_c",
+                  "allele": "size_c_large",
+                  "zyg": "het"
+                }
+              ]
+            },
+            {
+              "sex": "male",
+              "count": 2,
+              "loci": [
+                {
+                  "gene": "size_a",
+                  "allele": "size_a_large",
+                  "zyg": "het"
+                },
+                {
+                  "gene": "size_b",
+                  "allele": "size_b_large",
+                  "zyg": "het"
+                },
+                {
+                  "gene": "size_c",
+                  "allele": "size_c_large",
+                  "zyg": "het"
+                }
+              ]
+            }
+          ]
+        }
       ],
       "objectives": [
-        {"type": "phenotype_count", "desc": "Produce at least one fly with body size >= 1.15", "predicate": {"trait": "body_size", "op": "ge", "value": 1.15}, "count": 1}
-      ]
+        {
+          "type": "phenotype_count",
+          "desc": "Produce at least one fly with body size >= 1.15",
+          "predicate": {
+            "trait": "body_size",
+            "op": "ge",
+            "value": 1.15
+          },
+          "count": 1
+        }
+      ],
+      "reward": {
+        "research_points": 25,
+        "budget": 70,
+        "reputation": 5
+      }
     }
   ]
 }

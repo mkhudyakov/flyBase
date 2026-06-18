@@ -1,0 +1,11 @@
+{
+  "_comment": "Equipment / analysis upgrades purchased with research points (spec section 15). These unlock deeper ABSTRACT analysis tools and bigger experiments — never real lab methods. 'requires' lists prerequisite equipment ids.",
+  "schema_version": 1,
+  "equipment": [
+    {"id": "stats_suite", "name": "Advanced statistics suite", "description": "Adds extra histogram traits and finer distribution analysis on the Statistics screen.", "cost_rp": 10, "requires": []},
+    {"id": "large_cross", "name": "High-throughput crosser", "description": "Run crosses of up to 1000 offspring for sharper ratios.", "cost_rp": 20, "requires": []},
+    {"id": "long_term_culture", "name": "Long-term culture chamber", "description": "Run population experiments up to 20 generations.", "cost_rp": 25, "requires": []},
+    {"id": "carrier_scanner", "name": "Carrier scanner", "description": "Reveal hidden genotypes (including heterozygous carriers) in the vial fly list.", "cost_rp": 35, "requires": []},
+    {"id": "automation", "name": "Automated batch crosses", "description": "Cheaper breeding: reduces the supply cost of each cross.", "cost_rp": 40, "requires": ["large_cross"]}
+  ]
+}

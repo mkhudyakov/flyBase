@@ -8,27 +8,48 @@ const LAB_DASHBOARD_SCENE := "res://scenes/LabDashboard.tscn"
 @onready var _list: ItemList = %EntryList
 @onready var _detail: RichTextLabel = %Detail
 @onready var _status: Label = %Status
+@onready var _publish_button: Button = %PublishButton
+
+var _selected_index := -1
 
 func _ready() -> void:
 	_refresh_list()
+
+func _entry_key(e: Dictionary) -> String:
+	return "%s|%s" % [e.get("time", ""), e.get("title", "")]
 
 func _refresh_list() -> void:
 	_list.clear()
 	# Most recent first.
 	for i in range(Lab.notebook.size() - 1, -1, -1):
 		var e: Dictionary = Lab.notebook[i]
-		_list.add_item("[%s] %s" % [e.get("time", ""), e.get("title", "entry")])
+		var pub := "  📄published" if Economy.is_published(_entry_key(e)) else ""
+		_list.add_item("[%s] %s%s" % [e.get("time", ""), e.get("title", "entry"), pub])
 		_list.set_item_metadata(_list.item_count - 1, i)
 	if Lab.notebook.is_empty():
 		_detail.text = "No experiments recorded yet. Breed a vial on the dashboard and the result is logged here automatically."
 	else:
 		_list.select(0)
-		_show_entry(Lab.notebook[Lab.notebook.size() - 1])
+		_selected_index = Lab.notebook.size() - 1
+		_show_entry(Lab.notebook[_selected_index])
 
 func _on_entry_list_item_selected(idx: int) -> void:
-	var i: int = _list.get_item_metadata(idx)
-	if i >= 0 and i < Lab.notebook.size():
-		_show_entry(Lab.notebook[i])
+	_selected_index = _list.get_item_metadata(idx)
+	if _selected_index >= 0 and _selected_index < Lab.notebook.size():
+		_show_entry(Lab.notebook[_selected_index])
+
+func _on_publish_pressed() -> void:
+	if _selected_index < 0 or _selected_index >= Lab.notebook.size():
+		_status.text = "Select an experiment to publish."
+		return
+	var key := _entry_key(Lab.notebook[_selected_index])
+	var reward := Economy.publish(key)
+	if reward.is_empty():
+		_status.text = "Already published."
+	else:
+		_status.text = "Published! +%d publication, +%d RP, +$%d, +%d reputation." \
+			% [reward["publication_score"], reward["research_points"], reward["budget"], reward["reputation"]]
+		_refresh_list()
 
 func _show_entry(e: Dictionary) -> void:
 	var lines: Array[String] = []

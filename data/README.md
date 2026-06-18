@@ -14,6 +14,7 @@ Files (loaded by `scripts/autoload/DataLoader.gd`):
 | `development_stages.json` | active (10 stages) | Phase 4 |
 | `epistasis_rules.json`    | active (2 rules) | Phase 9 |
 | `scenarios.json`          | active (8 scenarios) | Phase 8 |
+| `equipment.json`          | active (5 upgrades) | Phase 11 |
 
 `genes.json` and `alleles.json` are parsed by `scripts/sim/Catalog.gd` into
 `Gene`/`Allele` objects. Each gene defines exactly one `wild_type` allele plus

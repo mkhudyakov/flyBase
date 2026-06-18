@@ -16,9 +16,11 @@ const TOOL_SCENES := {
 	"notebook": "res://scenes/NotebookScreen.tscn",
 	"campaign": "res://scenes/CampaignScreen.tscn",
 	"population": "res://scenes/PopulationScreen.tscn",
+	"equipment": "res://scenes/EquipmentScreen.tscn",
 }
 
 @onready var _stats: Label = %LabStats
+@onready var _econ: Label = %EconLabel
 @onready var _event: Label = %LastEvent
 @onready var _vial_list: ItemList = %VialList
 @onready var _vial_name: Label = %VialNameLabel
@@ -59,6 +61,8 @@ func _refresh_all() -> void:
 func _refresh_stats() -> void:
 	_stats.text = "Generation %d   •   %d vials   •   %d flies" \
 		% [Lab.generation, Lab.active_vials().size(), Lab.total_flies()]
+	_econ.text = "$%d  •  %d RP  •  Rep %d  •  Pubs %d" \
+		% [Economy.budget, Economy.research_points, Economy.reputation, Economy.publication_score]
 	_event.text = Lab.last_event
 
 func _refresh_vials() -> void:
@@ -127,16 +131,26 @@ func _refresh_detail() -> void:
 
 func _fly_label(f: Fly) -> String:
 	var status := "" if f.alive else "  ✗dead"
-	var marks: Array[String] = []
-	# Note any non-wild-type locus so carriers/mutants are visible at a glance.
-	for gene: Gene in Catalog.all_genes():
-		for aid in f.genome.genotype_at(gene.id):
-			var a: Allele = Catalog.get_allele(aid)
-			if a != null and not a.is_wild_type():
-				marks.append(gene.symbol)
-				break
-	var geno := (" {" + ",".join(marks) + "}") if not marks.is_empty() else " wild-type"
-	return "%s  %s%s%s" % [f.id, f.sex(), geno, status]
+	# Without a carrier scanner you only see the visible phenotype; with it, the
+	# full genotype (including hidden heterozygous carriers) is revealed.
+	if Economy.is_unlocked("carrier_scanner"):
+		var marks: Array[String] = []
+		for gene: Gene in Catalog.all_genes():
+			for aid in f.genome.genotype_at(gene.id):
+				var a: Allele = Catalog.get_allele(aid)
+				if a != null and not a.is_wild_type():
+					marks.append(gene.symbol)
+					break
+		var geno := (" {" + ",".join(marks) + "}") if not marks.is_empty() else " wild-type"
+		return "%s  %s%s%s" % [f.id, f.sex(), geno, status]
+
+	var dims := StatisticsEngine.visible_dims(f)
+	var visible: Array[String] = []
+	if dims["eye"] != "red-eye": visible.append(dims["eye"])
+	if dims["wing"] != "normal-wing": visible.append(dims["wing"])
+	if dims["body"] != "tan-body": visible.append(dims["body"])
+	var pheno := ", ".join(visible) if not visible.is_empty() else "normal"
+	return "%s  %s — %s%s" % [f.id, f.sex(), pheno, status]
 
 # --- Vial actions ------------------------------------------------------------
 
@@ -149,10 +163,14 @@ func _on_fly_list_item_selected(idx: int) -> void:
 	_selected_fly_id = _fly_ids[idx]
 
 func _on_new_vial_pressed() -> void:
+	if not Economy.spend(Economy.VIAL_COST):
+		Lab.last_event = "Not enough budget for a new vial (need $%d)." % Economy.VIAL_COST
+		_refresh_stats()
+		return
 	var inc_id: String = _selected_inc_id if _selected_inc_id != "" else ""
 	var v := Lab.create_vial("New vial", inc_id)
 	_selected_vial_id = v.id
-	Lab.last_event = "Created vial '%s'." % v.name
+	Lab.last_event = "Created vial '%s' (-$%d)." % [v.name, Economy.VIAL_COST]
 	_refresh_all()
 
 func _on_archive_pressed() -> void:
@@ -173,6 +191,11 @@ func _on_incubator_option_item_selected(idx: int) -> void:
 func _on_breed_pressed() -> void:
 	var v := Lab.get_vial(_selected_vial_id)
 	if v == null:
+		return
+	var cost := Economy.breed_cost(50)
+	if not Economy.spend(cost):
+		Lab.last_event = "Not enough budget to breed (need $%d, have $%d). Publish results to earn more." % [cost, Economy.budget]
+		_refresh_stats()
 		return
 	var child := Lab.breed(v, 50)
 	if child != null:
@@ -233,6 +256,7 @@ func _on_tool_statistics_pressed() -> void: _open("statistics")
 func _on_tool_notebook_pressed() -> void: _open("notebook")
 func _on_tool_campaign_pressed() -> void: _open("campaign")
 func _on_tool_population_pressed() -> void: _open("population")
+func _on_tool_equipment_pressed() -> void: _open("equipment")
 
 func _open(key: String) -> void:
 	get_tree().change_scene_to_file(TOOL_SCENES[key])

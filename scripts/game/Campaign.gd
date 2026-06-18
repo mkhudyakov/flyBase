@@ -89,6 +89,8 @@ func complete_current() -> void:
 	for u in s.get("unlocks", []):
 		if not unlocks.has(String(u)):
 			unlocks.append(String(u))
+	# Reward the player's economy for completing the scenario (spec 11/15).
+	Economy.award_scenario(s.get("reward", {}))
 	save_progress()
 
 # --- Objective evaluation ----------------------------------------------------
