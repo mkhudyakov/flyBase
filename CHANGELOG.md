@@ -3,6 +3,38 @@
 All notable changes to the Drosophila Genetics Lab Simulator are documented
 here, phase by phase (see SPECS.md section 24).
 
+## Phase 5 — Inheritance & cross simulator
+
+Crossing two flies to generate offspring, with expected-vs-observed analysis.
+
+### Added
+- `scripts/sim/InheritanceEngine.gd` — `cross(mother, father, count, env, seed)`:
+  meiosis with per-arm **recombination** (crossover probability from map
+  distance), **autosomal** + **sex-linked** inheritance, sex determination
+  (mother→X, father→X/Y), optional spontaneous mutation (raised by radiation),
+  and per-offspring development. Analyses results into genotype/phenotype
+  distributions and per-gene expected-vs-observed ratio tables (autosomal, and
+  X-linked split by sex), with per-class survival and deviation explanations.
+  Performance safeguard caps offspring at 2000.
+- `scripts/sim/CrossResult.gd` — result container (offspring, distributions,
+  per-gene analysis, sex/survival counts, explanation).
+- `scenes/CrossSimulator.tscn` + `scripts/ui/CrossSimulator.gd` — pick two parent
+  presets, 10/100/1000 offspring, and a seed; renders the tables and explanation.
+- `FlyFactory.new_offspring()`; `Fly.alive` (set by development, saved/loaded).
+- `scenes/Phase5Tests.tscn` + `scripts/tests/Phase5Tests.gd` — 15-check headless
+  suite (all passing). Dashboard: added a "Cross Simulator" entry.
+
+### Verified genetics
+- Monohybrid 3:1 / genotype 1:2:1 (vg/+ × vg/+); X-linked criss-cross
+  (white ♀ × wild ♂ → carrier daughters, white sons); lethal deviation
+  (bcd/+ × bcd/+ → ~25% homozygotes conceived, ~0% among adults).
+
+### Definition of Done
+- Cross two flies ✓ / generate 10/100/1000 offspring ✓
+- Output genotype distribution ✓ / phenotype distribution ✓
+- Offspring inherit alleles correctly ✓ (autosomal + sex-linked, verified)
+- Random seed is reproducible ✓
+
 ## Phase 4 — Development engine
 
 Simulated egg→adult development; the environment now changes outcomes.

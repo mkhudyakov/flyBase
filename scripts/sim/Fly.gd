@@ -13,6 +13,7 @@ var phenotype: Phenotype
 var generation: int = 0                 ## 0 = founder.
 var parent_ids: Array[String] = []      ## Ids of the two parents, if bred.
 var label: String = ""                  ## Optional player-facing name.
+var alive: bool = true                  ## False if development failed (set by DevelopmentEngine).
 
 func _init() -> void:
 	genome = Genome.new()
@@ -30,6 +31,7 @@ func to_dict() -> Dictionary:
 		"id": id,
 		"label": label,
 		"generation": generation,
+		"alive": alive,
 		"parent_ids": parent_ids.duplicate(),
 		"genome": genome.to_dict(),
 		"phenotype": phenotype.to_dict(),
@@ -40,6 +42,7 @@ static func from_dict(d: Dictionary) -> Fly:
 	f.id = String(d.get("id", ""))
 	f.label = String(d.get("label", ""))
 	f.generation = int(d.get("generation", 0))
+	f.alive = bool(d.get("alive", true))
 	f.parent_ids.assign(d.get("parent_ids", []))
 	if d.has("genome") and d["genome"] is Dictionary:
 		f.genome = Genome.from_dict(d["genome"])

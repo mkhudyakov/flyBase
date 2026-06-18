@@ -1,0 +1,142 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/CrossSimulator.gd" id="1_cross"]
+
+[node name="CrossSimulator" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_cross")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.09, 0.11, 0.13, 1)
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="Root" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Margin/Root"]
+layout_mode = 2
+text = "Cross Simulator (Phase 5)"
+theme_override_font_sizes/font_size = 24
+
+[node name="Controls" type="HBoxContainer" parent="Margin/Root"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="MotherBox" type="VBoxContainer" parent="Margin/Root/Controls"]
+layout_mode = 2
+
+[node name="MLabel" type="Label" parent="Margin/Root/Controls/MotherBox"]
+layout_mode = 2
+text = "Mother (♀)"
+
+[node name="MotherOption" type="OptionButton" parent="Margin/Root/Controls/MotherBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="FatherBox" type="VBoxContainer" parent="Margin/Root/Controls"]
+layout_mode = 2
+
+[node name="FLabel" type="Label" parent="Margin/Root/Controls/FatherBox"]
+layout_mode = 2
+text = "Father (♂)"
+
+[node name="FatherOption" type="OptionButton" parent="Margin/Root/Controls/FatherBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="CountBox" type="VBoxContainer" parent="Margin/Root/Controls"]
+layout_mode = 2
+
+[node name="CLabel" type="Label" parent="Margin/Root/Controls/CountBox"]
+layout_mode = 2
+text = "Offspring"
+
+[node name="CountOption" type="OptionButton" parent="Margin/Root/Controls/CountBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+
+[node name="SeedBox" type="VBoxContainer" parent="Margin/Root/Controls"]
+layout_mode = 2
+
+[node name="SLabel" type="Label" parent="Margin/Root/Controls/SeedBox"]
+layout_mode = 2
+text = "Seed"
+
+[node name="SeedSpin" type="SpinBox" parent="Margin/Root/Controls/SeedBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+max_value = 1000000.0
+rounded = true
+
+[node name="ButtonBox" type="VBoxContainer" parent="Margin/Root/Controls"]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="Margin/Root/Controls/ButtonBox"]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+
+[node name="RunButton" type="Button" parent="Margin/Root/Controls/ButtonBox"]
+layout_mode = 2
+text = "Run cross"
+
+[node name="RandomizeBox" type="VBoxContainer" parent="Margin/Root/Controls"]
+layout_mode = 2
+
+[node name="Spacer2" type="Control" parent="Margin/Root/Controls/RandomizeBox"]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+
+[node name="RandomizeButton" type="Button" parent="Margin/Root/Controls/RandomizeBox"]
+layout_mode = 2
+text = "Random seed"
+
+[node name="OutputPanel" type="PanelContainer" parent="Margin/Root"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Scroll" type="ScrollContainer" parent="Margin/Root/OutputPanel"]
+layout_mode = 2
+
+[node name="Output" type="RichTextLabel" parent="Margin/Root/OutputPanel/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+fit_content = true
+
+[node name="BackButton" type="Button" parent="Margin/Root"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Back to Dashboard"
+
+[connection signal="pressed" from="Margin/Root/Controls/ButtonBox/RunButton" to="." method="_on_run_pressed"]
+[connection signal="pressed" from="Margin/Root/Controls/RandomizeBox/RandomizeButton" to="." method="_on_randomize_pressed"]
+[connection signal="pressed" from="Margin/Root/BackButton" to="." method="_on_back_pressed"]

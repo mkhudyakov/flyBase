@@ -17,6 +17,13 @@ static func _next_id() -> String:
 	_counter += 1
 	return "fly_%04d" % _counter
 
+## A blank fly with a fresh unique id and an empty genome. The caller (e.g. the
+## InheritanceEngine) builds the genome from inherited gametes.
+static func new_offspring() -> Fly:
+	var fly := Fly.new()
+	fly.id = _next_id()
+	return fly
+
 ## Builds a fully wild-type fly of the given sex: every catalog gene receives
 ## its wild-type allele on all relevant chromosome copies.
 static func create_wild_type(for_sex: String = Genome.FEMALE) -> Fly:

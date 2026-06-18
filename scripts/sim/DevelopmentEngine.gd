@@ -151,6 +151,7 @@ static func simulate(fly: Fly, env: VialEnvironment = null, roll_seed: int = -1)
 		result.fertility_score = 0.0
 		result.lifespan_days = 0.0
 
+	fly.alive = result.reached_adult
 	_write_phenotype(fly, env, roll_seed, result, nutrition_eff)
 	_build_explanation(fly, env, result, effects, module_health, temp_rate)
 	return result

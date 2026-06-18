@@ -16,41 +16,40 @@ APIs, no real genome database.
 
 ---
 
-## Current status: Phase 4 — Development engine
+## Current status: Phase 5 — Inheritance & cross simulator
 
-Flies now develop egg→adult, and the **environment changes outcomes**. What works:
+Two flies can now be crossed to produce offspring. What works:
 
-- Everything from Phases 0–3 (menu, dashboard, services, data model, phenotype
-  engine, fly renderer, viewers).
-- **DevelopmentEngine** (`scripts/sim/DevelopmentEngine.gd`) walks the 10 stages
-  (egg → adult), derives development-module health from the genome, and checks
-  each stage's sensitive modules, energy needs, and temperature-scaled duration.
-  It produces viability / developmental-stability / fertility / lifespan scores
-  plus a full per-stage log and explanation.
-- **Named failure outcomes** (embryonic arrest, metabolic collapse, pupal
-  lethality, temperature lethality, …): a severe developmental mutant (e.g.
-  `bicoid`, `wingless`) can die before adulthood, with the reason explained
-  ("axis_patterning critically low … lowered by bcd").
-- **Environment effects**: temperature scales stage duration (hot = faster,
-  cold = slower) and adds stress; extreme temperature is lethal; low food /
-  crowding reduce energy → smaller, less-fertile adults, or collapse if severe.
-- **Development Timeline** screen (Dashboard → *Development Timeline*): pick a
-  subject, set temperature / food / crowding, and watch the stage-by-stage run.
-- Reproducible (same seed + genome + environment → same result); verified by
-  `Phase4Tests.tscn` (16 checks).
+- Everything from Phases 0–4 (menu, dashboard, services, data model, phenotype
+  engine, fly renderer, development engine, viewers).
+- **InheritanceEngine** (`scripts/sim/InheritanceEngine.gd`) runs meiosis →
+  gametes → offspring with **autosomal** and **sex-linked** inheritance,
+  **simplified recombination** (map-distance linkage), sex determination
+  (mother gives X; father gives X→daughter / Y→son), and optional spontaneous
+  mutation. Each offspring is developed under the vial environment.
+- **Cross Simulator** screen (Dashboard → *Cross Simulator*): choose two parents,
+  10 / 100 / 1000 offspring, and a seed; see genotype and phenotype
+  distributions, sex/survival ratios, and **expected-vs-observed** ratio tables
+  per segregating gene, with deviation explanations.
+- Correct, verified genetics: monohybrid **3:1 / 1:2:1**, X-linked **criss-cross**
+  (white ♀ × wild ♂ → carrier daughters, white sons), and **lethal deviation**
+  (bcd/+ × bcd/+ → homozygotes conceived at ~25% but absent among adults, with
+  the deviation explained). Reproducible by seed. `Phase5Tests.tscn` (15 checks).
 
-> Inheritance / crossing two flies arrives in Phase 5.
+> Vials / lab management arrive in Phase 6.
 
 ### Earlier phases recap
 
+- **Phase 4 — development**: `DevelopmentEngine` walks 10 egg→adult stages;
+  severe developmental mutants can fail (named outcomes), and temperature /
+  nutrition / crowding change duration, size, fertility, and survival. See
+  *Development Timeline*.
 - **Phase 3 — renderer**: `FlyRenderer` draws a top-down fly from vector shapes
-  (no art assets), every feature phenotype-driven (eye color/size, wing
-  size/shape, body color/size, bristles, antennae, asymmetry). See *Microscope
-  Viewer*.
+  (no art assets), every feature phenotype-driven. See *Microscope Viewer*.
 - **Phase 2 — phenotype**: `PhenotypeEngine` converts a genome into traits via
-  dominance + dose, **penetrance**, and **expressivity**, with a human-readable
-  **explanation log**. 21 data-driven traits in `data/trait_rules.json`. Hidden
-  carriers, pleiotropy, and X-linked male expression all work.
+  dominance + dose, **penetrance**, and **expressivity**, with an **explanation
+  log**. 21 data-driven traits. Hidden carriers, pleiotropy, and X-linked male
+  expression all work.
 
 See [CHANGELOG.md](CHANGELOG.md) for per-phase history and
 [CONVENTIONS.md](CONVENTIONS.md) for coding conventions. The full plan lives in
@@ -88,6 +87,7 @@ GODOT=/Applications/Godot.app/Contents/MacOS/Godot
 "$GODOT" --headless --path . res://scenes/Phase1Tests.tscn --quit-after 10
 "$GODOT" --headless --path . res://scenes/Phase2Tests.tscn --quit-after 10
 "$GODOT" --headless --path . res://scenes/Phase4Tests.tscn --quit-after 10
+"$GODOT" --headless --path . res://scenes/Phase5Tests.tscn --quit-after 15
 ```
 
 The first command is only needed once after new `class_name` scripts are added
@@ -118,9 +118,11 @@ flyBase/
 │   ├── PhenotypeViewer.tscn
 │   ├── MicroscopeViewer.tscn
 │   ├── DevelopmentTimeline.tscn
+│   ├── CrossSimulator.tscn
 │   ├── Phase1Tests.tscn       # headless test scenes
 │   ├── Phase2Tests.tscn
-│   └── Phase4Tests.tscn
+│   ├── Phase4Tests.tscn
+│   └── Phase5Tests.tscn
 └── scripts/
     ├── autoload/              # Singletons (registered in project.godot)
     │   ├── DataLoader.gd
@@ -137,13 +139,16 @@ flyBase/
     │   ├── PhenotypeEngine.gd
     │   ├── DevelopmentEngine.gd
     │   ├── DevelopmentResult.gd
+    │   ├── InheritanceEngine.gd
+    │   ├── CrossResult.gd
     │   ├── VialEnvironment.gd  # "Environment" collides with a Godot built-in
     │   ├── Fly.gd
     │   └── FlyFactory.gd
     ├── tests/
     │   ├── Phase1Tests.gd
     │   ├── Phase2Tests.gd
-    │   └── Phase4Tests.gd
+    │   ├── Phase4Tests.gd
+    │   └── Phase5Tests.gd
     └── ui/                    # UI controllers (kept separate from sim code)
         ├── MainMenu.gd
         ├── LabDashboard.gd
@@ -151,7 +156,8 @@ flyBase/
         ├── PhenotypeViewer.gd
         ├── MicroscopeViewer.gd
         ├── FlyRenderer.gd     # procedural 2D fly (vector shapes, no assets)
-        └── DevelopmentTimeline.gd
+        ├── DevelopmentTimeline.gd
+        └── CrossSimulator.gd
 ```
 
 Simulation code lives in `scripts/sim/` separately from UI code, per the
