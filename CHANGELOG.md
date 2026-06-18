@@ -3,6 +3,40 @@
 All notable changes to the Drosophila Genetics Lab Simulator are documented
 here, phase by phase (see SPECS.md section 24).
 
+## Phase 2 — Phenotype engine
+
+Converted genotype into phenotype with dominance, penetrance, expressivity,
+trait deltas, and a human-readable explanation log.
+
+### Added
+- `scripts/sim/PhenotypeEngine.gd` — static `compute(fly, env, roll_seed)` that:
+  starts every trait at its baseline; gates each mutant allele by dominance +
+  dose (dominant = 1 copy; recessive = homozygous/hemizygous; semi-dominant /
+  additive = dose-proportional); rolls penetrance; scales by expressivity;
+  applies and clamps trait deltas; and records a full explanation (summary +
+  per-locus genetic reasoning, including hidden-carrier and penetrance-miss cases).
+- `scripts/sim/TraitRule.gd` + `data/trait_rules.json` — 15 data-driven traits
+  with baselines, hard clamps, and "normal" bands (visible/functional/behavioral).
+- `Catalog` now also parses trait rules (`all_traits`, `get_trait_rule`,
+  `trait_count`).
+- `scenes/PhenotypeViewer.tscn` + `scripts/ui/PhenotypeViewer.gd` — trait readout
+  (with abnormal-range flags and text gauges) and explanation log; a *Recompute*
+  button re-rolls penetrance/expressivity on the same genome.
+- `scenes/Phase2Tests.tscn` + `scripts/tests/Phase2Tests.gd` — 14-check headless
+  suite (all passing).
+- Dashboard: added a "Phenotype Viewer" entry; status line now shows trait count.
+
+### Reproducibility
+- Phenotype rolls use a local RNG seeded from the global seed XOR the genotype
+  signature, so the same seed + genotype always reproduces the same phenotype.
+
+### Definition of Done
+- Wild-type fly has normal phenotype ✓
+- white mutation affects eye color ✓ / vestigial affects wing size ✓
+- yellow/ebony affect body color (opposite directions) ✓
+- Explanations are generated ✓ (verified to match the spec's example style)
+- Same seed gives same phenotype ✓
+
 ## Phase 1 — Core data model
 
 Implemented the fly/genome/gene/allele/phenotype/environment classes. The

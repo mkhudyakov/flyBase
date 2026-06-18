@@ -1,0 +1,21 @@
+{
+  "_comment": "Trait definitions consumed by the Phase 2 PhenotypeEngine. ABSTRACT simulator quantities, not real measurements. 'baseline' is the wild-type value; the engine clamps final values to [min,max]; the [normal_min,normal_max] band flags whether a trait looks abnormal. Allele 'affected_traits' deltas are added on top of the baseline.",
+  "schema_version": 1,
+  "traits": [
+    {"id": "eye_color", "label": "Eye color", "category": "visible", "baseline": 1.0, "min": 0.0, "max": 1.0, "normal_min": 0.9, "normal_max": 1.0, "higher_is_better": true, "explanation": "1.0 = wild-type red, 0.0 = white (pigment absent)."},
+    {"id": "eye_size", "label": "Eye size", "category": "visible", "baseline": 1.0, "min": 0.0, "max": 1.2, "normal_min": 0.85, "normal_max": 1.1, "higher_is_better": true, "explanation": "Relative eye area; 0 = no eye."},
+    {"id": "body_color", "label": "Body color", "category": "visible", "baseline": 0.5, "min": 0.0, "max": 1.0, "normal_min": 0.4, "normal_max": 0.6, "higher_is_better": true, "explanation": "0 = pale/yellow, 0.5 = wild-type, 1 = dark/ebony."},
+    {"id": "wing_size", "label": "Wing size", "category": "visible", "baseline": 1.0, "min": 0.0, "max": 1.2, "normal_min": 0.85, "normal_max": 1.1, "higher_is_better": true, "explanation": "Relative wing area; low = vestigial."},
+    {"id": "wing_shape", "label": "Wing shape", "category": "visible", "baseline": 1.0, "min": 0.0, "max": 1.0, "normal_min": 0.85, "normal_max": 1.0, "higher_is_better": true, "explanation": "1 = normal outline; lower = notched/deformed."},
+    {"id": "wing_vein_quality", "label": "Wing vein quality", "category": "visible", "baseline": 1.0, "min": 0.0, "max": 1.0, "normal_min": 0.85, "normal_max": 1.0, "higher_is_better": true, "explanation": "Completeness of the wing vein pattern."},
+    {"id": "antenna_shape", "label": "Antenna shape", "category": "visible", "baseline": 1.0, "min": 0.0, "max": 1.0, "normal_min": 0.85, "normal_max": 1.0, "higher_is_better": true, "explanation": "1 = normal antenna; low = leg-like transformation."},
+    {"id": "segment_identity", "label": "Segment identity", "category": "visible", "baseline": 1.0, "min": 0.0, "max": 1.0, "normal_min": 0.85, "normal_max": 1.0, "higher_is_better": true, "explanation": "Correctness of body-segment identity."},
+    {"id": "deformity_score", "label": "Deformity", "category": "visible", "baseline": 0.0, "min": 0.0, "max": 1.0, "normal_min": 0.0, "normal_max": 0.1, "higher_is_better": false, "explanation": "Overall morphological abnormality; 0 = none."},
+    {"id": "flight_ability", "label": "Flight ability", "category": "functional", "baseline": 1.0, "min": 0.0, "max": 1.0, "normal_min": 0.8, "normal_max": 1.0, "higher_is_better": true, "explanation": "Capacity for sustained flight."},
+    {"id": "vision_score", "label": "Vision", "category": "functional", "baseline": 1.0, "min": 0.0, "max": 1.0, "normal_min": 0.8, "normal_max": 1.0, "higher_is_better": true, "explanation": "Visual function."},
+    {"id": "mating_success", "label": "Mating success", "category": "functional", "baseline": 1.0, "min": 0.0, "max": 1.0, "normal_min": 0.8, "normal_max": 1.0, "higher_is_better": true, "explanation": "Relative mating success."},
+    {"id": "sleep_cycle_stability", "label": "Sleep-cycle stability", "category": "behavioral", "baseline": 1.0, "min": 0.0, "max": 1.0, "normal_min": 0.8, "normal_max": 1.0, "higher_is_better": true, "explanation": "Regularity of the activity/rest rhythm."},
+    {"id": "activity_level", "label": "Activity level", "category": "behavioral", "baseline": 0.5, "min": 0.0, "max": 1.0, "normal_min": 0.35, "normal_max": 0.65, "higher_is_better": true, "explanation": "0 = sluggish, 1 = hyperactive."},
+    {"id": "courtship_score", "label": "Courtship", "category": "behavioral", "baseline": 1.0, "min": 0.0, "max": 1.0, "normal_min": 0.8, "normal_max": 1.0, "higher_is_better": true, "explanation": "Effectiveness of courtship behavior."}
+  ]
+}

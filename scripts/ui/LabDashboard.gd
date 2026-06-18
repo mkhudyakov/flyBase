@@ -8,6 +8,7 @@ extends Control
 
 const MAIN_MENU_SCENE := "res://scenes/MainMenu.tscn"
 const GENOTYPE_DEBUG_SCENE := "res://scenes/GenotypeDebug.tscn"
+const PHENOTYPE_VIEWER_SCENE := "res://scenes/PhenotypeViewer.tscn"
 
 @onready var _info_label: RichTextLabel = %InfoLabel
 
@@ -26,7 +27,7 @@ func _refresh() -> void:
 		"core services from Phase 0 are running:",
 		"",
 		"[b]DataLoader[/b] — loaded data: %s" % loaded_text,
-		"[b]Catalog[/b] — %d genes, %d alleles parsed" % [Catalog.gene_count(), Catalog.allele_count()],
+		"[b]Catalog[/b] — %d genes, %d alleles, %d traits parsed" % [Catalog.gene_count(), Catalog.allele_count(), Catalog.trait_count()],
 		"[b]RandomService[/b] — current seed: %d" % RandomService.get_seed(),
 		"[b]SaveLoadService[/b] — autosave present: %s" % str(SaveLoadService.has_save(SaveLoadService.AUTOSAVE_NAME)),
 		"",
@@ -50,6 +51,9 @@ func _on_test_load_pressed() -> void:
 
 func _on_genotype_debug_pressed() -> void:
 	get_tree().change_scene_to_file(GENOTYPE_DEBUG_SCENE)
+
+func _on_phenotype_viewer_pressed() -> void:
+	get_tree().change_scene_to_file(PHENOTYPE_VIEWER_SCENE)
 
 func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file(MAIN_MENU_SCENE)

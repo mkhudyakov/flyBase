@@ -12,6 +12,8 @@ extends Node
 var _genes_by_id: Dictionary = {}        ## gene_id -> Gene
 var _alleles_by_id: Dictionary = {}      ## allele_id -> Allele
 var _alleles_by_gene: Dictionary = {}    ## gene_id -> Array[Allele]
+var _traits_by_id: Dictionary = {}       ## trait_id -> TraitRule
+var _trait_order: Array[String] = []     ## trait_ids in file order (stable display)
 
 func _ready() -> void:
 	build()
@@ -22,6 +24,8 @@ func build() -> void:
 	_genes_by_id.clear()
 	_alleles_by_id.clear()
 	_alleles_by_gene.clear()
+	_traits_by_id.clear()
+	_trait_order.clear()
 
 	var genes_data: Variant = DataLoader.get_data("genes")
 	if genes_data is Dictionary and genes_data.has("genes"):
@@ -42,7 +46,17 @@ func build() -> void:
 						_alleles_by_gene[a.gene_id] = []
 					_alleles_by_gene[a.gene_id].append(a)
 
-	print("Catalog: loaded %d genes, %d alleles." % [_genes_by_id.size(), _alleles_by_id.size()])
+	var traits_data: Variant = DataLoader.get_data("trait_rules")
+	if traits_data is Dictionary and traits_data.has("traits"):
+		for raw in traits_data["traits"]:
+			if raw is Dictionary:
+				var t := TraitRule.from_dict(raw)
+				if t.id != "":
+					_traits_by_id[t.id] = t
+					_trait_order.append(t.id)
+
+	print("Catalog: loaded %d genes, %d alleles, %d traits."
+		% [_genes_by_id.size(), _alleles_by_id.size(), _traits_by_id.size()])
 
 ## True once at least one gene loaded (i.e. data files exist).
 func is_ready() -> bool:
@@ -53,6 +67,22 @@ func gene_count() -> int:
 
 func allele_count() -> int:
 	return _alleles_by_id.size()
+
+func trait_count() -> int:
+	return _traits_by_id.size()
+
+## TraitRule objects in file order (stable display order).
+func all_traits() -> Array:
+	var result: Array = []
+	for tid in _trait_order:
+		result.append(_traits_by_id[tid])
+	return result
+
+func get_trait_rule(trait_id: String) -> TraitRule:
+	return _traits_by_id.get(trait_id, null)
+
+func has_trait(trait_id: String) -> bool:
+	return _traits_by_id.has(trait_id)
 
 func get_gene(gene_id: String) -> Gene:
 	return _genes_by_id.get(gene_id, null)

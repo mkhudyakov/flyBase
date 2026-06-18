@@ -1,0 +1,135 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/PhenotypeViewer.gd" id="1_phenoview"]
+
+[node name="PhenotypeViewer" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_phenoview")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.09, 0.11, 0.13, 1)
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="Root" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Margin/Root"]
+layout_mode = 2
+text = "Phenotype Viewer (Phase 2)"
+theme_override_font_sizes/font_size = 24
+
+[node name="FlyTitle" type="Label" parent="Margin/Root"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+theme_override_colors/font_color = Color(0.7, 0.85, 0.9, 1)
+theme_override_font_sizes/font_size = 15
+
+[node name="HBox" type="HBoxContainer" parent="Margin/Root"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="Buttons" type="VBoxContainer" parent="Margin/Root/HBox"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="WildFemaleButton" type="Button" parent="Margin/Root/HBox/Buttons"]
+layout_mode = 2
+text = "Wild-type female"
+
+[node name="WhiteMaleButton" type="Button" parent="Margin/Root/HBox/Buttons"]
+layout_mode = 2
+text = "white-eyed male"
+
+[node name="VestigialButton" type="Button" parent="Margin/Root/HBox/Buttons"]
+layout_mode = 2
+text = "vestigial (wing size)"
+
+[node name="YellowButton" type="Button" parent="Margin/Root/HBox/Buttons"]
+layout_mode = 2
+text = "yellow (body color)"
+
+[node name="EbonyButton" type="Button" parent="Margin/Root/HBox/Buttons"]
+layout_mode = 2
+text = "ebony (body color)"
+
+[node name="AntpButton" type="Button" parent="Margin/Root/HBox/Buttons"]
+layout_mode = 2
+text = "Antennapedia (dominant)"
+
+[node name="Sep" type="HSeparator" parent="Margin/Root/HBox/Buttons"]
+layout_mode = 2
+
+[node name="RecomputeButton" type="Button" parent="Margin/Root/HBox/Buttons"]
+layout_mode = 2
+text = "Recompute (fresh roll)"
+
+[node name="TraitsPanel" type="PanelContainer" parent="Margin/Root/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Scroll" type="ScrollContainer" parent="Margin/Root/HBox/TraitsPanel"]
+layout_mode = 2
+
+[node name="TraitsOut" type="RichTextLabel" parent="Margin/Root/HBox/TraitsPanel/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+fit_content = true
+
+[node name="ExplainPanel" type="PanelContainer" parent="Margin/Root/HBox"]
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Scroll2" type="ScrollContainer" parent="Margin/Root/HBox/ExplainPanel"]
+layout_mode = 2
+
+[node name="ExplainOut" type="RichTextLabel" parent="Margin/Root/HBox/ExplainPanel/Scroll2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+fit_content = true
+
+[node name="BackButton" type="Button" parent="Margin/Root"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Back to Dashboard"
+
+[connection signal="pressed" from="Margin/Root/HBox/Buttons/WildFemaleButton" to="." method="_on_wild_female_pressed"]
+[connection signal="pressed" from="Margin/Root/HBox/Buttons/WhiteMaleButton" to="." method="_on_white_male_pressed"]
+[connection signal="pressed" from="Margin/Root/HBox/Buttons/VestigialButton" to="." method="_on_vestigial_pressed"]
+[connection signal="pressed" from="Margin/Root/HBox/Buttons/YellowButton" to="." method="_on_yellow_pressed"]
+[connection signal="pressed" from="Margin/Root/HBox/Buttons/EbonyButton" to="." method="_on_ebony_pressed"]
+[connection signal="pressed" from="Margin/Root/HBox/Buttons/AntpButton" to="." method="_on_antp_pressed"]
+[connection signal="pressed" from="Margin/Root/HBox/Buttons/RecomputeButton" to="." method="_on_recompute_pressed"]
+[connection signal="pressed" from="Margin/Root/BackButton" to="." method="_on_back_pressed"]

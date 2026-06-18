@@ -16,27 +16,30 @@ APIs, no real genome database.
 
 ---
 
-## Current status: Phase 1 — Core data model
+## Current status: Phase 2 — Phenotype engine
 
-The fly/genome/gene/allele/phenotype/environment classes now exist and are
-data-driven. What works:
+Genotype is now expressed into phenotype, with explanations. What works:
 
-- Everything from Phase 0 (menu, dashboard, services).
-- **Core simulation classes** (`scripts/sim/`): `Gene`, `Allele`, `Chromosome`,
-  `Genome`, `Phenotype`, `Environment`, `Fly`, plus a `FlyFactory` and a
-  `Catalog` singleton.
-- **Data-driven catalog**: 12 genes (`data/genes.json`) and 24 alleles
-  (`data/alleles.json`), loaded and parsed at startup.
-- **Diploid genome model** with homologous chromosome copies and correct
-  sex-linkage: females are XX, males XY, and a male X-linked gene is hemizygous.
-- **Genotype Debug** screen: build wild-type / mutant / carrier flies and read
-  their genotype gene-by-gene. (Dashboard → *Genotype Debug*.)
-- **Save/load one fly** round-trips a genome through JSON without loss.
-- Headless test scene `res://scenes/Phase1Tests.tscn` (13 checks, all passing).
+- Everything from Phases 0–1 (menu, dashboard, services, core data model,
+  Genotype Debug).
+- **PhenotypeEngine** (`scripts/sim/PhenotypeEngine.gd`) converts a genome into
+  traits using dominance, dose, **penetrance**, and **expressivity**, then
+  records a human-readable **explanation log** for every result.
+- **Data-driven traits**: 15 traits with baselines and normal ranges in
+  `data/trait_rules.json`.
+- Correct genetics behaviour, verified by tests: white (X-linked) gives white
+  eyes in males, vestigial reduces wing size (and pleiotropically flight/mating),
+  a heterozygous recessive is a silent **hidden carrier**, yellow/ebony shift
+  body color in opposite directions, and a dominant allele expresses from one copy.
+- **Phenotype Viewer** screen: build a fly, see its traits (with normal-range
+  flags) and the full explanation; *Recompute* re-rolls to show penetrance /
+  expressivity variation on the same genome. (Dashboard → *Phenotype Viewer*.)
+- **Reproducible**: same seed + same genotype → identical phenotype.
+- Headless suites: `Phase1Tests.tscn` (13 checks) and `Phase2Tests.tscn`
+  (14 checks), all passing.
 
-> Phenotype is **not computed yet** — that's Phase 2. The `Phenotype` class is a
-> container today; the genome carries alleles, but their visible effects are not
-> yet expressed.
+> Environment does not yet affect the phenotype — that arrives with the
+> development engine in Phase 4. The renderer (Phase 3) will draw these traits.
 
 See [CHANGELOG.md](CHANGELOG.md) for per-phase history and
 [CONVENTIONS.md](CONVENTIONS.md) for coding conventions. The full plan lives in
@@ -72,6 +75,7 @@ GODOT=/Applications/Godot.app/Contents/MacOS/Godot
 # First run after pulling new code registers class_name globals:
 "$GODOT" --headless --path . --editor --quit
 "$GODOT" --headless --path . res://scenes/Phase1Tests.tscn --quit-after 10
+"$GODOT" --headless --path . res://scenes/Phase2Tests.tscn --quit-after 10
 ```
 
 The first command is only needed once after new `class_name` scripts are added
@@ -92,33 +96,40 @@ flyBase/
 ├── SPECS.md                   # Full product specification
 ├── data/                      # Data-driven content (JSON). See data/README.md
 │   ├── genes.json             # 12 genes
-│   └── alleles.json           # 24 alleles
+│   ├── alleles.json           # 24 alleles
+│   └── trait_rules.json       # 15 traits (baselines + normal ranges)
 ├── scenes/                    # Godot scenes (.tscn)
 │   ├── MainMenu.tscn
 │   ├── LabDashboard.tscn
 │   ├── GenotypeDebug.tscn
-│   └── Phase1Tests.tscn       # headless test scene
+│   ├── PhenotypeViewer.tscn
+│   ├── Phase1Tests.tscn       # headless test scenes
+│   └── Phase2Tests.tscn
 └── scripts/
     ├── autoload/              # Singletons (registered in project.godot)
     │   ├── DataLoader.gd
     │   ├── RandomService.gd
     │   └── SaveLoadService.gd
     ├── sim/                   # Simulation classes (no UI dependencies)
-    │   ├── Catalog.gd         # autoload: parses JSON into Gene/Allele objects
+    │   ├── Catalog.gd         # autoload: parses JSON into Gene/Allele/TraitRule
     │   ├── Gene.gd
     │   ├── Allele.gd
+    │   ├── TraitRule.gd
     │   ├── Chromosome.gd
     │   ├── Genome.gd
     │   ├── Phenotype.gd
+    │   ├── PhenotypeEngine.gd
     │   ├── VialEnvironment.gd  # "Environment" collides with a Godot built-in
     │   ├── Fly.gd
     │   └── FlyFactory.gd
     ├── tests/
-    │   └── Phase1Tests.gd
+    │   ├── Phase1Tests.gd
+    │   └── Phase2Tests.gd
     └── ui/                    # UI controllers (kept separate from sim code)
         ├── MainMenu.gd
         ├── LabDashboard.gd
-        └── GenotypeDebug.gd
+        ├── GenotypeDebug.gd
+        └── PhenotypeViewer.gd
 ```
 
 Simulation code lives in `scripts/sim/` separately from UI code, per the
