@@ -105,6 +105,7 @@ func _build_objectives(s: Dictionary, is_current: bool) -> void:
 		var row := Label.new()
 		var mark := "✓" if complete else "○"
 		row.text = "%s  %s" % [mark, Loc.objective_text(s, i, "desc")]
+		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		row.add_theme_color_override("font_color",
 			Color(0.56, 0.84, 0.63) if complete else Color(0.85, 0.85, 0.85))
 		_objectives_box.add_child(row)
@@ -112,6 +113,7 @@ func _build_objectives(s: Dictionary, is_current: bool) -> void:
 		if is_current and progress != "":
 			var prog := Label.new()
 			prog.text = "      %s" % progress
+			prog.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			prog.add_theme_color_override("font_color", Color(0.6, 0.65, 0.7))
 			prog.add_theme_font_size_override("font_size", 12)
 			_objectives_box.add_child(prog)
@@ -153,6 +155,7 @@ func _show_tutorial(s: Dictionary) -> void:
 	var text := ""
 	for i in steps.size():
 		text += "%d. %s\n\n" % [i + 1, steps[i]]
+	_tutorial.dialog_autowrap = true
 	_tutorial.title = "%s — %s" % [tr("Tutorial"), Loc.scenario_text(s, "title")]
 	_tutorial.dialog_text = text
 	_tutorial.popup_centered(Vector2i(640, 360))

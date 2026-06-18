@@ -70,6 +70,7 @@ size_flags_horizontal = 3
 
 [node name="Scroll" type="ScrollContainer" parent="Margin/Root/HBox/DetailPanel"]
 layout_mode = 2
+horizontal_scroll_mode = 0
 
 [node name="DetailVBox" type="VBoxContainer" parent="Margin/Root/HBox/DetailPanel/Scroll"]
 layout_mode = 2
@@ -125,6 +126,7 @@ unique_name_in_owner = true
 title = "Tutorial"
 size = Vector2i(640, 360)
 ok_button_text = "Got it"
+dialog_autowrap = true
 
 [connection signal="item_selected" from="Margin/Root/HBox/ScenarioList" to="." method="_on_scenario_list_item_selected"]
 [connection signal="pressed" from="Margin/Root/TopBar/OpenLabButton" to="." method="_on_open_lab_pressed"]
