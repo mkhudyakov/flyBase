@@ -16,30 +16,35 @@ APIs, no real genome database.
 
 ---
 
-## Current status: Phase 2 — Phenotype engine
+## Current status: Phase 3 — Procedural fly renderer
 
-Genotype is now expressed into phenotype, with explanations. What works:
+The phenotype is now drawn as a 2D fly from generated vector shapes. What works:
 
-- Everything from Phases 0–1 (menu, dashboard, services, core data model,
-  Genotype Debug).
-- **PhenotypeEngine** (`scripts/sim/PhenotypeEngine.gd`) converts a genome into
-  traits using dominance, dose, **penetrance**, and **expressivity**, then
-  records a human-readable **explanation log** for every result.
-- **Data-driven traits**: 15 traits with baselines and normal ranges in
-  `data/trait_rules.json`.
-- Correct genetics behaviour, verified by tests: white (X-linked) gives white
-  eyes in males, vestigial reduces wing size (and pleiotropically flight/mating),
-  a heterozygous recessive is a silent **hidden carrier**, yellow/ebony shift
-  body color in opposite directions, and a dominant allele expresses from one copy.
-- **Phenotype Viewer** screen: build a fly, see its traits (with normal-range
-  flags) and the full explanation; *Recompute* re-rolls to show penetrance /
-  expressivity variation on the same genome. (Dashboard → *Phenotype Viewer*.)
-- **Reproducible**: same seed + same genotype → identical phenotype.
-- Headless suites: `Phase1Tests.tscn` (13 checks) and `Phase2Tests.tscn`
-  (14 checks), all passing.
+- Everything from Phases 0–2 (menu, dashboard, services, data model, phenotype
+  engine, Genotype/Phenotype viewers).
+- **FlyRenderer** (`scripts/ui/FlyRenderer.gd`) draws a top-down fly — head,
+  thorax, striped abdomen, wings, legs, antennae, eyes, bristles — entirely from
+  vector shapes. **No art assets.**
+- Every visual is **phenotype-driven**: eye color (red↔white), eye size, wing
+  size + shape (notching), body color (yellow↔ebony), body size, bristle count,
+  antenna shape (leg-like as it drops), and `deformity_score` asymmetry.
+- **Microscope Viewer** screen (Dashboard → *Microscope Viewer*): pick a fly and
+  see it drawn; *Recompute* re-rolls expressivity/penetrance on the same genome.
+- Verified visually: white-eyed, vestigial-winged, and light/dark-bodied flies
+  each look clearly different.
 
-> Environment does not yet affect the phenotype — that arrives with the
-> development engine in Phase 4. The renderer (Phase 3) will draw these traits.
+> Phase 3 added two renderer-facing traits (`body_size`, `bristle_count`),
+> bringing the total to 17; the phenotype engine itself is unchanged from
+> Phase 2 and still reproducible. Environment effects on development arrive in
+> Phase 4.
+
+### Phenotype engine recap (Phase 2)
+
+`PhenotypeEngine` converts a genome into traits using dominance + dose,
+**penetrance**, and **expressivity**, recording a human-readable **explanation
+log**. Data-driven traits live in `data/trait_rules.json`. Same seed + same
+genotype → identical phenotype. Hidden carriers, pleiotropy, and X-linked male
+expression all work and are covered by `Phase2Tests.tscn`.
 
 See [CHANGELOG.md](CHANGELOG.md) for per-phase history and
 [CONVENTIONS.md](CONVENTIONS.md) for coding conventions. The full plan lives in
@@ -97,12 +102,13 @@ flyBase/
 ├── data/                      # Data-driven content (JSON). See data/README.md
 │   ├── genes.json             # 12 genes
 │   ├── alleles.json           # 24 alleles
-│   └── trait_rules.json       # 15 traits (baselines + normal ranges)
+│   └── trait_rules.json       # 17 traits (baselines + normal ranges)
 ├── scenes/                    # Godot scenes (.tscn)
 │   ├── MainMenu.tscn
 │   ├── LabDashboard.tscn
 │   ├── GenotypeDebug.tscn
 │   ├── PhenotypeViewer.tscn
+│   ├── MicroscopeViewer.tscn
 │   ├── Phase1Tests.tscn       # headless test scenes
 │   └── Phase2Tests.tscn
 └── scripts/
@@ -129,7 +135,9 @@ flyBase/
         ├── MainMenu.gd
         ├── LabDashboard.gd
         ├── GenotypeDebug.gd
-        └── PhenotypeViewer.gd
+        ├── PhenotypeViewer.gd
+        ├── MicroscopeViewer.gd
+        └── FlyRenderer.gd     # procedural 2D fly (vector shapes, no assets)
 ```
 
 Simulation code lives in `scripts/sim/` separately from UI code, per the

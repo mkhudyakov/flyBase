@@ -3,6 +3,36 @@
 All notable changes to the Drosophila Genetics Lab Simulator are documented
 here, phase by phase (see SPECS.md section 24).
 
+## Phase 3 — Procedural fly renderer
+
+Drew the phenotype as a 2D fly using only generated vector shapes (no art assets).
+
+### Added
+- `scripts/ui/FlyRenderer.gd` — a `Control` that paints a top-down fly in
+  `_draw()`: head, thorax, striped abdomen, two wings, six legs, antennae, eyes,
+  bristles, on a microscope-field backdrop. Every feature is driven by a
+  phenotype trait, with trait→color mapping for eyes (red↔white) and body
+  (yellow↔wild↔ebony), trailing-edge notching from `wing_shape`, leg-like
+  antennae as `antenna_shape` drops, and left/right asymmetry from
+  `deformity_score`. Repaints on resize.
+- `scenes/MicroscopeViewer.tscn` + `scripts/ui/MicroscopeViewer.gd` — pick a fly,
+  draw it, and *Recompute* to re-roll expressivity/penetrance on the same genome.
+- `data/trait_rules.json`: added `body_size` and `bristle_count` (now 17 traits)
+  so body scaling and bristles are phenotype-driven.
+- Dashboard: added a "Microscope Viewer" entry.
+
+### Verification
+- Rendered each variant to PNG and visually confirmed the Definition of Done:
+  white-eyed (white eyes), vestigial (shrunken wings), and yellow vs ebony
+  (pale vs near-black body) all look clearly different; no external art used.
+  (Verification harness was temporary and removed.)
+
+### Definition of Done
+- Phenotype changes are visible ✓
+- white-eyed fly looks different ✓ / vestigial-wing fly looks different ✓
+- dark/light body flies look different ✓
+- No external art required ✓
+
 ## Phase 2 — Phenotype engine
 
 Converted genotype into phenotype with dominance, penetrance, expressivity,
