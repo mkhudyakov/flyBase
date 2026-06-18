@@ -15,6 +15,7 @@ const TOOL_SCENES := {
 	"statistics": "res://scenes/StatisticsScreen.tscn",
 	"notebook": "res://scenes/NotebookScreen.tscn",
 	"campaign": "res://scenes/CampaignScreen.tscn",
+	"population": "res://scenes/PopulationScreen.tscn",
 }
 
 @onready var _stats: Label = %LabStats
@@ -231,6 +232,7 @@ func _on_tool_cross_pressed() -> void: _open("cross")
 func _on_tool_statistics_pressed() -> void: _open("statistics")
 func _on_tool_notebook_pressed() -> void: _open("notebook")
 func _on_tool_campaign_pressed() -> void: _open("campaign")
+func _on_tool_population_pressed() -> void: _open("population")
 
 func _open(key: String) -> void:
 	get_tree().change_scene_to_file(TOOL_SCENES[key])

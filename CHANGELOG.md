@@ -3,6 +3,33 @@
 All notable changes to the Drosophila Genetics Lab Simulator are documented
 here, phase by phase (see SPECS.md section 24).
 
+## Phase 10 — Population simulation
+
+Added long-term, multi-generation population experiments.
+
+### Added
+- `scripts/sim/PopulationEngine.gd` — `simulate(founders, config)` runs N
+  generations: adults breed (brood ∝ females), offspring develop (viability
+  filter), **truncation selection** (keep/cull by phenotype) optionally applies,
+  and a carrying capacity / **bottleneck** randomly samples survivors (**drift**).
+  Tracks per-generation allele frequencies + trait means and a **line-stability**
+  score; stops on extinction.
+- `scripts/sim/PopulationResult.gd` — per-generation record + helpers.
+- `InheritanceEngine.make_child()` — extracted single-offspring path, shared by
+  the cross simulator and population engine.
+- `scenes/PopulationScreen.tscn` + `scripts/ui/PopulationScreen.gd` — founder /
+  selection / generation / temperature / bottleneck controls; generational trend
+  table, allele-frequency sparklines, stability score, and explanation.
+- Dashboard Tools row: added "Population".
+- `scenes/Phase10Tests.tscn` + `scripts/tests/Phase10Tests.gd` — 13-check suite.
+
+### Definition of Done
+- Player can run 10+ generations ✓
+- Trait frequencies change ✓ (tracked per generation)
+- Selection can increase a desired trait ✓ (vg 50% → fixation)
+- Low viability can collapse a line ✓ (lethal environment → extinction)
+- Charts show generational trends ✓ (table + sparklines)
+
 ## Phase 9 — Advanced genetics
 
 Added depth so Mendelian ratios can fail for explainable reasons.

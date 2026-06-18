@@ -42,17 +42,23 @@ static func cross(mother: Fly, father: Fly, count: int,
 	var gen := maxi(mother.generation, father.generation) + 1
 
 	for i in count:
-		var maternal := _make_gamete(mother.genome, rng, mut_rate)
-		var paternal := _make_gamete(father.genome, rng, mut_rate)
-		var child := _assemble(maternal, paternal)
-		child.generation = gen
-		child.parent_ids = [mother.id, father.id]
-		# Develop under the vial environment; this sets phenotype + alive.
-		DevelopmentEngine.simulate(child, env, rng.randi())
-		result.offspring.append(child)
+		result.offspring.append(make_child(mother, father, env, rng, mut_rate, gen))
 
 	_analyse(result, mother, father)
 	return result
+
+## Produces a single developed offspring from two parents using the supplied RNG.
+## Shared by the cross simulator and the population engine.
+static func make_child(mother: Fly, father: Fly, env: VialEnvironment,
+		rng: RandomNumberGenerator, mut_rate: float = 0.0, generation: int = -1) -> Fly:
+	var maternal := _make_gamete(mother.genome, rng, mut_rate)
+	var paternal := _make_gamete(father.genome, rng, mut_rate)
+	var child := _assemble(maternal, paternal)
+	child.generation = generation if generation >= 0 else maxi(mother.generation, father.generation) + 1
+	child.parent_ids = [mother.id, father.id]
+	# Develop under the environment; this sets phenotype + alive.
+	DevelopmentEngine.simulate(child, env, rng.randi())
+	return child
 
 # --- Meiosis -----------------------------------------------------------------
 

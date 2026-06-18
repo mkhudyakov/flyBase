@@ -16,30 +16,32 @@ APIs, no real genome database.
 
 ---
 
-## Current status: Phase 9 — Advanced genetics
+## Current status: Phase 10 — Population simulation
 
-Simple Mendelian ratios can now fail for rich, explainable reasons. What works:
+Long-term, evolution-flavored experiments over many generations. What works:
 
-- Everything from Phases 0–8 (simulation core, lab, statistics, notebook, campaign).
-- **Epistasis** (data-driven `data/epistasis_rules.json`): one gene can mask
-  another — eyeless flies hide their eye-color genotype; severe wing loss
-  overrides wing-shape genes. Masked traits show as e.g. "no-eye".
-- **Modifier alleles**: a suppressor reduces another gene's effect (rescuing
-  vestigial wings) and an enhancer worsens it — neither shows a phenotype alone.
-- **Polygenic traits**: body size is set additively by three body-size loci; you
-  stack "large" variants through breeding to grow an unusually large fly.
-- **Temperature-sensitive alleles**: a hidden allele only expresses when reared
-  warm, so the **environment reveals the genotype**.
-- **3 advanced challenge scenarios** (gated after the intro chain): epistasis
-  (hidden eye color), the temperature-sensitive mutant, and polygenic body size.
-- 16 genes / 37 alleles. `Phase9Tests.tscn` (13 checks). Each fly also carries a
-  per-individual `roll_seed`, so genetically identical siblings vary in
-  expressivity/penetrance (and stay reproducible).
+- Everything from Phases 0–9 (full simulation, lab, campaign, advanced genetics).
+- **PopulationEngine** (`scripts/sim/PopulationEngine.gd`) runs 10–20 generations:
+  each generation the adults breed (brood scales with female count), offspring
+  develop (viability filters them), **truncation selection** optionally keeps/culls
+  by phenotype, and a carrying capacity / **bottleneck** randomly samples survivors
+  (**drift**). It records per-generation allele frequencies, trait means, and a
+  **line-stability** score.
+- **Population screen** (Dashboard → *Population*): pick a founder stock, a
+  selection rule, generation count, temperature, and an optional bottleneck; the
+  result shows a generational trend table, allele-frequency sparklines, the
+  stability score, and an explanation.
+- Demonstrable: selection drives an allele toward fixation (vg 50%→100%), a
+  lethal environment collapses the line to extinction, and drift/bottlenecks
+  wobble frequencies. Reproducible by seed. `Phase10Tests.tscn` (13 checks).
 
-> Population-scale simulation (selection, drift, line stability) is Phase 10.
+> Game economy & progression (research points, budget, unlock tree) is Phase 11.
 
 ### Earlier phases recap
 
+- **Phase 9 — advanced genetics**: epistasis (gene masking), suppressor/enhancer
+  modifiers, polygenic body size, temperature-sensitive alleles, + 3 advanced
+  challenges. Per-individual variation via `Fly.roll_seed`.
 - **Phase 8 — campaign**: `Campaign` engine + 8 scenarios with prerequisite
   gating, data-driven objectives, quizzes, and tutorial popups (*Campaign* screen).
 - **Phase 7 — statistics & notebook**: `StatisticsEngine` distributions +
@@ -105,6 +107,7 @@ GODOT=/Applications/Godot.app/Contents/MacOS/Godot
 "$GODOT" --headless --path . res://scenes/Phase7Tests.tscn --quit-after 15
 "$GODOT" --headless --path . res://scenes/Phase8Tests.tscn --quit-after 15
 "$GODOT" --headless --path . res://scenes/Phase9Tests.tscn --quit-after 15
+"$GODOT" --headless --path . res://scenes/Phase10Tests.tscn --quit-after 30
 ```
 
 The first command is only needed once after new `class_name` scripts are added
@@ -141,6 +144,7 @@ flyBase/
 │   ├── StatisticsScreen.tscn
 │   ├── NotebookScreen.tscn
 │   ├── CampaignScreen.tscn
+│   ├── PopulationScreen.tscn
 │   ├── Phase1Tests.tscn       # headless test scenes
 │   ├── Phase2Tests.tscn
 │   ├── Phase4Tests.tscn
@@ -148,7 +152,8 @@ flyBase/
 │   ├── Phase6Tests.tscn
 │   ├── Phase7Tests.tscn
 │   ├── Phase8Tests.tscn
-│   └── Phase9Tests.tscn
+│   ├── Phase9Tests.tscn
+│   └── Phase10Tests.tscn
 └── scripts/
     ├── autoload/              # Singletons (registered in project.godot)
     │   ├── DataLoader.gd
@@ -173,6 +178,8 @@ flyBase/
     │   ├── InheritanceEngine.gd
     │   ├── CrossResult.gd
     │   ├── StatisticsEngine.gd
+    │   ├── PopulationEngine.gd
+    │   ├── PopulationResult.gd
     │   ├── VialEnvironment.gd  # "Environment" collides with a Godot built-in
     │   ├── Fly.gd
     │   └── FlyFactory.gd
@@ -184,7 +191,8 @@ flyBase/
     │   ├── Phase6Tests.gd
     │   ├── Phase7Tests.gd
     │   ├── Phase8Tests.gd
-    │   └── Phase9Tests.gd
+    │   ├── Phase9Tests.gd
+    │   └── Phase10Tests.gd
     └── ui/                    # UI controllers (kept separate from sim code)
         ├── MainMenu.gd
         ├── LabDashboard.gd
@@ -196,7 +204,8 @@ flyBase/
         ├── CrossSimulator.gd
         ├── StatisticsScreen.gd
         ├── NotebookScreen.gd
-        └── CampaignScreen.gd
+        ├── CampaignScreen.gd
+        └── PopulationScreen.gd
 ```
 
 Simulation code lives in `scripts/sim/` separately from UI code, per the
