@@ -1,0 +1,14 @@
+# Godot 4 .gitignore
+
+# Godot-generated import metadata and caches.
+.godot/
+*.import
+
+# Export artifacts.
+export_presets.cfg
+build/
+*.dmg
+*.zip
+
+# macOS cruft.
+.DS_Store

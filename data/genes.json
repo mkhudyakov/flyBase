@@ -1,0 +1,26 @@
+{
+  "_comment": "PLACEHOLDER for Phase 0. This file exists so DataLoader can demonstrate reading JSON. The full gene catalog (spec section 7) is implemented in Phase 1. All entries here are abstract, virtual simulator data and are NOT real biological instructions.",
+  "schema_version": 0,
+  "genes": [
+    {
+      "id": "w",
+      "display_name": "white",
+      "symbol": "w",
+      "chromosome": "X",
+      "biological_category": "eye_pigmentation",
+      "description": "Placeholder entry. Inspired by the classic white eye-color phenotype.",
+      "is_real_gene_name": true,
+      "is_simulator_abstraction": true
+    },
+    {
+      "id": "vg",
+      "display_name": "vestigial",
+      "symbol": "vg",
+      "chromosome": "2R",
+      "biological_category": "wing_development",
+      "description": "Placeholder entry. Inspired by reduced-wing phenotypes.",
+      "is_real_gene_name": true,
+      "is_simulator_abstraction": true
+    }
+  ]
+}

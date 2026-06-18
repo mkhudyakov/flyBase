@@ -1,0 +1,10 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <rect width="128" height="128" rx="20" fill="#11151a"/>
+  <!-- abstract fly: head, thorax/abdomen, two wings -->
+  <ellipse cx="64" cy="84" rx="20" ry="30" fill="#c9b07a"/>
+  <circle cx="64" cy="44" r="16" fill="#2a2f36"/>
+  <circle cx="57" cy="40" r="5" fill="#d94f4f"/>
+  <circle cx="71" cy="40" r="5" fill="#d94f4f"/>
+  <ellipse cx="38" cy="74" rx="22" ry="12" fill="#8fb4d9" fill-opacity="0.5" transform="rotate(-25 38 74)"/>
+  <ellipse cx="90" cy="74" rx="22" ry="12" fill="#8fb4d9" fill-opacity="0.5" transform="rotate(25 90 74)"/>
+</svg>

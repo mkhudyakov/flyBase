@@ -1,0 +1,113 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/MainMenu.gd" id="1_mainmenu"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mainmenu")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.07, 0.09, 0.11, 1)
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 48
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 48
+theme_override_constants/margin_bottom = 32
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "Drosophila Genetics Lab Simulator"
+theme_override_font_sizes/font_size = 32
+
+[node name="Subtitle" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "A dry-lab, educational genetics simulation"
+theme_override_font_sizes/font_size = 16
+
+[node name="Disclaimer" type="Label" parent="Margin/VBox"]
+custom_minimum_size = Vector2(700, 0)
+layout_mode = 2
+text = "This is a simplified educational dry-lab simulation inspired by Drosophila genetics. It does not simulate the full genome, does not provide real gene-editing instructions, and must not be used for real biological or medical decisions."
+autowrap_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.75, 0.6, 1)
+theme_override_font_sizes/font_size = 12
+
+[node name="Spacer" type="Control" parent="Margin/VBox"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+
+[node name="ButtonsBox" type="VBoxContainer" parent="Margin/VBox"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 8
+
+[node name="ContinueButton" type="Button" parent="Margin/VBox/ButtonsBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Continue"
+
+[node name="NewCampaignButton" type="Button" parent="Margin/VBox/ButtonsBox"]
+layout_mode = 2
+text = "New Campaign"
+
+[node name="SandboxButton" type="Button" parent="Margin/VBox/ButtonsBox"]
+layout_mode = 2
+text = "Sandbox"
+
+[node name="ChallengesButton" type="Button" parent="Margin/VBox/ButtonsBox"]
+layout_mode = 2
+text = "Challenges"
+
+[node name="TutorialButton" type="Button" parent="Margin/VBox/ButtonsBox"]
+layout_mode = 2
+text = "Tutorial Library"
+
+[node name="SettingsButton" type="Button" parent="Margin/VBox/ButtonsBox"]
+layout_mode = 2
+text = "Settings"
+
+[node name="QuitButton" type="Button" parent="Margin/VBox/ButtonsBox"]
+layout_mode = 2
+text = "Quit"
+
+[node name="Spacer2" type="Control" parent="Margin/VBox"]
+size_flags_vertical = 3
+layout_mode = 2
+
+[node name="StatusLabel" type="Label" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+theme_override_colors/font_color = Color(0.6, 0.65, 0.7, 1)
+theme_override_font_sizes/font_size = 13
+
+[connection signal="pressed" from="Margin/VBox/ButtonsBox/ContinueButton" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="Margin/VBox/ButtonsBox/NewCampaignButton" to="." method="_on_new_campaign_pressed"]
+[connection signal="pressed" from="Margin/VBox/ButtonsBox/SandboxButton" to="." method="_on_sandbox_pressed"]
+[connection signal="pressed" from="Margin/VBox/ButtonsBox/ChallengesButton" to="." method="_on_challenges_pressed"]
+[connection signal="pressed" from="Margin/VBox/ButtonsBox/TutorialButton" to="." method="_on_tutorial_pressed"]
+[connection signal="pressed" from="Margin/VBox/ButtonsBox/SettingsButton" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="Margin/VBox/ButtonsBox/QuitButton" to="." method="_on_quit_pressed"]
