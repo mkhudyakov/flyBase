@@ -16,16 +16,27 @@ APIs, no real genome database.
 
 ---
 
-## Current status: Phase 0 — Project foundation
+## Current status: Phase 1 — Core data model
 
-This is the project skeleton only. There is **no simulation yet.** What works:
+The fly/genome/gene/allele/phenotype/environment classes now exist and are
+data-driven. What works:
 
-- Project opens in Godot 4.x.
-- Main menu runs (`Sandbox` and `Continue` open the dashboard placeholder).
-- Lab dashboard placeholder opens and reports the state of the core services.
-- `DataLoader` reads JSON from `res://data/`.
-- `RandomService` provides seedable, reproducible randomness.
-- `SaveLoadService` writes/reads JSON saves (test buttons on the dashboard).
+- Everything from Phase 0 (menu, dashboard, services).
+- **Core simulation classes** (`scripts/sim/`): `Gene`, `Allele`, `Chromosome`,
+  `Genome`, `Phenotype`, `Environment`, `Fly`, plus a `FlyFactory` and a
+  `Catalog` singleton.
+- **Data-driven catalog**: 12 genes (`data/genes.json`) and 24 alleles
+  (`data/alleles.json`), loaded and parsed at startup.
+- **Diploid genome model** with homologous chromosome copies and correct
+  sex-linkage: females are XX, males XY, and a male X-linked gene is hemizygous.
+- **Genotype Debug** screen: build wild-type / mutant / carrier flies and read
+  their genotype gene-by-gene. (Dashboard → *Genotype Debug*.)
+- **Save/load one fly** round-trips a genome through JSON without loss.
+- Headless test scene `res://scenes/Phase1Tests.tscn` (13 checks, all passing).
+
+> Phenotype is **not computed yet** — that's Phase 2. The `Phenotype` class is a
+> container today; the genome carries alleles, but their visible effects are not
+> yet expressed.
 
 See [CHANGELOG.md](CHANGELOG.md) for per-phase history and
 [CONVENTIONS.md](CONVENTIONS.md) for coding conventions. The full plan lives in
@@ -44,11 +55,28 @@ See [CHANGELOG.md](CHANGELOG.md) for per-phase history and
      folder. (Or from a terminal: `godot --editor --path /path/to/flyBase`.)
 3. **Run it.** Press the ▶ **Run Project** button (or `Cmd+B`). The main menu
    appears.
-4. Click **Sandbox** to open the lab dashboard placeholder. Use the
-   **Test Save / Test Load** buttons to exercise the save/load shell.
+4. Click **Sandbox** to open the lab dashboard. From there open **Genotype
+   Debug** to build flies and inspect genotypes, or use **Test Save / Test
+   Load** to exercise the save/load shell.
 
 Save files are written to the per-user Godot data directory:
 `~/Library/Application Support/Godot/app_userdata/Drosophila Genetics Lab Simulator/saves/`
+
+### Running the test scene
+
+Phase checks live in headless test scenes. To run the Phase 1 suite from a
+terminal:
+
+```
+GODOT=/Applications/Godot.app/Contents/MacOS/Godot
+# First run after pulling new code registers class_name globals:
+"$GODOT" --headless --path . --editor --quit
+"$GODOT" --headless --path . res://scenes/Phase1Tests.tscn --quit-after 10
+```
+
+The first command is only needed once after new `class_name` scripts are added
+(the editor normally does this for you on open). It prints `PASS`/`FAIL` per
+check.
 
 ---
 
@@ -63,22 +91,38 @@ flyBase/
 ├── CONVENTIONS.md             # Coding conventions
 ├── SPECS.md                   # Full product specification
 ├── data/                      # Data-driven content (JSON). See data/README.md
-│   └── genes.json             # Phase 0 placeholder
+│   ├── genes.json             # 12 genes
+│   └── alleles.json           # 24 alleles
 ├── scenes/                    # Godot scenes (.tscn)
 │   ├── MainMenu.tscn
-│   └── LabDashboard.tscn
+│   ├── LabDashboard.tscn
+│   ├── GenotypeDebug.tscn
+│   └── Phase1Tests.tscn       # headless test scene
 └── scripts/
     ├── autoload/              # Singletons (registered in project.godot)
     │   ├── DataLoader.gd
     │   ├── RandomService.gd
     │   └── SaveLoadService.gd
+    ├── sim/                   # Simulation classes (no UI dependencies)
+    │   ├── Catalog.gd         # autoload: parses JSON into Gene/Allele objects
+    │   ├── Gene.gd
+    │   ├── Allele.gd
+    │   ├── Chromosome.gd
+    │   ├── Genome.gd
+    │   ├── Phenotype.gd
+    │   ├── VialEnvironment.gd  # "Environment" collides with a Godot built-in
+    │   ├── Fly.gd
+    │   └── FlyFactory.gd
+    ├── tests/
+    │   └── Phase1Tests.gd
     └── ui/                    # UI controllers (kept separate from sim code)
         ├── MainMenu.gd
-        └── LabDashboard.gd
+        ├── LabDashboard.gd
+        └── GenotypeDebug.gd
 ```
 
-Simulation code (added in later phases) lives under `scripts/` separately from
-UI code, per the conventions.
+Simulation code lives in `scripts/sim/` separately from UI code, per the
+conventions.
 
 ---
 

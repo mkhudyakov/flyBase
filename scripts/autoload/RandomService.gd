@@ -29,8 +29,10 @@ func _generate_time_seed() -> int:
 ## experiments should call this with a known value first.
 func seed_with(new_seed: int) -> void:
 	_seed = new_seed
+	# Assigning `seed` deterministically resets the generator's internal state,
+	# so the same seed always reproduces the same sequence. (Do NOT also poke
+	# `state` here — forcing it to a constant would make every seed identical.)
 	_rng.seed = new_seed
-	_rng.state = 0
 
 ## Returns the master seed (e.g. to record it in a save file or notebook).
 func get_seed() -> int:

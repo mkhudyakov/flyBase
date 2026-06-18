@@ -23,6 +23,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 DataLoader="*res://scripts/autoload/DataLoader.gd"
+Catalog="*res://scripts/sim/Catalog.gd"
 RandomService="*res://scripts/autoload/RandomService.gd"
 SaveLoadService="*res://scripts/autoload/SaveLoadService.gd"
 

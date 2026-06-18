@@ -7,6 +7,7 @@ extends Control
 ## the current RNG seed, and exercises the save/load shell.
 
 const MAIN_MENU_SCENE := "res://scenes/MainMenu.tscn"
+const GENOTYPE_DEBUG_SCENE := "res://scenes/GenotypeDebug.tscn"
 
 @onready var _info_label: RichTextLabel = %InfoLabel
 
@@ -25,8 +26,11 @@ func _refresh() -> void:
 		"core services from Phase 0 are running:",
 		"",
 		"[b]DataLoader[/b] — loaded data: %s" % loaded_text,
+		"[b]Catalog[/b] — %d genes, %d alleles parsed" % [Catalog.gene_count(), Catalog.allele_count()],
 		"[b]RandomService[/b] — current seed: %d" % RandomService.get_seed(),
 		"[b]SaveLoadService[/b] — autosave present: %s" % str(SaveLoadService.has_save(SaveLoadService.AUTOSAVE_NAME)),
+		"",
+		"Use [b]Genotype Debug[/b] to build wild-type/mutant flies and test save/load.",
 	]
 	_info_label.text = "\n".join(lines)
 
@@ -43,6 +47,9 @@ func _on_test_load_pressed() -> void:
 		_info_label.text += "\n\nLoad returned nothing (no save yet)."
 	else:
 		_info_label.text += "\n\nLoaded autosave envelope: %s" % JSON.stringify(envelope)
+
+func _on_genotype_debug_pressed() -> void:
+	get_tree().change_scene_to_file(GENOTYPE_DEBUG_SCENE)
 
 func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file(MAIN_MENU_SCENE)

@@ -47,6 +47,10 @@ fit_content = true
 layout_mode = 2
 theme_override_constants/separation = 8
 
+[node name="GenotypeDebugButton" type="Button" parent="Margin/VBox/ButtonsBox"]
+layout_mode = 2
+text = "Genotype Debug"
+
 [node name="TestSaveButton" type="Button" parent="Margin/VBox/ButtonsBox"]
 layout_mode = 2
 text = "Test Save (autosave)"
@@ -59,6 +63,7 @@ text = "Test Load (autosave)"
 layout_mode = 2
 text = "Back to Menu"
 
+[connection signal="pressed" from="Margin/VBox/ButtonsBox/GenotypeDebugButton" to="." method="_on_genotype_debug_pressed"]
 [connection signal="pressed" from="Margin/VBox/ButtonsBox/TestSaveButton" to="." method="_on_test_save_pressed"]
 [connection signal="pressed" from="Margin/VBox/ButtonsBox/TestLoadButton" to="." method="_on_test_load_pressed"]
 [connection signal="pressed" from="Margin/VBox/ButtonsBox/BackButton" to="." method="_on_back_pressed"]
