@@ -15,6 +15,9 @@ var generation: int = 0
 var last_event: String = ""
 ## Set by the dashboard to hand a specific fly to the Microscope viewer.
 var pending_inspect: Fly = null
+## Automatically recorded experiment log (spec section 17.10). Entries are
+## plain dictionaries so they serialise with the save file.
+var notebook: Array = []
 
 var _vial_counter: int = 0
 var _inc_counter: int = 0
@@ -28,6 +31,7 @@ func _ready() -> void:
 func new_default_lab() -> void:
 	vials.clear()
 	incubators.clear()
+	notebook.clear()
 	generation = 0
 	_vial_counter = 0
 	_inc_counter = 0
@@ -165,7 +169,84 @@ func breed(vial: Vial, count: int = 50, seed: int = -1) -> Vial:
 	generation = maxi(generation, females[0].generation + 1)
 	last_event = "Bred '%s' at %.0f°C: %d of %d offspring survived to adult." \
 		% [vial.name, env.temperature_c, survivors, result.requested]
+
+	# Automatically record the experiment in the notebook.
+	notebook.append(_make_cross_entry(result, females[0], males[0], env, vial, child_vial))
 	return child_vial
+
+## Builds a notebook entry from a cross result (all JSON-serialisable).
+func _make_cross_entry(result: CrossResult, mother: Fly, father: Fly,
+		env: VialEnvironment, source: Vial, child: Vial) -> Dictionary:
+	return {
+		"kind": "cross",
+		"time": Time.get_datetime_string_from_system(),
+		"title": "F%d  %s  ×  %s" % [child.flies[0].generation if not child.flies.is_empty() else generation,
+			_genotype_desc(mother), _genotype_desc(father)],
+		"source_vial": source.name,
+		"child_vial": child.name,
+		"mother": "%s (%s)" % [mother.id, _genotype_desc(mother)],
+		"father": "%s (%s)" % [father.id, _genotype_desc(father)],
+		"count": result.requested,
+		"survivors": result.survivors,
+		"sex_counts": result.sex_counts.duplicate(),
+		"temperature": env.temperature_c,
+		"seed": result.seed_used,
+		"per_gene": result.per_gene.duplicate(true),
+		"phenotype_dist": result.phenotype_dist.duplicate(),
+		"genotype_dist": result.genotype_dist.duplicate(),
+		"explanation": result.explanation.duplicate(),
+	}
+
+## Short genotype label listing non-wild-type loci (e.g. "vg+/vg-", "wild-type").
+func _genotype_desc(fly: Fly) -> String:
+	var parts: Array[String] = []
+	for gene: Gene in Catalog.all_genes():
+		var has_mut := false
+		for aid in fly.genome.genotype_at(gene.id):
+			var a: Allele = Catalog.get_allele(aid)
+			if a != null and not a.is_wild_type():
+				has_mut = true
+				break
+		if has_mut:
+			parts.append(gene.symbol)
+	return "+".join(parts) if not parts.is_empty() else "wild-type"
+
+## Writes the notebook to user://exports/ as both .txt and .json.
+## Returns the .txt path, or "" on failure.
+func export_notebook() -> String:
+	var dir := "user://exports/"
+	if not DirAccess.dir_exists_absolute(dir):
+		DirAccess.make_dir_recursive_absolute(dir)
+	var stamp := Time.get_datetime_string_from_system().replace(":", "-")
+	var txt_path := dir + "notebook_%s.txt" % stamp
+	var json_path := dir + "notebook_%s.json" % stamp
+
+	var jf := FileAccess.open(json_path, FileAccess.WRITE)
+	if jf == null:
+		return ""
+	jf.store_string(JSON.stringify(notebook, "\t"))
+	jf.close()
+
+	var tf := FileAccess.open(txt_path, FileAccess.WRITE)
+	if tf == null:
+		return ""
+	tf.store_string(_notebook_as_text())
+	tf.close()
+	last_event = "Exported notebook (%d entries)." % notebook.size()
+	return txt_path
+
+func _notebook_as_text() -> String:
+	var lines: Array[String] = ["Drosophila Genetics Lab — notebook export", ""]
+	for entry: Dictionary in notebook:
+		lines.append("[%s] %s" % [entry.get("time", ""), entry.get("title", "")])
+		lines.append("  %s → %s, %d offspring at %.0f°C (seed %d), %d survived."
+			% [entry.get("source_vial", ""), entry.get("child_vial", ""),
+				int(entry.get("count", 0)), float(entry.get("temperature", 25.0)),
+				int(entry.get("seed", 0)), int(entry.get("survivors", 0))])
+		for line in entry.get("explanation", []):
+			lines.append("    " + String(line))
+		lines.append("")
+	return "\n".join(lines)
 
 # --- Save / load -------------------------------------------------------------
 
@@ -182,6 +263,7 @@ func to_dict() -> Dictionary:
 		"inc_counter": _inc_counter,
 		"incubators": inc_dicts,
 		"vials": vial_dicts,
+		"notebook": notebook.duplicate(true),
 	}
 
 func load_from_dict(d: Dictionary) -> void:
@@ -196,6 +278,7 @@ func load_from_dict(d: Dictionary) -> void:
 	for vd in d.get("vials", []):
 		if vd is Dictionary:
 			vials.append(Vial.from_dict(vd))
+	notebook = d.get("notebook", []).duplicate(true)
 
 func save_lab() -> bool:
 	var ok := SaveLoadService.save_game(SAVE_SLOT, to_dict())

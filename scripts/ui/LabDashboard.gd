@@ -12,6 +12,8 @@ const TOOL_SCENES := {
 	"microscope": "res://scenes/MicroscopeViewer.tscn",
 	"development": "res://scenes/DevelopmentTimeline.tscn",
 	"cross": "res://scenes/CrossSimulator.tscn",
+	"statistics": "res://scenes/StatisticsScreen.tscn",
+	"notebook": "res://scenes/NotebookScreen.tscn",
 }
 
 @onready var _stats: Label = %LabStats
@@ -225,6 +227,8 @@ func _on_tool_phenotype_pressed() -> void: _open("phenotype")
 func _on_tool_microscope_pressed() -> void: _open("microscope")
 func _on_tool_development_pressed() -> void: _open("development")
 func _on_tool_cross_pressed() -> void: _open("cross")
+func _on_tool_statistics_pressed() -> void: _open("statistics")
+func _on_tool_notebook_pressed() -> void: _open("notebook")
 
 func _open(key: String) -> void:
 	get_tree().change_scene_to_file(TOOL_SCENES[key])

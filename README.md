@@ -16,28 +16,31 @@ APIs, no real genome database.
 
 ---
 
-## Current status: Phase 6 — Lab dashboard & vial system
+## Current status: Phase 7 — Statistics & lab notebook
 
-The simulator is now a lab game space. What works:
+Experiments are now recorded and analysable. What works:
 
-- Everything from Phases 0–5 (full simulation core + analysis tools).
-- **Lab** state singleton (`scripts/game/Lab.gd`) owns **vials** and
-  **incubators** and the operations on them; a fresh lab starts with three
-  incubators (18/25/29 °C) and stock vials of developed founder flies.
-- **Rebuilt Lab Dashboard** (the central screen): a vials list, a selected-vial
-  detail (summary, incubator assignment, per-fly list), an incubators panel with
-  a temperature slider, and actions — **New vial, Archive, Breed, Move fly,
-  Inspect fly** — plus a Tools row to the analysis screens and **Save/Load Lab**.
-- **Flies belong to vials**; you can move a fly between vials and archive a line.
-- **Incubator temperature affects development**: breeding a vial runs the cross +
-  development under the vial's incubator temperature, so the same pair yields
-  healthy offspring at 25 °C but none at a lethal 36 °C.
-- Lab state serialises to JSON (Save/Load Lab). `Phase6Tests.tscn` (17 checks).
+- Everything from Phases 0–6 (simulation core, lab dashboard, vials/incubators).
+- **StatisticsEngine** (`scripts/sim/StatisticsEngine.gd`): counts, sex/survival,
+  visible-phenotype distribution, and trait histograms over any set of flies.
+- **Statistics screen** (Dashboard → *Statistics*): pick a vial, see its
+  population/survival, phenotype distribution (bar table), and a histogram of a
+  chosen trait (body size, flight, lifespan, …).
+- **Lab notebook**: every breed is **automatically logged** to `Lab.notebook`
+  with parents, environment, counts, the expected-vs-observed ratio tables, the
+  phenotype distribution, and the explanation.
+- **Notebook screen** (Dashboard → *Notebook*): browse entries, read the full
+  recorded detail, and **export** the notebook to `user://exports/` as `.txt`
+  and `.json`.
+- Notebook persists in the save file. `Phase7Tests.tscn` (14 checks).
 
-> Statistics & lab notebook arrive in Phase 7.
+> Campaign / structured gameplay arrives in Phase 8.
 
 ### Earlier phases recap
 
+- **Phase 6 — lab**: `Lab` singleton owns vials + incubators; the dashboard lets
+  you breed, move/inspect flies, archive lines, set incubator temperature, and
+  Save/Load the lab.
 - **Phase 5 — inheritance**: `InheritanceEngine` crosses two flies (autosomal +
   sex-linked, recombination, sex determination) into 10/100/1000 offspring with
   expected-vs-observed ratio tables. Verified 3:1, X-linked criss-cross, lethal
@@ -92,6 +95,7 @@ GODOT=/Applications/Godot.app/Contents/MacOS/Godot
 "$GODOT" --headless --path . res://scenes/Phase4Tests.tscn --quit-after 10
 "$GODOT" --headless --path . res://scenes/Phase5Tests.tscn --quit-after 15
 "$GODOT" --headless --path . res://scenes/Phase6Tests.tscn --quit-after 15
+"$GODOT" --headless --path . res://scenes/Phase7Tests.tscn --quit-after 15
 ```
 
 The first command is only needed once after new `class_name` scripts are added
@@ -123,11 +127,14 @@ flyBase/
 │   ├── MicroscopeViewer.tscn
 │   ├── DevelopmentTimeline.tscn
 │   ├── CrossSimulator.tscn
+│   ├── StatisticsScreen.tscn
+│   ├── NotebookScreen.tscn
 │   ├── Phase1Tests.tscn       # headless test scenes
 │   ├── Phase2Tests.tscn
 │   ├── Phase4Tests.tscn
 │   ├── Phase5Tests.tscn
-│   └── Phase6Tests.tscn
+│   ├── Phase6Tests.tscn
+│   └── Phase7Tests.tscn
 └── scripts/
     ├── autoload/              # Singletons (registered in project.godot)
     │   ├── DataLoader.gd
@@ -150,6 +157,7 @@ flyBase/
     │   ├── DevelopmentResult.gd
     │   ├── InheritanceEngine.gd
     │   ├── CrossResult.gd
+    │   ├── StatisticsEngine.gd
     │   ├── VialEnvironment.gd  # "Environment" collides with a Godot built-in
     │   ├── Fly.gd
     │   └── FlyFactory.gd
@@ -158,7 +166,8 @@ flyBase/
     │   ├── Phase2Tests.gd
     │   ├── Phase4Tests.gd
     │   ├── Phase5Tests.gd
-    │   └── Phase6Tests.gd
+    │   ├── Phase6Tests.gd
+    │   └── Phase7Tests.gd
     └── ui/                    # UI controllers (kept separate from sim code)
         ├── MainMenu.gd
         ├── LabDashboard.gd
@@ -167,7 +176,9 @@ flyBase/
         ├── MicroscopeViewer.gd
         ├── FlyRenderer.gd     # procedural 2D fly (vector shapes, no assets)
         ├── DevelopmentTimeline.gd
-        └── CrossSimulator.gd
+        ├── CrossSimulator.gd
+        ├── StatisticsScreen.gd
+        └── NotebookScreen.gd
 ```
 
 Simulation code lives in `scripts/sim/` separately from UI code, per the

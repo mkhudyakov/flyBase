@@ -3,6 +3,31 @@
 All notable changes to the Drosophila Genetics Lab Simulator are documented
 here, phase by phase (see SPECS.md section 24).
 
+## Phase 7 — Statistics & lab notebook
+
+Made experiments understandable: analysis tools + an automatic experiment log.
+
+### Added
+- `scripts/sim/StatisticsEngine.gd` — `summarize`, `phenotype_distribution`
+  (varying-dimension classes), and `trait_histogram` over any Array[Fly].
+- `scenes/StatisticsScreen.tscn` + `scripts/ui/StatisticsScreen.gd` — per-vial
+  population/survival, phenotype distribution (bar table), and a trait histogram
+  with a trait selector.
+- Notebook on `Lab`: `notebook` array auto-populated on every `breed` with the
+  parents, environment, counts, per-gene expected-vs-observed tables, phenotype/
+  genotype distributions, and explanation; serialised in the save file.
+  `Lab.export_notebook()` writes `.txt` + `.json` to `user://exports/`.
+- `scenes/NotebookScreen.tscn` + `scripts/ui/NotebookScreen.gd` — browse entries,
+  read full detail (incl. expected-vs-observed), and export.
+- Dashboard Tools row: added "Statistics" and "Notebook".
+- `scenes/Phase7Tests.tscn` + `scripts/tests/Phase7Tests.gd` — 14-check suite.
+
+### Definition of Done
+- After a cross, notebook records the result ✓ (automatic)
+- Statistics screen shows distributions ✓ (phenotype + histograms)
+- Player can compare expected vs observed ✓ (notebook tables)
+- Explanations are readable ✓
+
 ## Phase 6 — Lab dashboard & vial system
 
 Turned the simulator into a lab game space.
