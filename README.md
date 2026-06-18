@@ -253,8 +253,17 @@ flyBase/
         ├── CampaignScreen.gd
         ├── PopulationScreen.gd
         ├── EquipmentScreen.gd
-        └── SettingsScreen.gd
+        ├── SettingsScreen.gd
+        └── ChartView.gd       # reusable drawn bar/line charts (no libraries)
 ```
+
+### Visualizations
+
+Results are shown as **drawn charts** (via `ChartView`) in addition to text:
+the Cross Simulator shows an expected-vs-observed grouped bar chart, the
+Population screen plots allele-frequency / survival line charts across
+generations, and the Statistics screen shows a phenotype-distribution bar chart
+and a trait histogram.
 
 Simulation code lives in `scripts/sim/` separately from UI code, per the
 conventions.

@@ -26,6 +26,7 @@ const GENERATION_OPTS := [10, 15, 20]
 @onready var _temp_label: Label = %TempLabel
 @onready var _bottleneck: CheckBox = %Bottleneck
 @onready var _out: RichTextLabel = %Output
+@onready var _chart: ChartView = %PopChart
 
 func _ready() -> void:
 	for f in FOUNDERS:
@@ -89,6 +90,7 @@ func _run() -> void:
 	_render(res, founder_spec["track"])
 
 func _render(res: PopulationResult, track: Array) -> void:
+	_render_chart(res, track)
 	var lines: Array[String] = []
 	var track_gene := String(track[0]) if not track.is_empty() else ""
 
@@ -148,6 +150,34 @@ func _freq_sparkline(res: PopulationResult, gene_id: String) -> String:
 				best = maxf(best, float(af[aid]))
 		series.append(best)
 	return _sparkline_fixed(series, 0.0, 1.0)
+
+## Line chart of frequencies/rates over generations (all 0..1).
+func _render_chart(res: PopulationResult, track: Array) -> void:
+	var gens: Array = res.generations
+	var x: Array = []
+	var vest: Array = []
+	var surv: Array = []
+	var allele: Array = []
+	var track_gene := String(track[0]) if not track.is_empty() else ""
+	for gd: Dictionary in gens:
+		x.append(int(gd["gen"]))
+		vest.append(float(gd["vestigial_frac"]))
+		surv.append(float(gd["survival_rate"]))
+		if track_gene != "":
+			var af: Dictionary = gd.get("allele_freq", {}).get(track_gene, {})
+			var best := 0.0
+			for aid: String in af.keys():
+				var a: Allele = Catalog.get_allele(aid)
+				if a != null and not a.is_wild_type():
+					best = maxf(best, float(af[aid]))
+			allele.append(best)
+
+	var series: Array = []
+	if track_gene != "":
+		series.append({"name": "%s allele freq" % track_gene, "values": allele})
+	series.append({"name": "vestigial fraction", "values": vest})
+	series.append({"name": "survival rate", "values": surv})
+	_chart.set_lines(x, series, "Trends over generations (0–1)", 1.0)
 
 func _sparkline(series: Array) -> String:
 	var hi := 0.0

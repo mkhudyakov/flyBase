@@ -30,6 +30,7 @@ const FATHERS := [
 @onready var _count_opt: OptionButton = %CountOption
 @onready var _seed_spin: SpinBox = %SeedSpin
 @onready var _out: RichTextLabel = %Output
+@onready var _chart: ChartView = %CrossChart
 
 func _ready() -> void:
 	if not Catalog.is_ready():
@@ -77,6 +78,7 @@ func _run() -> void:
 	_render(result)
 
 func _render(r: CrossResult) -> void:
+	_render_chart(r)
 	var lines: Array[String] = []
 	lines.append("[b]%s  ×  %s[/b]" % [MOTHERS[_mother_opt.get_selected()]["label"], FATHERS[_father_opt.get_selected()]["label"]])
 	lines.append("Offspring: %d   Survivors: %d (%.0f%%)   Sex ♀%d : ♂%d   Seed: %d"
@@ -117,6 +119,28 @@ func _render(r: CrossResult) -> void:
 		lines.append("  " + line)
 
 	_out.text = "\n".join(lines)
+
+## Expected-vs-observed grouped bars for the first segregating gene.
+func _render_chart(r: CrossResult) -> void:
+	if r.per_gene.is_empty():
+		_chart.set_bars([], [], tr("No segregating genes"))
+		return
+	var entry: Dictionary = r.per_gene[0]
+	var cats: Array = []
+	var expected: Array = []
+	var observed: Array = []
+	for c: Dictionary in entry["classes"]:
+		var label := String(c["label"])
+		var sep := label.find(": ")
+		if sep >= 0:
+			label = label.substr(sep + 2)
+		cats.append(label)
+		expected.append(float(c["expected"]) * 100.0)
+		observed.append(float(c["observed_frac"]) * 100.0)
+	_chart.set_bars(cats, [
+		{"name": "expected", "values": expected},
+		{"name": "observed", "values": observed},
+	], "%s — %% expected vs observed" % entry["symbol"], 0.0, "%")
 
 func _sorted_by_count(dict: Dictionary) -> Array:
 	var keys: Array = dict.keys()

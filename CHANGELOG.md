@@ -3,6 +3,19 @@
 All notable changes to the Drosophila Genetics Lab Simulator are documented
 here, phase by phase (see SPECS.md section 24).
 
+## Post-release — Visualizations
+
+Added drawn charts (no libraries) alongside the existing text output.
+
+- `scripts/ui/ChartView.gd` — a reusable `Control` that draws grouped **bar
+  charts** and multi-**line charts** with axes, gridlines, value ticks, x labels,
+  and a legend, via `_draw()`.
+- **Cross Simulator**: expected-vs-observed **grouped bar chart** per segregating
+  gene (visualises 3:1 / 1:2:1, criss-cross, lethal deviation at a glance).
+- **Population**: **line chart** of allele frequency, vestigial fraction, and
+  survival across generations (watch selection drive an allele to fixation).
+- **Statistics**: phenotype-distribution **bar chart** + a trait **histogram**.
+
 ## Phase 12 — Polish & productization (final)
 
 Prepared the game for a public, playable release.

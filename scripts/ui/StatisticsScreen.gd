@@ -10,6 +10,8 @@ var HIST_TRAITS: Array = []
 @onready var _vial_opt: OptionButton = %VialOption
 @onready var _trait_opt: OptionButton = %TraitOption
 @onready var _out: RichTextLabel = %Output
+@onready var _pheno_chart: ChartView = %PhenoChart
+@onready var _hist_chart: ChartView = %HistChart
 
 var _vial_ids: Array[String] = []
 
@@ -78,6 +80,29 @@ func _render() -> void:
 		lines.append("  %5.1f–%5.1f %s %3d" % [b["lo"], b["hi"], _bar(frac, 24), b["count"]])
 
 	_out.text = "\n".join(lines)
+	_render_charts(dist, hist)
+
+## Visual bar charts for the phenotype distribution and trait histogram.
+func _render_charts(dist: Dictionary, hist: Dictionary) -> void:
+	var p_cats: Array = []
+	var p_vals: Array = []
+	var keys: Array = dist.keys()
+	keys.sort_custom(func(a, b): return int(dist[a]) > int(dist[b]))
+	for k in keys:
+		p_cats.append(_short_class(String(k)))
+		p_vals.append(float(dist[k]))
+	_pheno_chart.set_bars(p_cats, [{"name": "", "values": p_vals}], "Phenotype distribution")
+
+	var h_cats: Array = []
+	var h_vals: Array = []
+	for b: Dictionary in hist["bins"]:
+		h_cats.append("%.1f" % float(b["lo"]))
+		h_vals.append(float(b["count"]))
+	_hist_chart.set_bars(h_cats, [{"name": "", "values": h_vals}], "Histogram: %s" % hist["label"])
+
+## Shortens a phenotype-class label so the x-axis stays readable.
+func _short_class(label: String) -> String:
+	return label.replace("female", "♀").replace("male", "♂").replace("-wing", "").replace("-eye", "").replace("-body", "")
 
 func _bar(frac: float, width: int) -> String:
 	var filled := clampi(roundi(frac * width), 0, width)

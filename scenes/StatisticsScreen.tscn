@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/StatisticsScreen.gd" id="1_stats"]
+[ext_resource type="Script" path="res://scripts/ui/ChartView.gd" id="2_chart"]
 
 [node name="StatisticsScreen" type="Control"]
 layout_mode = 3
@@ -62,6 +63,29 @@ text = "Histogram trait:"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
+
+[node name="ChartRow" type="HBoxContainer" parent="Margin/Root"]
+custom_minimum_size = Vector2(0, 280)
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="PhenoPanel" type="PanelContainer" parent="Margin/Root/ChartRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PhenoChart" type="Control" parent="Margin/Root/ChartRow/PhenoPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("2_chart")
+
+[node name="HistPanel" type="PanelContainer" parent="Margin/Root/ChartRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HistChart" type="Control" parent="Margin/Root/ChartRow/HistPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("2_chart")
 
 [node name="OutputPanel" type="PanelContainer" parent="Margin/Root"]
 layout_mode = 2

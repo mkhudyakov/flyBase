@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/PopulationScreen.gd" id="1_pop"]
+[ext_resource type="Script" path="res://scripts/ui/ChartView.gd" id="2_chart"]
 
 [node name="PopulationScreen" type="Control"]
 layout_mode = 3
@@ -83,6 +84,15 @@ min_value = 16.0
 max_value = 36.0
 step = 1.0
 value = 25.0
+
+[node name="ChartPanel" type="PanelContainer" parent="Margin/Root"]
+custom_minimum_size = Vector2(0, 280)
+layout_mode = 2
+
+[node name="PopChart" type="Control" parent="Margin/Root/ChartPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("2_chart")
 
 [node name="OutputPanel" type="PanelContainer" parent="Margin/Root"]
 layout_mode = 2
