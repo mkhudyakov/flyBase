@@ -7,6 +7,16 @@ here, phase by phase (see SPECS.md section 24).
 
 Prepared the game for a public, playable release.
 
+### Localization (RU)
+- `scripts/autoload/Loc.gd` (autoload `Loc`) — registers a runtime Russian
+  `Translation` so Godot auto-translates fixed Control text, and loads localized
+  campaign text from `data/lang_ru.json`.
+- `data/lang_ru.json` — Russian translation of all 15 scenarios (titles,
+  briefings, tutorials, objective descriptions, quiz questions + options).
+- Language selector in Settings (English / Русский), persisted; switching
+  reloads the screen to re-render. `CampaignScreen` and dynamic labels use the
+  localized text. (Generated explanation logs remain English for now.)
+
 ### Added
 - `scripts/autoload/Settings.gd` (autoload) — master/SFX/music volume, UI scale,
   high-contrast text, reduced motion; applied live (audio bus, window content

@@ -11,8 +11,11 @@ const MAIN_MENU_SCENE := "res://scenes/MainMenu.tscn"
 @onready var _scale_label: Label = %ScaleLabel
 @onready var _contrast: CheckBox = %ContrastCheck
 @onready var _motion: CheckBox = %MotionCheck
+@onready var _language: OptionButton = %LanguageOption
 @onready var _status: Label = %Status
 @onready var _confirm: ConfirmationDialog = %ConfirmNewGame
+
+const LANG_CODES := ["en", "ru"]
 
 func _ready() -> void:
 	_master.value = Settings.master_volume
@@ -21,6 +24,10 @@ func _ready() -> void:
 	_scale.value = Settings.ui_scale
 	_contrast.button_pressed = Settings.high_contrast
 	_motion.button_pressed = Settings.reduced_motion
+	_language.add_item("English")
+	_language.add_item("Русский")
+	_language.select(LANG_CODES.find(Settings.language))
+	_language.item_selected.connect(_on_language_selected)
 	_update_scale_label()
 
 	_master.value_changed.connect(func(v): Settings.set_master_volume(v))
@@ -34,7 +41,12 @@ func _ready() -> void:
 	_confirm.confirmed.connect(_do_new_game)
 
 func _update_scale_label() -> void:
-	_scale_label.text = "UI scale: %d%%" % roundi(Settings.ui_scale * 100.0)
+	_scale_label.text = tr("UI scale: %d%%") % roundi(Settings.ui_scale * 100.0)
+
+func _on_language_selected(idx: int) -> void:
+	Loc.set_language(LANG_CODES[idx])
+	# Reload the screen so all text re-renders in the chosen language.
+	get_tree().reload_current_scene()
 
 func _on_new_game_pressed() -> void:
 	_confirm.popup_centered()

@@ -46,7 +46,7 @@ func _on_bicoid_pressed() -> void:
 	_run()
 
 func _on_temp_changed(value: float) -> void:
-	_temp_label.text = "Temperature: %.0f °C" % value
+	_temp_label.text = tr("Temperature: %.0f °C") % value
 
 func _on_run_pressed() -> void:
 	_run()

@@ -99,6 +99,20 @@ layout_mode = 2
 text = "Accessibility"
 theme_override_font_sizes/font_size = 18
 
+[node name="LanguageRow" type="HBoxContainer" parent="Margin/Root"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="L" type="Label" parent="Margin/Root/LanguageRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Language"
+
+[node name="LanguageOption" type="OptionButton" parent="Margin/Root/LanguageRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
 [node name="ScaleLabel" type="Label" parent="Margin/Root"]
 unique_name_in_owner = true
 layout_mode = 2

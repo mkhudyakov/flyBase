@@ -11,6 +11,7 @@ var music_volume: float = 0.5
 var ui_scale: float = 1.0          ## window content scale (accessibility)
 var high_contrast: bool = false
 var reduced_motion: bool = false
+var language: String = "en"        ## "en" | "ru"
 
 func _ready() -> void:
 	load_settings()
@@ -52,6 +53,7 @@ func to_dict() -> Dictionary:
 	return {
 		"master_volume": master_volume, "sfx_volume": sfx_volume, "music_volume": music_volume,
 		"ui_scale": ui_scale, "high_contrast": high_contrast, "reduced_motion": reduced_motion,
+		"language": language,
 	}
 
 func save_settings() -> void:
@@ -70,3 +72,4 @@ func load_settings() -> void:
 	ui_scale = float(d.get("ui_scale", ui_scale))
 	high_contrast = bool(d.get("high_contrast", high_contrast))
 	reduced_motion = bool(d.get("reduced_motion", reduced_motion))
+	language = String(d.get("language", language))

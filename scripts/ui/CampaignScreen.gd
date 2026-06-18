@@ -37,7 +37,7 @@ func _refresh_list() -> void:
 			tag = "  ✓"
 		elif not Campaign.is_unlocked(id):
 			tag = "  🔒"
-		_list.add_item(String(s.get("title", id)) + tag)
+		_list.add_item(Loc.scenario_text(s, "title") + tag)
 		_scenario_ids.append(id)
 		if id == _viewing_id:
 			_list.select(_scenario_ids.size() - 1)
@@ -62,33 +62,30 @@ func _render() -> void:
 	var done := Campaign.is_completed(_viewing_id)
 
 	var b: Array[String] = []
-	b.append("[b]%s[/b]" % s.get("title", ""))
+	b.append("[b]%s[/b]" % Loc.scenario_text(s, "title"))
 	if done:
-		b.append("[color=#8fd6a0]Completed ✓[/color]")
+		b.append("[color=#8fd6a0]%s[/color]" % tr("Completed ✓"))
 	elif not unlocked:
-		b.append("[color=#d9a06c]Locked — complete the prerequisite scenario first.[/color]")
+		b.append("[color=#d9a06c]%s[/color]" % tr("Locked — complete the prerequisite scenario first."))
 	b.append("")
-	b.append(String(s.get("briefing", "")))
-	if not s.get("unlocks", []).is_empty():
-		b.append("")
-		b.append("[i]Unlocks: %s[/i]" % ", ".join(s.get("unlocks", [])))
+	b.append(Loc.scenario_text(s, "briefing"))
 	_briefing.text = "\n".join(b)
 
 	_build_objectives(s, is_current)
 
 	_start_button.disabled = not unlocked
-	_start_button.text = "Restart scenario" if is_current else "Start scenario"
+	_start_button.text = tr("Restart scenario") if is_current else tr("Start scenario")
 	_check_button.disabled = not is_current
 	_complete_button.disabled = not (is_current and Campaign.is_scenario_complete(_viewing_id) and not done)
 
 	if done:
-		_status.text = "Scenario complete."
+		_status.text = tr("Scenario complete.")
 	elif not unlocked:
-		_status.text = "Locked."
+		_status.text = tr("Locked.")
 	elif is_current:
-		_status.text = "Scenario in progress — breed in the lab, then Check objectives."
+		_status.text = tr("Scenario in progress — breed in the lab, then Check objectives.")
 	else:
-		_status.text = "Press Start to begin this scenario."
+		_status.text = tr("Press Start to begin this scenario.")
 
 ## Rebuilds the objective list (and quiz controls) for the scenario.
 func _build_objectives(s: Dictionary, is_current: bool) -> void:
@@ -107,7 +104,7 @@ func _build_objectives(s: Dictionary, is_current: bool) -> void:
 
 		var row := Label.new()
 		var mark := "✓" if complete else "○"
-		row.text = "%s  %s" % [mark, obj.get("desc", "")]
+		row.text = "%s  %s" % [mark, Loc.objective_text(s, i, "desc")]
 		row.add_theme_color_override("font_color",
 			Color(0.56, 0.84, 0.63) if complete else Color(0.85, 0.85, 0.85))
 		_objectives_box.add_child(row)
@@ -122,12 +119,12 @@ func _build_objectives(s: Dictionary, is_current: bool) -> void:
 		# Quiz: render question + answer buttons (only when playing this scenario).
 		if String(obj.get("type", "")) == "quiz" and is_current and not complete:
 			var q := Label.new()
-			q.text = "      %s" % obj.get("question", "")
+			q.text = "      %s" % Loc.objective_text(s, i, "question")
 			q.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			_objectives_box.add_child(q)
 			var hb := HBoxContainer.new()
 			_objectives_box.add_child(hb)
-			var options: Array = obj.get("options", [])
+			var options: Array = Loc.objective_options(s, i)
 			for opt_idx in options.size():
 				var btn := Button.new()
 				btn.text = String(options[opt_idx])
@@ -150,13 +147,13 @@ func _on_start_pressed() -> void:
 	_render()
 
 func _show_tutorial(s: Dictionary) -> void:
-	var steps: Array = s.get("tutorial", [])
+	var steps: Array = Loc.scenario_tutorial(s)
 	if steps.is_empty():
 		return
 	var text := ""
 	for i in steps.size():
 		text += "%d. %s\n\n" % [i + 1, steps[i]]
-	_tutorial.title = "Tutorial — %s" % s.get("title", "")
+	_tutorial.title = "%s — %s" % [tr("Tutorial"), Loc.scenario_text(s, "title")]
 	_tutorial.dialog_text = text
 	_tutorial.popup_centered(Vector2i(640, 360))
 

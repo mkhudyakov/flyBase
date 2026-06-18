@@ -15,6 +15,7 @@ Files (loaded by `scripts/autoload/DataLoader.gd`):
 | `epistasis_rules.json`    | active (2 rules) | Phase 9 |
 | `scenarios.json`          | active (15 scenarios) | Phase 8 |
 | `equipment.json`          | active (5 upgrades) | Phase 11 |
+| `lang_ru.json`            | active (RU campaign text) | localization |
 
 `genes.json` and `alleles.json` are parsed by `scripts/sim/Catalog.gd` into
 `Gene`/`Allele` objects. Each gene defines exactly one `wild_type` allele plus

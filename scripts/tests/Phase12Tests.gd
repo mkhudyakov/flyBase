@@ -50,6 +50,21 @@ func _ready() -> void:
 	_check("Heat reduces fertility (cool > hot)", f_cool > f_hot + 0.05)
 	_check("Cool rearing gives high fertility (>=0.92)", f_cool >= 0.92)
 
+	# Localization (RU).
+	var foundations := Campaign.get_scenario("foundations")
+	Settings.language = "en"
+	var en_title := Loc.scenario_text(foundations, "title")
+	var en_obj := Loc.objective_text(foundations, 0, "desc")
+	Settings.language = "ru"
+	_check("RU scenario title differs from EN", Loc.scenario_text(foundations, "title") != en_title)
+	_check("RU objective text differs from EN", Loc.objective_text(foundations, 0, "desc") != en_obj)
+	_check("RU quiz options localized", Loc.objective_options(Campaign.get_scenario("eye_color_mystery"), 1).size() == 3)
+	TranslationServer.set_locale("ru")
+	_check("UI string translates under RU locale", tr("Continue") == "Продолжить")
+	TranslationServer.set_locale("en")
+	_check("UI string is source text under EN locale", tr("Continue") == "Continue")
+	Settings.language = "en"
+
 	# Save/load still works end to end (Lab).
 	Lab.new_default_lab()
 	var n := Lab.active_vials().size()

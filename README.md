@@ -23,7 +23,12 @@ accessibility, a new-game flow, a 15-scenario campaign, and a packaged macOS
 export. What's new in Phase 12:
 
 - **Settings screen** (main menu → *Settings*): master / SFX / music volume,
-  **UI scale**, high-contrast text, and reduced-motion — applied live and saved.
+  **UI scale**, high-contrast text, reduced-motion, and **language
+  (English / Русский)** — applied live and saved.
+- **Localization (RU)**: a runtime translation flips all fixed UI text to
+  Russian, and the **entire campaign** (titles, briefings, tutorials, objectives,
+  quizzes) is translated via `data/lang_ru.json` (`scripts/autoload/Loc.gd`).
+  The procedurally generated scientific explanation logs remain English for now.
 - **Procedural audio** (`AudioManager`): a synthesized UI click (auto-wired to
   every button) and a looping ambient drone — no asset files. Volumes follow
   Settings.

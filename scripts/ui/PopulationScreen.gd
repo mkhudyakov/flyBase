@@ -37,12 +37,12 @@ func _ready() -> void:
 		if g >= 20 and not Economy.is_unlocked("long_term_culture"):
 			continue
 		_gen_opt.add_item("%d generations" % g)
-	_temp_slider.value_changed.connect(func(v): _temp_label.text = "Temperature: %.0f °C" % v)
+	_temp_slider.value_changed.connect(func(v): _temp_label.text = tr("Temperature: %.0f °C") % v)
 	_founder_opt.select(0)
 	_selection_opt.select(1)
 	_gen_opt.select(0)
 	_temp_slider.value = 25.0
-	_temp_label.text = "Temperature: 25 °C"
+	_temp_label.text = tr("Temperature: %.0f °C") % 25.0
 	_out.text = "Configure a population experiment and press Run."
 
 func _on_run_pressed() -> void:
