@@ -265,6 +265,11 @@ Population screen plots allele-frequency / survival line charts across
 generations, and the Statistics screen shows a phenotype-distribution bar chart
 and a trait histogram.
 
+The Cross Simulator also renders a **fly gallery** — one drawn fly (via
+`FlyRenderer`) per offspring phenotype class, with counts — so you see the actual
+flies a cross produces. Individual flies can also be viewed in the **Microscope**
+(dashboard → *Microscope*, or select a fly → *Inspect fly*).
+
 Simulation code lives in `scripts/sim/` separately from UI code, per the
 conventions.
 

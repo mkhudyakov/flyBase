@@ -11,7 +11,9 @@ Added drawn charts (no libraries) alongside the existing text output.
   charts** and multi-**line charts** with axes, gridlines, value ticks, x labels,
   and a legend, via `_draw()`.
 - **Cross Simulator**: expected-vs-observed **grouped bar chart** per segregating
-  gene (visualises 3:1 / 1:2:1, criss-cross, lethal deviation at a glance).
+  gene, plus a **rendered fly gallery** — one drawn fly per offspring phenotype
+  class with its count, so you see the actual flies the cross produced (e.g. the
+  white-eyed sons vs red-eyed daughters of a criss-cross).
 - **Population**: **line chart** of allele frequency, vestigial fraction, and
   survival across generations (watch selection drive an allele to fixation).
 - **Statistics**: phenotype-distribution **bar chart** + a trait **histogram**.

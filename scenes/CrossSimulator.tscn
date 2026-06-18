@@ -127,6 +127,19 @@ unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("2_chart")
 
+[node name="GalleryPanel" type="PanelContainer" parent="Margin/Root"]
+custom_minimum_size = Vector2(0, 196)
+layout_mode = 2
+
+[node name="GalleryScroll" type="ScrollContainer" parent="Margin/Root/GalleryPanel"]
+layout_mode = 2
+vertical_scroll_mode = 0
+
+[node name="FlyGallery" type="HBoxContainer" parent="Margin/Root/GalleryPanel/GalleryScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
 [node name="OutputPanel" type="PanelContainer" parent="Margin/Root"]
 layout_mode = 2
 size_flags_vertical = 3

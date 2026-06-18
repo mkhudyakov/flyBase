@@ -139,6 +139,13 @@ func archive_vial(vial_id: String) -> bool:
 	last_event = "Archived line '%s'." % v.name
 	return true
 
+## Strips leading "F<n> of " prefixes so an offspring vial is named after the
+## original stock, e.g. "F3 of F2 of vestigial line" -> "vestigial line".
+func _base_stock_name(name: String) -> String:
+	var re := RegEx.new()
+	re.compile("^(F\\d+ of )+")
+	return re.sub(name, "")
+
 ## Moves a fly from one vial to another. Returns true on success.
 func move_fly(fly_id: String, from_vial_id: String, to_vial_id: String) -> bool:
 	var from_v := get_vial(from_vial_id)
@@ -175,7 +182,11 @@ func breed(vial: Vial, count: int = 50, seed: int = -1) -> Vial:
 	var env := effective_environment(vial)
 	var result := InheritanceEngine.cross(females[0], males[0], count, env, seed)
 
-	var child_vial := create_vial("F%d of %s" % [generation + 1, vial.name], vial.incubator_id)
+	# Name the offspring vial "F<gen> of <base stock>" — strip any existing
+	# "F<n> of " prefixes so the name doesn't grow without bound across breedings.
+	var child_gen := females[0].generation + 1
+	var base_name := _base_stock_name(vial.name)
+	var child_vial := create_vial("F%d of %s" % [child_gen, base_name], vial.incubator_id)
 	var survivors := 0
 	for child in result.offspring:
 		if child.alive:

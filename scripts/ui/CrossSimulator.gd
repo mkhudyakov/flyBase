@@ -31,6 +31,7 @@ const FATHERS := [
 @onready var _seed_spin: SpinBox = %SeedSpin
 @onready var _out: RichTextLabel = %Output
 @onready var _chart: ChartView = %CrossChart
+@onready var _gallery: HBoxContainer = %FlyGallery
 
 func _ready() -> void:
 	if not Catalog.is_ready():
@@ -79,6 +80,7 @@ func _run() -> void:
 
 func _render(r: CrossResult) -> void:
 	_render_chart(r)
+	_render_gallery(r)
 	var lines: Array[String] = []
 	lines.append("[b]%s  ×  %s[/b]" % [MOTHERS[_mother_opt.get_selected()]["label"], FATHERS[_father_opt.get_selected()]["label"]])
 	lines.append("Offspring: %d   Survivors: %d (%.0f%%)   Sex ♀%d : ♂%d   Seed: %d"
@@ -119,6 +121,52 @@ func _render(r: CrossResult) -> void:
 		lines.append("  " + line)
 
 	_out.text = "\n".join(lines)
+
+## Draws one representative surviving fly per visible phenotype class, so the
+## player sees the actual flies the cross produced (not just numbers).
+func _render_gallery(r: CrossResult) -> void:
+	for child in _gallery.get_children():
+		child.queue_free()
+
+	# Group survivors by their visible phenotype class; keep a representative + count.
+	var reps := {}      # class label -> Fly
+	var counts := {}    # class label -> int
+	for child: Fly in r.offspring:
+		if not child.alive:
+			continue
+		var dims := StatisticsEngine.visible_dims(child)
+		var key := "%s, %s, %s, %s" % [child.sex(), dims["eye"], dims["wing"], dims["body"]]
+		counts[key] = int(counts.get(key, 0)) + 1
+		if not reps.has(key):
+			reps[key] = child
+
+	# Most common classes first, cap to keep the strip tidy.
+	var keys: Array = reps.keys()
+	keys.sort_custom(func(a, b): return int(counts[a]) > int(counts[b]))
+	for i in mini(keys.size(), 8):
+		var key: String = keys[i]
+		_gallery.add_child(_fly_card(reps[key], "%d×  %s" % [counts[key], key]))
+
+	if keys.is_empty():
+		var none := Label.new()
+		none.text = "  (no surviving offspring to show)"
+		_gallery.add_child(none)
+
+## A small card: a drawn fly above a caption.
+func _fly_card(fly: Fly, caption: String) -> Control:
+	var box := VBoxContainer.new()
+	box.custom_minimum_size = Vector2(150, 0)
+	var renderer := FlyRenderer.new()
+	renderer.custom_minimum_size = Vector2(150, 150)
+	renderer.set_fly(fly)
+	box.add_child(renderer)
+	var label := Label.new()
+	label.text = caption
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.custom_minimum_size = Vector2(150, 0)
+	label.add_theme_font_size_override("font_size", 11)
+	box.add_child(label)
+	return box
 
 ## Expected-vs-observed grouped bars for the first segregating gene.
 func _render_chart(r: CrossResult) -> void:
