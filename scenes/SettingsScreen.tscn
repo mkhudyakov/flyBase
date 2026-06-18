@@ -1,0 +1,164 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/SettingsScreen.gd" id="1_settings"]
+
+[node name="SettingsScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_settings")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08, 0.1, 0.12, 1)
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 28
+
+[node name="Root" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="Margin/Root"]
+layout_mode = 2
+text = "Settings"
+theme_override_font_sizes/font_size = 28
+
+[node name="AudioHeader" type="Label" parent="Margin/Root"]
+layout_mode = 2
+text = "Audio"
+theme_override_font_sizes/font_size = 18
+
+[node name="MasterRow" type="HBoxContainer" parent="Margin/Root"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="L" type="Label" parent="Margin/Root/MasterRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Master volume"
+
+[node name="MasterSlider" type="HSlider" parent="Margin/Root/MasterRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+
+[node name="SfxRow" type="HBoxContainer" parent="Margin/Root"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="L" type="Label" parent="Margin/Root/SfxRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Sound effects"
+
+[node name="SfxSlider" type="HSlider" parent="Margin/Root/SfxRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+
+[node name="MusicRow" type="HBoxContainer" parent="Margin/Root"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="L" type="Label" parent="Margin/Root/MusicRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Ambient music"
+
+[node name="MusicSlider" type="HSlider" parent="Margin/Root/MusicRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+
+[node name="AccessHeader" type="Label" parent="Margin/Root"]
+layout_mode = 2
+text = "Accessibility"
+theme_override_font_sizes/font_size = 18
+
+[node name="ScaleLabel" type="Label" parent="Margin/Root"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI scale: 100%"
+
+[node name="ScaleSlider" type="HSlider" parent="Margin/Root"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+min_value = 0.8
+max_value = 1.4
+step = 0.05
+value = 1.0
+
+[node name="ContrastCheck" type="CheckBox" parent="Margin/Root"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "High contrast text"
+
+[node name="MotionCheck" type="CheckBox" parent="Margin/Root"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Reduce motion"
+
+[node name="Disclaimer" type="Label" parent="Margin/Root"]
+custom_minimum_size = Vector2(760, 0)
+layout_mode = 2
+text = "This is a simplified educational dry-lab simulation inspired by Drosophila genetics. It does not simulate the full genome, does not provide real gene-editing instructions, and must not be used for real biological or medical decisions."
+autowrap_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.75, 0.6, 1)
+theme_override_font_sizes/font_size = 12
+
+[node name="Spacer" type="Control" parent="Margin/Root"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Buttons" type="HBoxContainer" parent="Margin/Root"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="NewGameButton" type="Button" parent="Margin/Root/Buttons"]
+layout_mode = 2
+text = "Start New Game (reset progress)"
+
+[node name="BackButton" type="Button" parent="Margin/Root/Buttons"]
+layout_mode = 2
+text = "Back to Menu"
+
+[node name="Status" type="Label" parent="Margin/Root"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+theme_override_colors/font_color = Color(0.7, 0.82, 0.85, 1)
+
+[node name="ConfirmNewGame" type="ConfirmationDialog" parent="."]
+unique_name_in_owner = true
+title = "Start New Game?"
+ok_button_text = "Reset everything"
+dialog_text = "This resets your lab, campaign progress, and economy. Settings are kept. Continue?"
+
+[connection signal="pressed" from="Margin/Root/Buttons/NewGameButton" to="." method="_on_new_game_pressed"]
+[connection signal="pressed" from="Margin/Root/Buttons/BackButton" to="." method="_on_back_pressed"]

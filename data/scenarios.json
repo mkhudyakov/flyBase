@@ -430,7 +430,9 @@
       "requires": [
         "temperature_challenge"
       ],
-      "unlocks": [],
+      "unlocks": [
+        "wings_disappear"
+      ],
       "tutorial": [
         "Polygenic traits depend on many genes, each contributing a small additive amount. No single gene makes a fly large.",
         "These founders are heterozygous for 'large' variants at three loci. Breed and select to stack more large variants into one fly.",
@@ -502,6 +504,489 @@
         "research_points": 25,
         "budget": 70,
         "reputation": 5
+      }
+    },
+    {
+      "id": "wings_disappear",
+      "title": "9. Why did the wings disappear?",
+      "briefing": "The wingless gene (wg) is needed to build a wing at all. Unlike vestigial (which shrinks wings), losing wingless can erase them. Breed the carriers and produce wingless flies.",
+      "requires": [
+        "polygenic_size"
+      ],
+      "unlocks": [
+        "dev_catastrophe"
+      ],
+      "tutorial": [
+        "Different genes act at different points in development. vestigial shrinks the wing; wingless is needed earlier, to form the wing field at all.",
+        "Breed the wingless carriers. Homozygous wg/wg offspring have severely reduced or absent wings (and lower viability).",
+        "Objective: produce wingless offspring, then answer the question."
+      ],
+      "starting_vials": [
+        {
+          "name": "wingless carriers (wg/+)",
+          "incubator": 1,
+          "flies": [
+            {
+              "gene": "wg",
+              "allele": "wg_loss",
+              "zyg": "het",
+              "sex": "female",
+              "count": 1
+            },
+            {
+              "gene": "wg",
+              "allele": "wg_loss",
+              "zyg": "het",
+              "sex": "male",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "objectives": [
+        {
+          "type": "phenotype_count",
+          "desc": "Produce at least 3 flies with near-absent wings",
+          "predicate": {
+            "trait": "wing_size",
+            "op": "lt",
+            "value": 0.3
+          },
+          "count": 3
+        },
+        {
+          "type": "quiz",
+          "desc": "Answer: why is wingless loss more severe than vestigial?",
+          "question": "wingless removes wings more completely than vestigial because it...",
+          "options": [
+            "acts earlier, in forming the wing field",
+            "is dominant",
+            "only acts at high temperature"
+          ],
+          "answer": 0
+        }
+      ],
+      "reward": {
+        "research_points": 20,
+        "budget": 50,
+        "reputation": 3
+      }
+    },
+    {
+      "id": "dev_catastrophe",
+      "title": "10. Developmental catastrophe",
+      "briefing": "Severe developmental mutations don't just change a trait \u2014 they can kill the animal during development. Run a large cross of these fragile carriers and watch survival crash.",
+      "requires": [
+        "wings_disappear"
+      ],
+      "unlocks": [
+        "rescue_cross"
+      ],
+      "tutorial": [
+        "When a gene essential for development is disrupted in both copies, the embryo or larva may arrest and die.",
+        "Cross the carriers at scale (100+ offspring). Many homozygous offspring will not reach adulthood.",
+        "Objective: run a 100+ offspring cross and drive survival below 85%."
+      ],
+      "starting_vials": [
+        {
+          "name": "wingless carriers (wg/+)",
+          "incubator": 1,
+          "flies": [
+            {
+              "gene": "wg",
+              "allele": "wg_loss",
+              "zyg": "het",
+              "sex": "female",
+              "count": 1
+            },
+            {
+              "gene": "wg",
+              "allele": "wg_loss",
+              "zyg": "het",
+              "sex": "male",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "objectives": [
+        {
+          "type": "cross_survival_below",
+          "desc": "Run a 100+ offspring cross with under 85% survival",
+          "threshold": 0.85,
+          "min_n": 100
+        },
+        {
+          "type": "quiz",
+          "desc": "Answer: where did the missing offspring go?",
+          "question": "Fewer adults appeared than expected because the homozygous mutants...",
+          "options": [
+            "were never conceived",
+            "died during development",
+            "turned into females"
+          ],
+          "answer": 1
+        }
+      ],
+      "reward": {
+        "research_points": 22,
+        "budget": 55,
+        "reputation": 4
+      }
+    },
+    {
+      "id": "rescue_cross",
+      "title": "11. Rescue cross",
+      "briefing": "A flightless vestigial line can be partly rescued by a suppressor allele that softens the wing defect. Cross in the suppressor and recover flight.",
+      "requires": [
+        "dev_catastrophe"
+      ],
+      "unlocks": [
+        "selection_large"
+      ],
+      "tutorial": [
+        "A suppressor is a modifier allele: it does nothing on its own, but it reduces the severity of another gene's defect.",
+        "These vestigial (vg/vg) flies are flightless. The males also carry a wing-defect suppressor. Breed them and some offspring regain flight.",
+        "Objective: produce flies with recovered flight (flight ability >= 0.55)."
+      ],
+      "starting_vials": [
+        {
+          "name": "vestigial + suppressor stock",
+          "incubator": 1,
+          "flies": [
+            {
+              "sex": "female",
+              "count": 2,
+              "loci": [
+                {
+                  "gene": "vg",
+                  "allele": "vg_strong_loss",
+                  "zyg": "hom"
+                }
+              ]
+            },
+            {
+              "sex": "male",
+              "count": 2,
+              "loci": [
+                {
+                  "gene": "vg",
+                  "allele": "vg_strong_loss",
+                  "zyg": "hom"
+                },
+                {
+                  "gene": "wing_mod",
+                  "allele": "wm_suppressor",
+                  "zyg": "het"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "objectives": [
+        {
+          "type": "phenotype_count",
+          "desc": "Produce at least 5 flies with recovered flight (flight >= 0.55)",
+          "predicate": {
+            "trait": "flight_ability",
+            "op": "ge",
+            "value": 0.55
+          },
+          "count": 5
+        },
+        {
+          "type": "quiz",
+          "desc": "Answer: how did the suppressor help?",
+          "question": "The suppressor restored some flight by...",
+          "options": [
+            "deleting the vestigial allele",
+            "reducing the severity of the vestigial defect",
+            "raising the temperature"
+          ],
+          "answer": 1
+        }
+      ],
+      "reward": {
+        "research_points": 24,
+        "budget": 60,
+        "reputation": 4
+      }
+    },
+    {
+      "id": "selection_large",
+      "title": "12. Selection over generations",
+      "briefing": "Body size is polygenic. By breeding and selecting the largest flies over generations, push body size beyond what any founder shows.",
+      "requires": [
+        "rescue_cross"
+      ],
+      "unlocks": [
+        "recover_fertility"
+      ],
+      "tutorial": [
+        "Selection means choosing which flies breed. Keep breeding the largest and the population's size genes accumulate.",
+        "Use the Population tool (or repeated breeding + selection) to combine large-variant alleles.",
+        "Objective: produce at least 3 unusually large flies (body size >= 1.2)."
+      ],
+      "starting_vials": [
+        {
+          "name": "large-variant stock",
+          "incubator": 1,
+          "flies": [
+            {
+              "sex": "female",
+              "count": 2,
+              "loci": [
+                {
+                  "gene": "size_a",
+                  "allele": "size_a_large",
+                  "zyg": "het"
+                },
+                {
+                  "gene": "size_b",
+                  "allele": "size_b_large",
+                  "zyg": "het"
+                },
+                {
+                  "gene": "size_c",
+                  "allele": "size_c_large",
+                  "zyg": "het"
+                }
+              ]
+            },
+            {
+              "sex": "male",
+              "count": 2,
+              "loci": [
+                {
+                  "gene": "size_a",
+                  "allele": "size_a_large",
+                  "zyg": "het"
+                },
+                {
+                  "gene": "size_b",
+                  "allele": "size_b_large",
+                  "zyg": "het"
+                },
+                {
+                  "gene": "size_c",
+                  "allele": "size_c_large",
+                  "zyg": "het"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "objectives": [
+        {
+          "type": "phenotype_count",
+          "desc": "Produce at least 3 large flies (body size >= 1.2)",
+          "predicate": {
+            "trait": "body_size",
+            "op": "ge",
+            "value": 1.2
+          },
+          "count": 3
+        }
+      ],
+      "reward": {
+        "research_points": 25,
+        "budget": 65,
+        "reputation": 5
+      }
+    },
+    {
+      "id": "recover_fertility",
+      "title": "13. Recover fertility",
+      "briefing": "This stock was left in a hot incubator and its fertility has dropped. Heat suppresses fertility \u2014 find better rearing conditions and recover it.",
+      "requires": [
+        "selection_large"
+      ],
+      "unlocks": [
+        "unexpected_f2"
+      ],
+      "tutorial": [
+        "Environment affects more than size: high rearing temperature reduces fertility.",
+        "Move the vial to a cooler incubator (25 or 18 C) before breeding, then raise a healthy, fertile generation.",
+        "Objective: produce at least 8 highly fertile flies (fertility >= 0.92)."
+      ],
+      "starting_vials": [
+        {
+          "name": "heat-stressed stock",
+          "incubator": 2,
+          "flies": [
+            {
+              "wild": true,
+              "sex": "female",
+              "count": 2
+            },
+            {
+              "wild": true,
+              "sex": "male",
+              "count": 2
+            }
+          ]
+        }
+      ],
+      "objectives": [
+        {
+          "type": "phenotype_count",
+          "desc": "Produce at least 8 highly fertile flies (fertility >= 0.92)",
+          "predicate": {
+            "trait": "fertility_score",
+            "op": "ge",
+            "value": 0.92
+          },
+          "count": 8
+        },
+        {
+          "type": "quiz",
+          "desc": "Answer: what recovered fertility?",
+          "question": "Fertility recovered when you...",
+          "options": [
+            "bred more flies",
+            "reared them at a cooler temperature",
+            "added more males"
+          ],
+          "answer": 1
+        }
+      ],
+      "reward": {
+        "research_points": 26,
+        "budget": 65,
+        "reputation": 5
+      }
+    },
+    {
+      "id": "unexpected_f2",
+      "title": "14. Explain unexpected F2 ratios",
+      "briefing": "You expected a clean ratio of eye colors, but the numbers look wrong. The culprit is epistasis: eyeless flies hide their eye color entirely.",
+      "requires": [
+        "recover_fertility"
+      ],
+      "unlocks": [
+        "final_thesis"
+      ],
+      "tutorial": [
+        "When two genes interact, simple ratios break down. Here, the eyeless phenotype masks the eye-color genotype.",
+        "Breed the eyeless carriers and notice that eyeless offspring can't be scored for eye color at all.",
+        "Objective: produce eyeless offspring, then explain the deviation."
+      ],
+      "starting_vials": [
+        {
+          "name": "eyeless carriers (ey/+)",
+          "incubator": 1,
+          "flies": [
+            {
+              "gene": "ey",
+              "allele": "ey_loss",
+              "zyg": "het",
+              "sex": "female",
+              "count": 1
+            },
+            {
+              "gene": "ey",
+              "allele": "ey_loss",
+              "zyg": "het",
+              "sex": "male",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "objectives": [
+        {
+          "type": "phenotype_count",
+          "desc": "Produce at least 3 eyeless offspring",
+          "predicate": {
+            "trait": "eye_size",
+            "op": "lt",
+            "value": 0.25
+          },
+          "count": 3
+        },
+        {
+          "type": "quiz",
+          "desc": "Answer: why did the eye-color ratio look wrong?",
+          "question": "The expected eye-color ratio deviated because...",
+          "options": [
+            "eyeless flies can't show eye color (epistasis)",
+            "mutation rates changed",
+            "the parents were sterile"
+          ],
+          "answer": 0
+        }
+      ],
+      "reward": {
+        "research_points": 28,
+        "budget": 70,
+        "reputation": 6
+      }
+    },
+    {
+      "id": "final_thesis",
+      "title": "15. Final thesis project",
+      "briefing": "Your capstone: establish a stable, true-breeding flightless line and defend your understanding of how it breeds true.",
+      "requires": [
+        "unexpected_f2"
+      ],
+      "unlocks": [],
+      "tutorial": [
+        "A true-breeding line is homozygous for the trait, so every offspring shows it.",
+        "Build a vial of at least 20 living flies that are almost all flightless, then answer the final question.",
+        "Congratulations on reaching the final project!"
+      ],
+      "starting_vials": [
+        {
+          "name": "vestigial carriers (vg/+)",
+          "incubator": 1,
+          "flies": [
+            {
+              "gene": "vg",
+              "allele": "vg_strong_loss",
+              "zyg": "het",
+              "sex": "female",
+              "count": 1
+            },
+            {
+              "gene": "vg",
+              "allele": "vg_strong_loss",
+              "zyg": "het",
+              "sex": "male",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "objectives": [
+        {
+          "type": "vial_uniform_phenotype",
+          "desc": "A vial with >=20 living flies, >=85% flightless",
+          "predicate": {
+            "trait": "flight_ability",
+            "op": "lt",
+            "value": 0.5
+          },
+          "count": 20,
+          "min_fraction": 0.85
+        },
+        {
+          "type": "quiz",
+          "desc": "Answer: why does a vestigial line breed true?",
+          "question": "A vestigial (vg/vg) line breeds true because...",
+          "options": [
+            "both parents are homozygous, so all offspring are vg/vg",
+            "vestigial is dominant",
+            "of genetic drift"
+          ],
+          "answer": 0
+        }
+      ],
+      "reward": {
+        "research_points": 40,
+        "budget": 100,
+        "reputation": 10
       }
     }
   ]

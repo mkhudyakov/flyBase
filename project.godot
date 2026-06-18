@@ -26,6 +26,8 @@ DataLoader="*res://scripts/autoload/DataLoader.gd"
 Catalog="*res://scripts/sim/Catalog.gd"
 RandomService="*res://scripts/autoload/RandomService.gd"
 SaveLoadService="*res://scripts/autoload/SaveLoadService.gd"
+AudioManager="*res://scripts/autoload/AudioManager.gd"
+Settings="*res://scripts/autoload/Settings.gd"
 Lab="*res://scripts/game/Lab.gd"
 Campaign="*res://scripts/game/Campaign.gd"
 Economy="*res://scripts/game/Economy.gd"
@@ -35,3 +37,7 @@ Economy="*res://scripts/game/Economy.gd"
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
+
+[rendering]
+
+textures/vram_compression/import_etc2_astc=true

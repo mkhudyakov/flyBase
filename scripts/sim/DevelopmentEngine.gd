@@ -141,8 +141,11 @@ static func simulate(fly: Fly, env: VialEnvironment = null, roll_seed: int = -1)
 	# --- Scores -------------------------------------------------------------
 	if alive:
 		result.viability_score = clampf(0.5 + 0.5 * stability + viability_impact, 0.0, 1.0)
+		# Heat suppresses fertility (a balancing/biology touch used by the
+		# "recover fertility" scenario: cooling the vial restores it).
+		var heat_penalty: float = maxf(0.0, temp - 26.0) * 0.05
 		result.fertility_score = clampf(
-			0.6 + 0.4 * stability + fertility_impact + (nutrition_eff - 0.7) * 0.5, 0.0, 1.0)
+			0.6 + 0.4 * stability + fertility_impact + (nutrition_eff - 0.7) * 0.5 - heat_penalty, 0.0, 1.0)
 		var temp_life: float = clampf(1.0 - (temp - opt) / 40.0, 0.4, 1.2)
 		result.lifespan_days = clampf(55.0 * stability * temp_life, 0.0, 90.0)
 		result.outcome = _adult_outcome(result)

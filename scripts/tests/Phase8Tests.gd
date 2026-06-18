@@ -52,10 +52,11 @@ func _ready() -> void:
 	Campaign.start_scenario("build_flightless")
 	var inc := Lab.incubators[1]
 	var line := Lab.create_vial("vestigial line", inc.id)
-	for i in 24:
+	for i in 30:
 		var sex := Genome.FEMALE if i % 2 == 0 else Genome.MALE
 		var fly := FlyFactory.create_mutant("vg", "vg_strong_loss", FlyFactory.Zygosity.HOMOZYGOUS, sex)
-		DevelopmentEngine.simulate(fly, Lab.effective_environment(line))
+		# Explicit per-fly seed → deterministic (no dependence on the time-based global seed).
+		DevelopmentEngine.simulate(fly, Lab.effective_environment(line), 9000 + i)
 		line.add_fly(fly)
 	_check("True-breeding vestigial line satisfies the objective",
 		Campaign.is_scenario_complete("build_flightless"))

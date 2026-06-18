@@ -16,38 +16,36 @@ APIs, no real genome database.
 
 ---
 
-## Current status: Phase 11 — Game economy & progression
+## Status: COMPLETE — all 12 phases (Phase 12: polish & productization)
 
-Constraints and a progression loop turn the sandbox into a game. What works:
+A full, playable Godot 4 game. The final phase added settings, audio,
+accessibility, a new-game flow, a 15-scenario campaign, and a packaged macOS
+export. What's new in Phase 12:
 
-- Everything from Phases 0–10 (full simulation, lab, campaign, population sim).
-- **Economy** singleton (`scripts/game/Economy.gd`): research points, budget,
-  reputation, and publication score, with JSON persistence.
-- **Meaningful constraints**: breeding and new vials cost budget; run out and you
-  must earn more before continuing.
-- **Earning loop**: completing campaign scenarios grants RP/budget/reputation
-  (data-driven `reward` per scenario), and **publishing** a notebook experiment
-  (Notebook → *Publish selected*) pays out RP + budget + reputation.
-- **Equipment unlock tree** (`data/equipment.json`, *Equipment* screen): spend RP
-  on upgrades with prerequisite gating, each with a real effect — *carrier
-  scanner* reveals hidden genotypes in the vial list (otherwise you only see the
-  visible phenotype), *high-throughput crosser* enables 1000-offspring crosses,
-  *long-term culture* enables 20-generation runs, *automation* cuts breeding cost.
-- The dashboard shows live `$ / RP / Rep / Pubs`. `Phase11Tests.tscn` (18 checks).
+- **Settings screen** (main menu → *Settings*): master / SFX / music volume,
+  **UI scale**, high-contrast text, and reduced-motion — applied live and saved.
+- **Procedural audio** (`AudioManager`): a synthesized UI click (auto-wired to
+  every button) and a looping ambient drone — no asset files. Volumes follow
+  Settings.
+- **15 campaign scenarios** (was 8): the full chapter arc from foundations to a
+  final thesis project, all prerequisite-gated.
+- **New Game** flow (Settings → *Start New Game*) resets lab + campaign + economy.
+- **macOS export**: `export_presets.cfg` + a verified universal `.app` build.
+- Balancing: heat now suppresses fertility (powers the "recover fertility"
+  scenario). `Phase12Tests.tscn` (11 checks).
 
-> Final phase (12) is polish & productization: settings, audio, accessibility,
-> macOS export, balancing.
+**Full test coverage:** 12 headless suites, ~157 checks, all passing.
 
-### Earlier phases recap
+### Phase recap (the whole game)
 
-- **Phase 10 — population**: `PopulationEngine` runs 10–20 generations with
-  truncation selection, bottlenecks, and drift; tracks allele frequencies and a
-  line-stability score (*Population* screen).
-- **Phase 9 — advanced genetics**: epistasis (gene masking), suppressor/enhancer
-  modifiers, polygenic body size, temperature-sensitive alleles, + 3 advanced
-  challenges. Per-individual variation via `Fly.roll_seed`.
-- **Phase 8 — campaign**: `Campaign` engine + 8 scenarios with prerequisite
-  gating, data-driven objectives, quizzes, and tutorial popups (*Campaign* screen).
+- **Phase 11 — economy**: research points, budget, reputation, publications;
+  breeding costs; scenario rewards; publishing; an equipment unlock tree with
+  real effects (carrier scanner, big crosses, long runs, cheaper breeding).
+- **Phase 10 — population**: 10–20 generation runs with selection, bottlenecks,
+  drift, allele-frequency tracking, and a line-stability score.
+- **Phase 9 — advanced genetics**: epistasis, suppressor/enhancer modifiers,
+  polygenic body size, temperature-sensitive alleles, + advanced challenges.
+- **Phase 8 — campaign**: scenario/objective engine with quizzes + tutorials.
 - **Phase 7 — statistics & notebook**: `StatisticsEngine` distributions +
   histograms (*Statistics* screen); every breed auto-logged to the *Notebook*
   with expected-vs-observed tables, exportable to `user://exports/`.
@@ -94,6 +92,33 @@ See [CHANGELOG.md](CHANGELOG.md) for per-phase history and
 Save files are written to the per-user Godot data directory:
 `~/Library/Application Support/Godot/app_userdata/Drosophila Genetics Lab Simulator/saves/`
 
+### Playing the packaged macOS build
+
+A packaged universal `.app` is produced under `build/`:
+
+```
+unzip build/DrosophilaGeneticsLab.zip -d ~/Desktop
+open "~/Desktop/Drosophila Genetics Lab Simulator.app"
+```
+
+(First launch may need right-click → Open, since the build is unsigned.)
+
+### Re-exporting
+
+The macOS preset lives in `export_presets.cfg`. To export yourself you need the
+Godot **export templates** for this exact version installed (Editor → *Manage
+Export Templates*, a one-time ~1 GB download). Then:
+
+```
+"$GODOT" --headless --path . --export-release "macOS" build/DrosophilaGeneticsLab.zip
+```
+
+### New game vs. continue
+
+A fresh launch starts clean. **Continue** (main menu) loads your saved lab,
+campaign progress, and economy. **Settings → Start New Game** resets all progress
+(keeps your settings).
+
 ### Running the test scene
 
 Phase checks live in headless test scenes. To run the Phase 1 suite from a
@@ -113,6 +138,7 @@ GODOT=/Applications/Godot.app/Contents/MacOS/Godot
 "$GODOT" --headless --path . res://scenes/Phase9Tests.tscn --quit-after 15
 "$GODOT" --headless --path . res://scenes/Phase10Tests.tscn --quit-after 30
 "$GODOT" --headless --path . res://scenes/Phase11Tests.tscn --quit-after 15
+"$GODOT" --headless --path . res://scenes/Phase12Tests.tscn --quit-after 20
 ```
 
 The first command is only needed once after new `class_name` scripts are added
@@ -152,6 +178,7 @@ flyBase/
 │   ├── CampaignScreen.tscn
 │   ├── PopulationScreen.tscn
 │   ├── EquipmentScreen.tscn
+│   ├── SettingsScreen.tscn
 │   ├── Phase1Tests.tscn       # headless test scenes
 │   ├── Phase2Tests.tscn
 │   ├── Phase4Tests.tscn
@@ -161,12 +188,15 @@ flyBase/
 │   ├── Phase8Tests.tscn
 │   ├── Phase9Tests.tscn
 │   ├── Phase10Tests.tscn
-│   └── Phase11Tests.tscn
+│   ├── Phase11Tests.tscn
+│   └── Phase12Tests.tscn
 └── scripts/
     ├── autoload/              # Singletons (registered in project.godot)
     │   ├── DataLoader.gd
     │   ├── RandomService.gd
-    │   └── SaveLoadService.gd
+    │   ├── SaveLoadService.gd
+    │   ├── AudioManager.gd    # procedural SFX + ambient (no assets)
+    │   └── Settings.gd        # volumes + accessibility, persisted
     ├── game/                  # Game-layer state (vials, incubators, lab)
     │   ├── Lab.gd             # autoload: central lab state + operations
     │   ├── Campaign.gd        # autoload: scenarios, objectives, unlocks
@@ -202,7 +232,8 @@ flyBase/
     │   ├── Phase8Tests.gd
     │   ├── Phase9Tests.gd
     │   ├── Phase10Tests.gd
-    │   └── Phase11Tests.gd
+    │   ├── Phase11Tests.gd
+    │   └── Phase12Tests.gd
     └── ui/                    # UI controllers (kept separate from sim code)
         ├── MainMenu.gd
         ├── LabDashboard.gd
@@ -216,7 +247,8 @@ flyBase/
         ├── NotebookScreen.gd
         ├── CampaignScreen.gd
         ├── PopulationScreen.gd
-        └── EquipmentScreen.gd
+        ├── EquipmentScreen.gd
+        └── SettingsScreen.gd
 ```
 
 Simulation code lives in `scripts/sim/` separately from UI code, per the

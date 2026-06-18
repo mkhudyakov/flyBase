@@ -4,11 +4,9 @@
 .godot/
 *.import
 
-# Export artifacts.
-export_presets.cfg
+# Export artifacts (export_presets.cfg IS tracked — it's project config).
 build/
 *.dmg
-*.zip
 
 # macOS cruft.
 .DS_Store

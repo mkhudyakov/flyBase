@@ -3,6 +3,39 @@
 All notable changes to the Drosophila Genetics Lab Simulator are documented
 here, phase by phase (see SPECS.md section 24).
 
+## Phase 12 — Polish & productization (final)
+
+Prepared the game for a public, playable release.
+
+### Added
+- `scripts/autoload/Settings.gd` (autoload) — master/SFX/music volume, UI scale,
+  high-contrast text, reduced motion; applied live (audio bus, window content
+  scale, high-contrast theme) and persisted.
+- `scripts/autoload/AudioManager.gd` (autoload) — procedurally synthesized UI
+  click (auto-connected to every button) and a looping ambient drone; no asset
+  files. Volumes follow Settings.
+- `scenes/SettingsScreen.tscn` + `scripts/ui/SettingsScreen.gd` — settings UI, the
+  safety disclaimer, and a confirmed **New Game** reset (lab + campaign + economy).
+- Expanded the campaign to **15 scenarios** (full chapter arc) with rewards and a
+  fully linked prerequisite chain.
+- `export_presets.cfg` (macOS, universal) and a verified packaged `.app` build;
+  enabled ETC2/ASTC import for universal export.
+- Main menu: *Settings* opens the screen; *Continue* loads saved lab/campaign/
+  economy; Continue is enabled only when a lab save exists.
+- `scenes/Phase12Tests.tscn` + `scripts/tests/Phase12Tests.gd` — 11-check suite.
+
+### Changed / fixed
+- Balancing: high rearing temperature now reduces fertility (drives the "recover
+  fertility" scenario).
+- Made the Phase 8 flightless-line test deterministic (explicit per-fly seed)
+  instead of depending on the time-based global seed.
+
+### Definition of Done
+- Game is playable by a new user ✓ (menu → campaign/sandbox; tutorials; settings)
+- Campaign has at least 15 scenarios ✓
+- Sandbox is stable ✓ / save/load works ✓ / no obvious crashes ✓
+- macOS export works ✓ (universal `.app` built and booted)
+
 ## Phase 11 — Game economy & progression
 
 Added constraints and a progression loop on top of the sandbox.
