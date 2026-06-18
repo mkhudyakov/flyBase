@@ -27,6 +27,10 @@ var vial_cleanliness: float = 1.0     ## 0..1, 1 = clean.
 static func standard() -> VialEnvironment:
 	return VialEnvironment.new()
 
+## A deep copy of this environment.
+func clone() -> VialEnvironment:
+	return VialEnvironment.from_dict(to_dict())
+
 func to_dict() -> Dictionary:
 	return {
 		"temperature_c": temperature_c,

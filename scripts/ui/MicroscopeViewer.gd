@@ -17,6 +17,15 @@ func _ready() -> void:
 	if not Catalog.is_ready() or Catalog.trait_count() == 0:
 		_title.text = "Catalog/traits not loaded — check data/*.json."
 		return
+	# If the dashboard handed us a specific fly to inspect, show that instead.
+	if Lab.pending_inspect != null:
+		var fly := Lab.pending_inspect
+		Lab.pending_inspect = null
+		_current_fly = fly
+		_title.text = "Inspecting %s (%s)" % [fly.id, fly.sex()]
+		_renderer.set_fly(fly)
+		_update_caption(fly)
+		return
 	_show(FlyFactory.create_wild_type(Genome.FEMALE), "Wild-type female")
 
 func _on_wild_female_pressed() -> void:

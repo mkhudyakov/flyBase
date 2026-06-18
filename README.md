@@ -16,30 +16,32 @@ APIs, no real genome database.
 
 ---
 
-## Current status: Phase 5 — Inheritance & cross simulator
+## Current status: Phase 6 — Lab dashboard & vial system
 
-Two flies can now be crossed to produce offspring. What works:
+The simulator is now a lab game space. What works:
 
-- Everything from Phases 0–4 (menu, dashboard, services, data model, phenotype
-  engine, fly renderer, development engine, viewers).
-- **InheritanceEngine** (`scripts/sim/InheritanceEngine.gd`) runs meiosis →
-  gametes → offspring with **autosomal** and **sex-linked** inheritance,
-  **simplified recombination** (map-distance linkage), sex determination
-  (mother gives X; father gives X→daughter / Y→son), and optional spontaneous
-  mutation. Each offspring is developed under the vial environment.
-- **Cross Simulator** screen (Dashboard → *Cross Simulator*): choose two parents,
-  10 / 100 / 1000 offspring, and a seed; see genotype and phenotype
-  distributions, sex/survival ratios, and **expected-vs-observed** ratio tables
-  per segregating gene, with deviation explanations.
-- Correct, verified genetics: monohybrid **3:1 / 1:2:1**, X-linked **criss-cross**
-  (white ♀ × wild ♂ → carrier daughters, white sons), and **lethal deviation**
-  (bcd/+ × bcd/+ → homozygotes conceived at ~25% but absent among adults, with
-  the deviation explained). Reproducible by seed. `Phase5Tests.tscn` (15 checks).
+- Everything from Phases 0–5 (full simulation core + analysis tools).
+- **Lab** state singleton (`scripts/game/Lab.gd`) owns **vials** and
+  **incubators** and the operations on them; a fresh lab starts with three
+  incubators (18/25/29 °C) and stock vials of developed founder flies.
+- **Rebuilt Lab Dashboard** (the central screen): a vials list, a selected-vial
+  detail (summary, incubator assignment, per-fly list), an incubators panel with
+  a temperature slider, and actions — **New vial, Archive, Breed, Move fly,
+  Inspect fly** — plus a Tools row to the analysis screens and **Save/Load Lab**.
+- **Flies belong to vials**; you can move a fly between vials and archive a line.
+- **Incubator temperature affects development**: breeding a vial runs the cross +
+  development under the vial's incubator temperature, so the same pair yields
+  healthy offspring at 25 °C but none at a lethal 36 °C.
+- Lab state serialises to JSON (Save/Load Lab). `Phase6Tests.tscn` (17 checks).
 
-> Vials / lab management arrive in Phase 6.
+> Statistics & lab notebook arrive in Phase 7.
 
 ### Earlier phases recap
 
+- **Phase 5 — inheritance**: `InheritanceEngine` crosses two flies (autosomal +
+  sex-linked, recombination, sex determination) into 10/100/1000 offspring with
+  expected-vs-observed ratio tables. Verified 3:1, X-linked criss-cross, lethal
+  deviation. See *Cross Simulator*.
 - **Phase 4 — development**: `DevelopmentEngine` walks 10 egg→adult stages;
   severe developmental mutants can fail (named outcomes), and temperature /
   nutrition / crowding change duration, size, fertility, and survival. See
@@ -68,9 +70,10 @@ See [CHANGELOG.md](CHANGELOG.md) for per-phase history and
      folder. (Or from a terminal: `godot --editor --path /path/to/flyBase`.)
 3. **Run it.** Press the ▶ **Run Project** button (or `Cmd+B`). The main menu
    appears.
-4. Click **Sandbox** to open the lab dashboard. From there open **Genotype
-   Debug** to build flies and inspect genotypes, or use **Test Save / Test
-   Load** to exercise the save/load shell.
+4. Click **Sandbox** to open the **Lab Dashboard**: manage vials and incubators,
+   breed flies, move/inspect them, and open the analysis tools from the Tools
+   row (Genome, Phenotype, Microscope, Development, Cross). **Save/Load Lab**
+   persists the whole lab.
 
 Save files are written to the per-user Godot data directory:
 `~/Library/Application Support/Godot/app_userdata/Drosophila Genetics Lab Simulator/saves/`
@@ -88,6 +91,7 @@ GODOT=/Applications/Godot.app/Contents/MacOS/Godot
 "$GODOT" --headless --path . res://scenes/Phase2Tests.tscn --quit-after 10
 "$GODOT" --headless --path . res://scenes/Phase4Tests.tscn --quit-after 10
 "$GODOT" --headless --path . res://scenes/Phase5Tests.tscn --quit-after 15
+"$GODOT" --headless --path . res://scenes/Phase6Tests.tscn --quit-after 15
 ```
 
 The first command is only needed once after new `class_name` scripts are added
@@ -122,12 +126,17 @@ flyBase/
 │   ├── Phase1Tests.tscn       # headless test scenes
 │   ├── Phase2Tests.tscn
 │   ├── Phase4Tests.tscn
-│   └── Phase5Tests.tscn
+│   ├── Phase5Tests.tscn
+│   └── Phase6Tests.tscn
 └── scripts/
     ├── autoload/              # Singletons (registered in project.godot)
     │   ├── DataLoader.gd
     │   ├── RandomService.gd
     │   └── SaveLoadService.gd
+    ├── game/                  # Game-layer state (vials, incubators, lab)
+    │   ├── Lab.gd             # autoload: central lab state + operations
+    │   ├── Vial.gd
+    │   └── Incubator.gd
     ├── sim/                   # Simulation classes (no UI dependencies)
     │   ├── Catalog.gd         # autoload: parses JSON into Gene/Allele/TraitRule
     │   ├── Gene.gd
@@ -148,7 +157,8 @@ flyBase/
     │   ├── Phase1Tests.gd
     │   ├── Phase2Tests.gd
     │   ├── Phase4Tests.gd
-    │   └── Phase5Tests.gd
+    │   ├── Phase5Tests.gd
+    │   └── Phase6Tests.gd
     └── ui/                    # UI controllers (kept separate from sim code)
         ├── MainMenu.gd
         ├── LabDashboard.gd

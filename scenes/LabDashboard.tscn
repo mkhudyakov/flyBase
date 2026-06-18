@@ -27,63 +27,222 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 32
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 32
-theme_override_constants/margin_bottom = 24
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
 
-[node name="VBox" type="VBoxContainer" parent="Margin"]
+[node name="Root" type="VBoxContainer" parent="Margin"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 10
 
-[node name="InfoLabel" type="RichTextLabel" parent="Margin/VBox"]
+[node name="TopBar" type="HBoxContainer" parent="Margin/Root"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Margin/Root/TopBar"]
+layout_mode = 2
+text = "Lab Dashboard"
+theme_override_font_sizes/font_size = 24
+
+[node name="Spacer" type="Control" parent="Margin/Root/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LabStats" type="Label" parent="Margin/Root/TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+theme_override_colors/font_color = Color(0.7, 0.8, 0.85, 1)
+
+[node name="SaveButton" type="Button" parent="Margin/Root/TopBar"]
+layout_mode = 2
+text = "Save Lab"
+
+[node name="LoadButton" type="Button" parent="Margin/Root/TopBar"]
+layout_mode = 2
+text = "Load Lab"
+
+[node name="BackButton" type="Button" parent="Margin/Root/TopBar"]
+layout_mode = 2
+text = "Menu"
+
+[node name="LastEvent" type="Label" parent="Margin/Root"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+theme_override_colors/font_color = Color(0.6, 0.8, 0.65, 1)
+theme_override_font_sizes/font_size = 13
+
+[node name="Main" type="HBoxContainer" parent="Margin/Root"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="VialsPanel" type="VBoxContainer" parent="Margin/Root/Main"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Header" type="Label" parent="Margin/Root/Main/VialsPanel"]
+layout_mode = 2
+text = "Vials"
+theme_override_font_sizes/font_size = 16
+
+[node name="VialList" type="ItemList" parent="Margin/Root/Main/VialsPanel"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="VialButtons" type="HBoxContainer" parent="Margin/Root/Main/VialsPanel"]
+layout_mode = 2
+
+[node name="NewVialButton" type="Button" parent="Margin/Root/Main/VialsPanel/VialButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "New vial"
+
+[node name="ArchiveButton" type="Button" parent="Margin/Root/Main/VialsPanel/VialButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Archive"
+
+[node name="DetailPanel" type="VBoxContainer" parent="Margin/Root/Main"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="VialNameLabel" type="Label" parent="Margin/Root/Main/DetailPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "No vial selected"
+theme_override_font_sizes/font_size = 18
+
+[node name="VialSummary" type="RichTextLabel" parent="Margin/Root/Main/DetailPanel"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
 bbcode_enabled = true
 fit_content = true
 
-[node name="ButtonsBox" type="HBoxContainer" parent="Margin/VBox"]
+[node name="IncubatorRow" type="HBoxContainer" parent="Margin/Root/Main/DetailPanel"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="GenotypeDebugButton" type="Button" parent="Margin/VBox/ButtonsBox"]
+[node name="IncLabel" type="Label" parent="Margin/Root/Main/DetailPanel/IncubatorRow"]
 layout_mode = 2
-text = "Genotype Debug"
+text = "Incubator:"
 
-[node name="PhenotypeViewerButton" type="Button" parent="Margin/VBox/ButtonsBox"]
+[node name="IncubatorOption" type="OptionButton" parent="Margin/Root/Main/DetailPanel/IncubatorRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
-text = "Phenotype Viewer"
 
-[node name="MicroscopeButton" type="Button" parent="Margin/VBox/ButtonsBox"]
+[node name="FliesHeader" type="Label" parent="Margin/Root/Main/DetailPanel"]
 layout_mode = 2
-text = "Microscope Viewer"
+text = "Flies"
+theme_override_font_sizes/font_size = 16
 
-[node name="DevelopmentButton" type="Button" parent="Margin/VBox/ButtonsBox"]
+[node name="FlyList" type="ItemList" parent="Margin/Root/Main/DetailPanel"]
+unique_name_in_owner = true
 layout_mode = 2
-text = "Development Timeline"
+size_flags_vertical = 3
 
-[node name="CrossButton" type="Button" parent="Margin/VBox/ButtonsBox"]
+[node name="Actions" type="HBoxContainer" parent="Margin/Root/Main/DetailPanel"]
 layout_mode = 2
-text = "Cross Simulator"
+theme_override_constants/separation = 8
 
-[node name="TestSaveButton" type="Button" parent="Margin/VBox/ButtonsBox"]
+[node name="BreedButton" type="Button" parent="Margin/Root/Main/DetailPanel/Actions"]
 layout_mode = 2
-text = "Test Save (autosave)"
+text = "Breed (50)"
 
-[node name="TestLoadButton" type="Button" parent="Margin/VBox/ButtonsBox"]
+[node name="InspectButton" type="Button" parent="Margin/Root/Main/DetailPanel/Actions"]
 layout_mode = 2
-text = "Test Load (autosave)"
+text = "Inspect fly"
 
-[node name="BackButton" type="Button" parent="Margin/VBox/ButtonsBox"]
+[node name="MoveLabel" type="Label" parent="Margin/Root/Main/DetailPanel/Actions"]
 layout_mode = 2
-text = "Back to Menu"
+text = "→"
 
-[connection signal="pressed" from="Margin/VBox/ButtonsBox/GenotypeDebugButton" to="." method="_on_genotype_debug_pressed"]
-[connection signal="pressed" from="Margin/VBox/ButtonsBox/PhenotypeViewerButton" to="." method="_on_phenotype_viewer_pressed"]
-[connection signal="pressed" from="Margin/VBox/ButtonsBox/MicroscopeButton" to="." method="_on_microscope_pressed"]
-[connection signal="pressed" from="Margin/VBox/ButtonsBox/DevelopmentButton" to="." method="_on_development_pressed"]
-[connection signal="pressed" from="Margin/VBox/ButtonsBox/CrossButton" to="." method="_on_cross_pressed"]
-[connection signal="pressed" from="Margin/VBox/ButtonsBox/TestSaveButton" to="." method="_on_test_save_pressed"]
-[connection signal="pressed" from="Margin/VBox/ButtonsBox/TestLoadButton" to="." method="_on_test_load_pressed"]
-[connection signal="pressed" from="Margin/VBox/ButtonsBox/BackButton" to="." method="_on_back_pressed"]
+[node name="MoveTargetOption" type="OptionButton" parent="Margin/Root/Main/DetailPanel/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+
+[node name="MoveButton" type="Button" parent="Margin/Root/Main/DetailPanel/Actions"]
+layout_mode = 2
+text = "Move fly"
+
+[node name="IncubatorPanel" type="VBoxContainer" parent="Margin/Root/Main"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Header" type="Label" parent="Margin/Root/Main/IncubatorPanel"]
+layout_mode = 2
+text = "Incubators"
+theme_override_font_sizes/font_size = 16
+
+[node name="IncubatorList" type="ItemList" parent="Margin/Root/Main/IncubatorPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="IncTempLabel" type="Label" parent="Margin/Root/Main/IncubatorPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Temperature"
+
+[node name="IncTempSlider" type="HSlider" parent="Margin/Root/Main/IncubatorPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 8.0
+max_value = 36.0
+step = 1.0
+value = 25.0
+
+[node name="ToolsBar" type="HBoxContainer" parent="Margin/Root"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ToolsLabel" type="Label" parent="Margin/Root/ToolsBar"]
+layout_mode = 2
+text = "Tools:"
+
+[node name="GenomeButton" type="Button" parent="Margin/Root/ToolsBar"]
+layout_mode = 2
+text = "Genome"
+
+[node name="PhenotypeButton" type="Button" parent="Margin/Root/ToolsBar"]
+layout_mode = 2
+text = "Phenotype"
+
+[node name="MicroscopeButton" type="Button" parent="Margin/Root/ToolsBar"]
+layout_mode = 2
+text = "Microscope"
+
+[node name="DevelopmentButton" type="Button" parent="Margin/Root/ToolsBar"]
+layout_mode = 2
+text = "Development"
+
+[node name="CrossButton" type="Button" parent="Margin/Root/ToolsBar"]
+layout_mode = 2
+text = "Cross"
+
+[connection signal="pressed" from="Margin/Root/TopBar/SaveButton" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="Margin/Root/TopBar/LoadButton" to="." method="_on_load_pressed"]
+[connection signal="pressed" from="Margin/Root/TopBar/BackButton" to="." method="_on_back_pressed"]
+[connection signal="item_selected" from="Margin/Root/Main/VialsPanel/VialList" to="." method="_on_vial_list_item_selected"]
+[connection signal="pressed" from="Margin/Root/Main/VialsPanel/VialButtons/NewVialButton" to="." method="_on_new_vial_pressed"]
+[connection signal="pressed" from="Margin/Root/Main/VialsPanel/VialButtons/ArchiveButton" to="." method="_on_archive_pressed"]
+[connection signal="item_selected" from="Margin/Root/Main/DetailPanel/IncubatorRow/IncubatorOption" to="." method="_on_incubator_option_item_selected"]
+[connection signal="item_selected" from="Margin/Root/Main/DetailPanel/FlyList" to="." method="_on_fly_list_item_selected"]
+[connection signal="pressed" from="Margin/Root/Main/DetailPanel/Actions/BreedButton" to="." method="_on_breed_pressed"]
+[connection signal="pressed" from="Margin/Root/Main/DetailPanel/Actions/InspectButton" to="." method="_on_inspect_pressed"]
+[connection signal="pressed" from="Margin/Root/Main/DetailPanel/Actions/MoveButton" to="." method="_on_move_pressed"]
+[connection signal="item_selected" from="Margin/Root/Main/IncubatorPanel/IncubatorList" to="." method="_on_incubator_list_item_selected"]
+[connection signal="pressed" from="Margin/Root/ToolsBar/GenomeButton" to="." method="_on_tool_genotype_pressed"]
+[connection signal="pressed" from="Margin/Root/ToolsBar/PhenotypeButton" to="." method="_on_tool_phenotype_pressed"]
+[connection signal="pressed" from="Margin/Root/ToolsBar/MicroscopeButton" to="." method="_on_tool_microscope_pressed"]
+[connection signal="pressed" from="Margin/Root/ToolsBar/DevelopmentButton" to="." method="_on_tool_development_pressed"]
+[connection signal="pressed" from="Margin/Root/ToolsBar/CrossButton" to="." method="_on_tool_cross_pressed"]

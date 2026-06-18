@@ -3,6 +3,34 @@
 All notable changes to the Drosophila Genetics Lab Simulator are documented
 here, phase by phase (see SPECS.md section 24).
 
+## Phase 6 — Lab dashboard & vial system
+
+Turned the simulator into a lab game space.
+
+### Added
+- `scripts/game/Vial.gd` — a container of flies with its own environment and an
+  incubator assignment; population/sex/alive helpers; to/from dict.
+- `scripts/game/Incubator.gd` — a temperature-controlled box vials sit in.
+- `scripts/game/Lab.gd` (autoload `Lab`) — central game state: vials, incubators,
+  generation, and operations (`create_vial`, `move_fly`, `archive_vial`,
+  `effective_environment`, `breed`) plus JSON save/load. A fresh lab seeds three
+  incubators and stock vials of developed founders. Breeding delegates to the
+  InheritanceEngine and develops offspring under the vial's incubator temperature.
+- Rebuilt `scenes/LabDashboard.tscn` + `scripts/ui/LabDashboard.gd` — vials list,
+  selected-vial detail (summary, incubator dropdown, fly list), incubators panel
+  with a temperature slider, actions (new/archive/breed/move/inspect), a Tools row
+  to the analysis screens, and Save/Load Lab. *Inspect fly* hands the selected fly
+  to the Microscope viewer via `Lab.pending_inspect`.
+- `VialEnvironment.clone()`. `scenes/Phase6Tests.tscn` +
+  `scripts/tests/Phase6Tests.gd` — 17-check headless suite (all passing).
+
+### Definition of Done
+- Player can manage multiple vials ✓
+- Each vial has environment settings ✓ (vial env + incubator temperature)
+- Flies belong to vials ✓ (move between vials)
+- Incubator temperature affects development ✓ (25 °C survives, 36 °C lethal)
+- Dashboard feels like a lab ✓
+
 ## Phase 5 — Inheritance & cross simulator
 
 Crossing two flies to generate offspring, with expected-vs-observed analysis.
