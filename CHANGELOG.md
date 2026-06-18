@@ -3,6 +3,30 @@
 All notable changes to the Drosophila Genetics Lab Simulator are documented
 here, phase by phase (see SPECS.md section 24).
 
+## Phase 8 — Campaign framework
+
+Added structured, goal-driven gameplay.
+
+### Added
+- `data/scenarios.json` — 5 scenarios with briefings, tutorials, starting vials,
+  prerequisite gating, unlocks, and data-driven objectives.
+- `scripts/game/Campaign.gd` (autoload `Campaign`) — loads scenarios, seeds the
+  lab (`Lab.new_scenario_lab()`), evaluates objectives against live lab/notebook
+  state, tracks completion + unlocks, handles quiz answers, and persists progress.
+  Objective types: `phenotype_count`, `vial_uniform_phenotype`,
+  `cross_survival_below`, and `quiz`.
+- `scenes/CampaignScreen.tscn` + `scripts/ui/CampaignScreen.gd` — scenario list
+  with lock/complete markers, briefing, live objective progress, dynamic quiz
+  buttons, tutorial popup on start, and Start/Check/Complete actions.
+- Wired *New Campaign* (main menu) and a *Campaign* tool (dashboard) to the screen.
+- `scenes/Phase8Tests.tscn` + `scripts/tests/Phase8Tests.gd` — 13-check suite.
+
+### Definition of Done
+- At least 5 playable scenarios ✓ (chained by unlocks)
+- Objectives can be completed ✓ (evaluated live against lab + notebook)
+- Unlocks work ✓ (prerequisite gating; later scenarios locked until earlier done)
+- Tutorial teaches core mechanics ✓ (per-scenario tutorial popups)
+
 ## Phase 7 — Statistics & lab notebook
 
 Made experiments understandable: analysis tools + an automatic experiment log.

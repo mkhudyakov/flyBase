@@ -24,7 +24,7 @@ func _on_continue_pressed() -> void:
 	get_tree().change_scene_to_file(LAB_DASHBOARD_SCENE)
 
 func _on_new_campaign_pressed() -> void:
-	_notify("Campaign mode arrives in a later phase (Phase 8).")
+	get_tree().change_scene_to_file("res://scenes/CampaignScreen.tscn")
 
 func _on_challenges_pressed() -> void:
 	_notify("Challenge mode arrives in a later phase.")

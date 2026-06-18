@@ -13,7 +13,7 @@ Files (loaded by `scripts/autoload/DataLoader.gd`):
 | `trait_rules.json`        | active (21 traits) | Phase 2 |
 | `development_stages.json` | active (10 stages) | Phase 4 |
 | `epistasis_rules.json`    | not yet  | Phase 9 |
-| `scenarios.json`          | not yet  | Phase 8 |
+| `scenarios.json`          | active (5 scenarios) | Phase 8 |
 
 `genes.json` and `alleles.json` are parsed by `scripts/sim/Catalog.gd` into
 `Gene`/`Allele` objects. Each gene defines exactly one `wild_type` allele plus

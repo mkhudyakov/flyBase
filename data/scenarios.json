@@ -1,0 +1,114 @@
+{
+  "_comment": "Campaign scenarios consumed by the Campaign engine. ABSTRACT educational content. Each scenario seeds the lab with starting vials, shows tutorial popups, and defines objectives evaluated against the live lab state and notebook. 'requires' gates a scenario behind earlier completions; 'unlocks' is recorded on completion. Fly recipe: {gene, allele, zyg: hom|het, sex: female|male, count} or {wild:true, sex, count}.",
+  "schema_version": 1,
+  "scenarios": [
+    {
+      "id": "foundations",
+      "title": "1. Foundations of inheritance",
+      "briefing": "Two normal-looking flies carry a hidden recessive 'vestigial' wing allele (vg/+). Breed them and watch a recessive trait reappear in the next generation.",
+      "requires": [],
+      "unlocks": ["eye_color_mystery"],
+      "tutorial": [
+        "Welcome to your dry-lab. Flies live in vials; vials sit in temperature-controlled incubators.",
+        "On the dashboard, select a vial and press Breed (50) to cross the first living female and male inside it.",
+        "These parents are vg/+ carriers: each looks normal but carries one recessive vestigial-wing allele. About 1 in 4 offspring should be vestigial-winged.",
+        "Objective: breed the carriers and produce vestigial-winged offspring."
+      ],
+      "starting_vials": [
+        {"name": "vestigial carriers (vg/+)", "incubator": 1, "flies": [
+          {"gene": "vg", "allele": "vg_strong_loss", "zyg": "het", "sex": "female", "count": 1},
+          {"gene": "vg", "allele": "vg_strong_loss", "zyg": "het", "sex": "male", "count": 1}
+        ]}
+      ],
+      "objectives": [
+        {"type": "phenotype_count", "desc": "Produce at least 10 vestigial-winged offspring", "predicate": {"trait": "wing_size", "op": "lt", "value": 0.4}, "count": 10}
+      ]
+    },
+    {
+      "id": "eye_color_mystery",
+      "title": "2. The eye-color mystery",
+      "briefing": "A white-eyed female is crossed with a wild-type male. The white allele sits on the X chromosome. Predict how eye color is inherited between sons and daughters.",
+      "requires": ["foundations"],
+      "unlocks": ["hidden_carriers"],
+      "tutorial": [
+        "The white (w) gene is on the X chromosome. Females are XX, males XY.",
+        "A white-eyed mother (w/w) crossed to a wild-type father gives carrier daughters and white-eyed sons — the classic criss-cross pattern.",
+        "Objective: produce white-eyed offspring, then answer the inheritance question."
+      ],
+      "starting_vials": [
+        {"name": "white stock", "incubator": 1, "flies": [
+          {"gene": "w", "allele": "w_null", "zyg": "hom", "sex": "female", "count": 1},
+          {"wild": true, "sex": "male", "count": 1}
+        ]}
+      ],
+      "objectives": [
+        {"type": "phenotype_count", "desc": "Produce at least 10 white-eyed offspring", "predicate": {"trait": "eye_color", "op": "lt", "value": 0.3}, "count": 10},
+        {"type": "quiz", "desc": "Answer: is the white allele dominant or recessive?", "question": "A heterozygous carrier daughter (w/+) has red eyes. The white allele is therefore...", "options": ["Dominant", "Recessive", "Codominant"], "answer": 1}
+      ]
+    },
+    {
+      "id": "hidden_carriers",
+      "title": "3. Hidden carriers",
+      "briefing": "This stock looks completely normal, but a recessive allele may be hiding in it. Breed within the stock to expose any hidden carriers.",
+      "requires": ["eye_color_mystery"],
+      "unlocks": ["lethal_recessive"],
+      "tutorial": [
+        "A heterozygous fly (vg/+) looks wild-type but secretly carries a recessive allele — a hidden carrier.",
+        "You cannot see carriers directly. You reveal them by breeding: if recessive offspring appear, the parents were carriers.",
+        "Objective: breed the stock and expose the hidden allele by producing vestigial offspring."
+      ],
+      "starting_vials": [
+        {"name": "mystery stock", "incubator": 1, "flies": [
+          {"gene": "vg", "allele": "vg_strong_loss", "zyg": "het", "sex": "female", "count": 2},
+          {"gene": "vg", "allele": "vg_strong_loss", "zyg": "het", "sex": "male", "count": 2}
+        ]}
+      ],
+      "objectives": [
+        {"type": "phenotype_count", "desc": "Expose the carriers: produce at least 5 vestigial-winged offspring", "predicate": {"trait": "wing_size", "op": "lt", "value": 0.4}, "count": 5}
+      ]
+    },
+    {
+      "id": "lethal_recessive",
+      "title": "4. Lethal recessives",
+      "briefing": "These flies carry a recessive allele that is lethal when homozygous. Run a large cross and explain why the expected 3:1 ratio fails.",
+      "requires": ["hidden_carriers"],
+      "unlocks": ["build_flightless"],
+      "tutorial": [
+        "Some genotypes never reach adulthood. A recessive-lethal allele kills homozygotes during development.",
+        "When you cross two carriers, ~1/4 of the offspring are homozygous — and they die — so fewer than expected survive and the adult ratio is skewed.",
+        "Objective: run a 100+ offspring cross at 25°C and observe survival drop below 85%, then answer the question."
+      ],
+      "starting_vials": [
+        {"name": "bicoid carriers (bcd/+)", "incubator": 1, "flies": [
+          {"gene": "bcd", "allele": "bcd_loss", "zyg": "het", "sex": "female", "count": 1},
+          {"gene": "bcd", "allele": "bcd_loss", "zyg": "het", "sex": "male", "count": 1}
+        ]}
+      ],
+      "objectives": [
+        {"type": "cross_survival_below", "desc": "Run a 100+ offspring cross with under 85% survival", "threshold": 0.85, "min_n": 100},
+        {"type": "quiz", "desc": "Answer: why did the expected 3:1 ratio fail?", "question": "Fewer offspring survived than a simple 3:1 predicts. The best explanation is...", "options": ["The mutation became dominant", "Homozygous mutants died before adulthood", "Recombination changed the ratio"], "answer": 1}
+      ]
+    },
+    {
+      "id": "build_flightless",
+      "title": "5. Build a stable flightless line",
+      "briefing": "Establish a true-breeding vestigial (flightless) stock: a vial where every fly is vestigial-winged, so the line breeds true.",
+      "requires": ["lethal_recessive"],
+      "unlocks": [],
+      "tutorial": [
+        "Vestigial-winged flies are homozygous (vg/vg). If you breed two of them together, all their offspring are vestigial too — a true-breeding line.",
+        "Breed the carriers, then move a vestigial female and a vestigial male into a fresh vial and breed them.",
+        "Objective: build a vial with at least 20 living flies that are (almost) all vestigial-winged."
+      ],
+      "starting_vials": [
+        {"name": "vestigial carriers (vg/+)", "incubator": 1, "flies": [
+          {"gene": "vg", "allele": "vg_strong_loss", "zyg": "het", "sex": "female", "count": 1},
+          {"gene": "vg", "allele": "vg_strong_loss", "zyg": "het", "sex": "male", "count": 1}
+        ]}
+      ],
+      "objectives": [
+        {"type": "vial_uniform_phenotype", "desc": "A vial with >=20 living flies, >=85% vestigial-winged", "predicate": {"trait": "wing_size", "op": "lt", "value": 0.4}, "count": 20, "min_fraction": 0.85}
+      ]
+    }
+  ]
+}

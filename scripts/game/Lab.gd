@@ -36,9 +36,8 @@ func new_default_lab() -> void:
 	_vial_counter = 0
 	_inc_counter = 0
 
-	var cold := _add_incubator("Incubator (18°C)", 18.0)
-	var standard := _add_incubator("Incubator (25°C)", 25.0)
-	_add_incubator("Incubator (29°C)", 29.0)
+	_create_default_incubators()
+	var standard := incubators[1]  # the 25°C incubator
 
 	var stock := create_vial("Wild-type stock", standard.id)
 	for i in 2:
@@ -52,6 +51,22 @@ func new_default_lab() -> void:
 		FlyFactory.create_mutant("vg", "vg_strong_loss", FlyFactory.Zygosity.HETEROZYGOUS, Genome.MALE), standard))
 
 	last_event = "New lab created."
+
+## Clears the lab and creates the standard incubators but no vials — used when a
+## campaign scenario seeds its own starting vials.
+func new_scenario_lab() -> void:
+	vials.clear()
+	incubators.clear()
+	notebook.clear()
+	generation = 0
+	_vial_counter = 0
+	_inc_counter = 0
+	_create_default_incubators()
+
+func _create_default_incubators() -> void:
+	_add_incubator("Incubator (18°C)", 18.0)
+	_add_incubator("Incubator (25°C)", 25.0)
+	_add_incubator("Incubator (29°C)", 29.0)
 
 ## Develops a founder fly in an incubator so it has a phenotype and alive state.
 func _founder(fly: Fly, inc: Incubator) -> Fly:

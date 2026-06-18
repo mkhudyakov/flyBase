@@ -16,28 +16,31 @@ APIs, no real genome database.
 
 ---
 
-## Current status: Phase 7 — Statistics & lab notebook
+## Current status: Phase 8 — Campaign framework
 
-Experiments are now recorded and analysable. What works:
+Structured, goal-driven play on top of the sandbox. What works:
 
-- Everything from Phases 0–6 (simulation core, lab dashboard, vials/incubators).
-- **StatisticsEngine** (`scripts/sim/StatisticsEngine.gd`): counts, sex/survival,
-  visible-phenotype distribution, and trait histograms over any set of flies.
-- **Statistics screen** (Dashboard → *Statistics*): pick a vial, see its
-  population/survival, phenotype distribution (bar table), and a histogram of a
-  chosen trait (body size, flight, lifespan, …).
-- **Lab notebook**: every breed is **automatically logged** to `Lab.notebook`
-  with parents, environment, counts, the expected-vs-observed ratio tables, the
-  phenotype distribution, and the explanation.
-- **Notebook screen** (Dashboard → *Notebook*): browse entries, read the full
-  recorded detail, and **export** the notebook to `user://exports/` as `.txt`
-  and `.json`.
-- Notebook persists in the save file. `Phase7Tests.tscn` (14 checks).
+- Everything from Phases 0–7 (simulation core, lab, statistics, notebook).
+- **Campaign** engine (`scripts/game/Campaign.gd`) loads scenarios from
+  `data/scenarios.json`, seeds the lab for a scenario, evaluates **objectives**
+  against the live lab state + notebook, and tracks completion + unlocks.
+- **5 playable scenarios** with prerequisite gating (each unlocks the next):
+  foundations (3:1) → eye-color mystery (X-linked + quiz) → hidden carriers →
+  lethal recessives (ratio deviation + quiz) → build a true-breeding line.
+- **Data-driven objective types**: produce N of a phenotype, a true-breeding
+  vial, a low-survival lethal cross, and multiple-choice **quiz** questions.
+- **Tutorial popups** introduce mechanics at scenario start; **Campaign screen**
+  (main menu → *New Campaign*, or dashboard → *Campaign*) shows briefing,
+  objective progress, quizzes, and Start/Check/Complete.
+- Progress + unlocks persist (own save slot). `Phase8Tests.tscn` (13 checks).
 
-> Campaign / structured gameplay arrives in Phase 8.
+> Advanced genetics (epistasis, modifiers, polygenic, hidden lethals) is Phase 9.
 
 ### Earlier phases recap
 
+- **Phase 7 — statistics & notebook**: `StatisticsEngine` distributions +
+  histograms (*Statistics* screen); every breed auto-logged to the *Notebook*
+  with expected-vs-observed tables, exportable to `user://exports/`.
 - **Phase 6 — lab**: `Lab` singleton owns vials + incubators; the dashboard lets
   you breed, move/inspect flies, archive lines, set incubator temperature, and
   Save/Load the lab.
@@ -96,6 +99,7 @@ GODOT=/Applications/Godot.app/Contents/MacOS/Godot
 "$GODOT" --headless --path . res://scenes/Phase5Tests.tscn --quit-after 15
 "$GODOT" --headless --path . res://scenes/Phase6Tests.tscn --quit-after 15
 "$GODOT" --headless --path . res://scenes/Phase7Tests.tscn --quit-after 15
+"$GODOT" --headless --path . res://scenes/Phase8Tests.tscn --quit-after 15
 ```
 
 The first command is only needed once after new `class_name` scripts are added
@@ -129,12 +133,14 @@ flyBase/
 │   ├── CrossSimulator.tscn
 │   ├── StatisticsScreen.tscn
 │   ├── NotebookScreen.tscn
+│   ├── CampaignScreen.tscn
 │   ├── Phase1Tests.tscn       # headless test scenes
 │   ├── Phase2Tests.tscn
 │   ├── Phase4Tests.tscn
 │   ├── Phase5Tests.tscn
 │   ├── Phase6Tests.tscn
-│   └── Phase7Tests.tscn
+│   ├── Phase7Tests.tscn
+│   └── Phase8Tests.tscn
 └── scripts/
     ├── autoload/              # Singletons (registered in project.godot)
     │   ├── DataLoader.gd
@@ -142,6 +148,7 @@ flyBase/
     │   └── SaveLoadService.gd
     ├── game/                  # Game-layer state (vials, incubators, lab)
     │   ├── Lab.gd             # autoload: central lab state + operations
+    │   ├── Campaign.gd        # autoload: scenarios, objectives, unlocks
     │   ├── Vial.gd
     │   └── Incubator.gd
     ├── sim/                   # Simulation classes (no UI dependencies)
@@ -167,7 +174,8 @@ flyBase/
     │   ├── Phase4Tests.gd
     │   ├── Phase5Tests.gd
     │   ├── Phase6Tests.gd
-    │   └── Phase7Tests.gd
+    │   ├── Phase7Tests.gd
+    │   └── Phase8Tests.gd
     └── ui/                    # UI controllers (kept separate from sim code)
         ├── MainMenu.gd
         ├── LabDashboard.gd
@@ -178,7 +186,8 @@ flyBase/
         ├── DevelopmentTimeline.gd
         ├── CrossSimulator.gd
         ├── StatisticsScreen.gd
-        └── NotebookScreen.gd
+        ├── NotebookScreen.gd
+        └── CampaignScreen.gd
 ```
 
 Simulation code lives in `scripts/sim/` separately from UI code, per the

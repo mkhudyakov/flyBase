@@ -27,6 +27,7 @@ Catalog="*res://scripts/sim/Catalog.gd"
 RandomService="*res://scripts/autoload/RandomService.gd"
 SaveLoadService="*res://scripts/autoload/SaveLoadService.gd"
 Lab="*res://scripts/game/Lab.gd"
+Campaign="*res://scripts/game/Campaign.gd"
 
 [display]
 
