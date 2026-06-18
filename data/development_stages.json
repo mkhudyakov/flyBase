@@ -1,0 +1,17 @@
+{
+  "_comment": "Development stages consumed by the Phase 4 DevelopmentEngine. ABSTRACT simulator data, not a real developmental protocol. 'base_duration_days' is at the optimal temperature; the engine scales it by temperature. 'required_energy' (0..1) is drawn from nutrition. 'sensitive_modules' are development modules whose health is checked at that stage; if one is critically low the stage fails with 'failure_outcome'.",
+  "schema_version": 1,
+  "optimal_temperature_c": 25.0,
+  "stages": [
+    {"id": "egg", "display_name": "Egg", "base_duration_days": 0.8, "required_energy": 0.10, "sensitive_modules": ["axis_patterning"], "failure_outcome": "embryonic arrest"},
+    {"id": "embryo_early", "display_name": "Early embryo", "base_duration_days": 0.5, "required_energy": 0.15, "sensitive_modules": ["axis_patterning", "segment_identity"], "failure_outcome": "axis pattern failure"},
+    {"id": "embryo_late", "display_name": "Late embryo", "base_duration_days": 0.7, "required_energy": 0.20, "sensitive_modules": ["segment_identity", "nervous_system", "gut_development"], "failure_outcome": "embryonic arrest"},
+    {"id": "larva_1", "display_name": "1st instar larva", "base_duration_days": 1.0, "required_energy": 0.30, "sensitive_modules": ["metabolic_maturation", "gut_development"], "failure_outcome": "larval arrest"},
+    {"id": "larva_2", "display_name": "2nd instar larva", "base_duration_days": 1.2, "required_energy": 0.45, "sensitive_modules": ["metabolic_maturation", "muscle_development"], "failure_outcome": "larval arrest"},
+    {"id": "larva_3", "display_name": "3rd instar larva", "base_duration_days": 2.0, "required_energy": 0.60, "sensitive_modules": ["wing_imaginal_disc", "eye_imaginal_disc", "leg_imaginal_disc", "metabolic_maturation"], "failure_outcome": "metabolic collapse"},
+    {"id": "pupa_early", "display_name": "Early pupa", "base_duration_days": 1.8, "required_energy": 0.40, "sensitive_modules": ["pupal_remodeling", "wing_imaginal_disc", "segment_identity"], "failure_outcome": "pupal lethality"},
+    {"id": "pupa_late", "display_name": "Late pupa", "base_duration_days": 1.8, "required_energy": 0.35, "sensitive_modules": ["pupal_remodeling", "cuticle_pigmentation", "bristle_development"], "failure_outcome": "failed metamorphosis"},
+    {"id": "adult_eclosion", "display_name": "Eclosion", "base_duration_days": 0.3, "required_energy": 0.30, "sensitive_modules": ["adult_eclosion_readiness", "muscle_development"], "failure_outcome": "adult eclosion failure"},
+    {"id": "adult", "display_name": "Adult", "base_duration_days": 0.2, "required_energy": 0.25, "sensitive_modules": ["gonad_development", "metabolic_maturation"], "failure_outcome": "short-lived adult"}
+  ]
+}

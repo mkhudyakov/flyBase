@@ -10,8 +10,8 @@ Files (loaded by `scripts/autoload/DataLoader.gd`):
 |---------------------------|----------|------------|
 | `genes.json`              | active (12 genes) | Phase 1 |
 | `alleles.json`            | active (24 alleles) | Phase 1 |
-| `trait_rules.json`        | active (15 traits) | Phase 2 |
-| `development_stages.json` | not yet  | Phase 4 |
+| `trait_rules.json`        | active (21 traits) | Phase 2 |
+| `development_stages.json` | active (10 stages) | Phase 4 |
 | `epistasis_rules.json`    | not yet  | Phase 9 |
 | `scenarios.json`          | not yet  | Phase 8 |
 

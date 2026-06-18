@@ -83,7 +83,7 @@ static func _apply_gene(fly: Fly, gene: Gene, p: Phenotype, rng: RandomNumberGen
 		var copies := int(counts[allele_id])
 		var total := genotype.size()
 		var hemizygous := total == 1
-		var dose := _dose_factor(allele.dominance_model, copies, total)
+		var dose := dose_factor(allele.dominance_model, copies, total)
 
 		# Recessive carrier: a single masked copy (hidden carrier, spec 13.7).
 		if dose <= 0.0:
@@ -119,7 +119,8 @@ static func _apply_gene(fly: Fly, gene: Gene, p: Phenotype, rng: RandomNumberGen
 			])
 
 ## Maps dominance model + dose to an expression factor in [0,1].
-static func _dose_factor(dominance_model: String, copies: int, total: int) -> float:
+## Public so the DevelopmentEngine can gate allele effects the same way.
+static func dose_factor(dominance_model: String, copies: int, total: int) -> float:
 	match dominance_model:
 		"dominant":
 			return 1.0  # one copy is sufficient

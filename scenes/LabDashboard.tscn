@@ -59,6 +59,10 @@ text = "Phenotype Viewer"
 layout_mode = 2
 text = "Microscope Viewer"
 
+[node name="DevelopmentButton" type="Button" parent="Margin/VBox/ButtonsBox"]
+layout_mode = 2
+text = "Development Timeline"
+
 [node name="TestSaveButton" type="Button" parent="Margin/VBox/ButtonsBox"]
 layout_mode = 2
 text = "Test Save (autosave)"
@@ -74,6 +78,7 @@ text = "Back to Menu"
 [connection signal="pressed" from="Margin/VBox/ButtonsBox/GenotypeDebugButton" to="." method="_on_genotype_debug_pressed"]
 [connection signal="pressed" from="Margin/VBox/ButtonsBox/PhenotypeViewerButton" to="." method="_on_phenotype_viewer_pressed"]
 [connection signal="pressed" from="Margin/VBox/ButtonsBox/MicroscopeButton" to="." method="_on_microscope_pressed"]
+[connection signal="pressed" from="Margin/VBox/ButtonsBox/DevelopmentButton" to="." method="_on_development_pressed"]
 [connection signal="pressed" from="Margin/VBox/ButtonsBox/TestSaveButton" to="." method="_on_test_save_pressed"]
 [connection signal="pressed" from="Margin/VBox/ButtonsBox/TestLoadButton" to="." method="_on_test_load_pressed"]
 [connection signal="pressed" from="Margin/VBox/ButtonsBox/BackButton" to="." method="_on_back_pressed"]

@@ -3,6 +3,39 @@
 All notable changes to the Drosophila Genetics Lab Simulator are documented
 here, phase by phase (see SPECS.md section 24).
 
+## Phase 4 — Development engine
+
+Simulated egg→adult development; the environment now changes outcomes.
+
+### Added
+- `scripts/sim/DevelopmentEngine.gd` — `simulate(fly, env, roll_seed)` walks the
+  10 stages, derives development-module health from the genome (gated by the same
+  dominance + dose logic as the phenotype engine), and at each stage checks
+  sensitive modules, temperature-scaled duration, and energy needs. Computes
+  viability / developmental-stability / fertility / lifespan, writes them (plus a
+  nutrition-based body-size adjustment) onto the phenotype, and records a
+  per-stage log + explanation.
+- `scripts/sim/DevelopmentResult.gd` — result container (stage logs, outcome,
+  scores, explanation; `to_dict`).
+- `data/development_stages.json` — 10 stages with durations, energy needs,
+  sensitive modules, and named failure outcomes.
+- `data/trait_rules.json`: added functional traits `viability_score`,
+  `developmental_stability`, `fertility_score`, `lifespan_days` (now 21 traits).
+- `scenes/DevelopmentTimeline.tscn` + `scripts/ui/DevelopmentTimeline.gd` — pick
+  a subject, adjust temperature / food / crowding, and view the stage-by-stage
+  run with failure highlighting and explanation.
+- `scenes/Phase4Tests.tscn` + `scripts/tests/Phase4Tests.gd` — 16-check headless
+  suite (all passing).
+- Made `PhenotypeEngine.dose_factor` public so development reuses the same
+  allele-expression gating. Dashboard: added a "Development Timeline" entry.
+
+### Definition of Done
+- Fly develops egg→adult ✓
+- Severe developmental mutation can fail ✓ (e.g. bicoid → embryonic arrest)
+- Failure has explanation ✓ (names the stage, module, and gene)
+- Temperature changes stage duration/stress ✓ (hot faster, cold slower, extreme lethal)
+- Nutrition affects size/survival ✓ (smaller/less-fertile, or collapse if severe)
+
 ## Phase 3 — Procedural fly renderer
 
 Drew the phenotype as a 2D fly using only generated vector shapes (no art assets).

@@ -16,35 +16,41 @@ APIs, no real genome database.
 
 ---
 
-## Current status: Phase 3 — Procedural fly renderer
+## Current status: Phase 4 — Development engine
 
-The phenotype is now drawn as a 2D fly from generated vector shapes. What works:
+Flies now develop egg→adult, and the **environment changes outcomes**. What works:
 
-- Everything from Phases 0–2 (menu, dashboard, services, data model, phenotype
-  engine, Genotype/Phenotype viewers).
-- **FlyRenderer** (`scripts/ui/FlyRenderer.gd`) draws a top-down fly — head,
-  thorax, striped abdomen, wings, legs, antennae, eyes, bristles — entirely from
-  vector shapes. **No art assets.**
-- Every visual is **phenotype-driven**: eye color (red↔white), eye size, wing
-  size + shape (notching), body color (yellow↔ebony), body size, bristle count,
-  antenna shape (leg-like as it drops), and `deformity_score` asymmetry.
-- **Microscope Viewer** screen (Dashboard → *Microscope Viewer*): pick a fly and
-  see it drawn; *Recompute* re-rolls expressivity/penetrance on the same genome.
-- Verified visually: white-eyed, vestigial-winged, and light/dark-bodied flies
-  each look clearly different.
+- Everything from Phases 0–3 (menu, dashboard, services, data model, phenotype
+  engine, fly renderer, viewers).
+- **DevelopmentEngine** (`scripts/sim/DevelopmentEngine.gd`) walks the 10 stages
+  (egg → adult), derives development-module health from the genome, and checks
+  each stage's sensitive modules, energy needs, and temperature-scaled duration.
+  It produces viability / developmental-stability / fertility / lifespan scores
+  plus a full per-stage log and explanation.
+- **Named failure outcomes** (embryonic arrest, metabolic collapse, pupal
+  lethality, temperature lethality, …): a severe developmental mutant (e.g.
+  `bicoid`, `wingless`) can die before adulthood, with the reason explained
+  ("axis_patterning critically low … lowered by bcd").
+- **Environment effects**: temperature scales stage duration (hot = faster,
+  cold = slower) and adds stress; extreme temperature is lethal; low food /
+  crowding reduce energy → smaller, less-fertile adults, or collapse if severe.
+- **Development Timeline** screen (Dashboard → *Development Timeline*): pick a
+  subject, set temperature / food / crowding, and watch the stage-by-stage run.
+- Reproducible (same seed + genome + environment → same result); verified by
+  `Phase4Tests.tscn` (16 checks).
 
-> Phase 3 added two renderer-facing traits (`body_size`, `bristle_count`),
-> bringing the total to 17; the phenotype engine itself is unchanged from
-> Phase 2 and still reproducible. Environment effects on development arrive in
-> Phase 4.
+> Inheritance / crossing two flies arrives in Phase 5.
 
-### Phenotype engine recap (Phase 2)
+### Earlier phases recap
 
-`PhenotypeEngine` converts a genome into traits using dominance + dose,
-**penetrance**, and **expressivity**, recording a human-readable **explanation
-log**. Data-driven traits live in `data/trait_rules.json`. Same seed + same
-genotype → identical phenotype. Hidden carriers, pleiotropy, and X-linked male
-expression all work and are covered by `Phase2Tests.tscn`.
+- **Phase 3 — renderer**: `FlyRenderer` draws a top-down fly from vector shapes
+  (no art assets), every feature phenotype-driven (eye color/size, wing
+  size/shape, body color/size, bristles, antennae, asymmetry). See *Microscope
+  Viewer*.
+- **Phase 2 — phenotype**: `PhenotypeEngine` converts a genome into traits via
+  dominance + dose, **penetrance**, and **expressivity**, with a human-readable
+  **explanation log**. 21 data-driven traits in `data/trait_rules.json`. Hidden
+  carriers, pleiotropy, and X-linked male expression all work.
 
 See [CHANGELOG.md](CHANGELOG.md) for per-phase history and
 [CONVENTIONS.md](CONVENTIONS.md) for coding conventions. The full plan lives in
@@ -81,6 +87,7 @@ GODOT=/Applications/Godot.app/Contents/MacOS/Godot
 "$GODOT" --headless --path . --editor --quit
 "$GODOT" --headless --path . res://scenes/Phase1Tests.tscn --quit-after 10
 "$GODOT" --headless --path . res://scenes/Phase2Tests.tscn --quit-after 10
+"$GODOT" --headless --path . res://scenes/Phase4Tests.tscn --quit-after 10
 ```
 
 The first command is only needed once after new `class_name` scripts are added
@@ -102,15 +109,18 @@ flyBase/
 ├── data/                      # Data-driven content (JSON). See data/README.md
 │   ├── genes.json             # 12 genes
 │   ├── alleles.json           # 24 alleles
-│   └── trait_rules.json       # 17 traits (baselines + normal ranges)
+│   ├── trait_rules.json       # 21 traits (baselines + normal ranges)
+│   └── development_stages.json # 10 egg→adult stages
 ├── scenes/                    # Godot scenes (.tscn)
 │   ├── MainMenu.tscn
 │   ├── LabDashboard.tscn
 │   ├── GenotypeDebug.tscn
 │   ├── PhenotypeViewer.tscn
 │   ├── MicroscopeViewer.tscn
+│   ├── DevelopmentTimeline.tscn
 │   ├── Phase1Tests.tscn       # headless test scenes
-│   └── Phase2Tests.tscn
+│   ├── Phase2Tests.tscn
+│   └── Phase4Tests.tscn
 └── scripts/
     ├── autoload/              # Singletons (registered in project.godot)
     │   ├── DataLoader.gd
@@ -125,19 +135,23 @@ flyBase/
     │   ├── Genome.gd
     │   ├── Phenotype.gd
     │   ├── PhenotypeEngine.gd
+    │   ├── DevelopmentEngine.gd
+    │   ├── DevelopmentResult.gd
     │   ├── VialEnvironment.gd  # "Environment" collides with a Godot built-in
     │   ├── Fly.gd
     │   └── FlyFactory.gd
     ├── tests/
     │   ├── Phase1Tests.gd
-    │   └── Phase2Tests.gd
+    │   ├── Phase2Tests.gd
+    │   └── Phase4Tests.gd
     └── ui/                    # UI controllers (kept separate from sim code)
         ├── MainMenu.gd
         ├── LabDashboard.gd
         ├── GenotypeDebug.gd
         ├── PhenotypeViewer.gd
         ├── MicroscopeViewer.gd
-        └── FlyRenderer.gd     # procedural 2D fly (vector shapes, no assets)
+        ├── FlyRenderer.gd     # procedural 2D fly (vector shapes, no assets)
+        └── DevelopmentTimeline.gd
 ```
 
 Simulation code lives in `scripts/sim/` separately from UI code, per the

@@ -10,6 +10,7 @@ const MAIN_MENU_SCENE := "res://scenes/MainMenu.tscn"
 const GENOTYPE_DEBUG_SCENE := "res://scenes/GenotypeDebug.tscn"
 const PHENOTYPE_VIEWER_SCENE := "res://scenes/PhenotypeViewer.tscn"
 const MICROSCOPE_SCENE := "res://scenes/MicroscopeViewer.tscn"
+const DEVELOPMENT_SCENE := "res://scenes/DevelopmentTimeline.tscn"
 
 @onready var _info_label: RichTextLabel = %InfoLabel
 
@@ -58,6 +59,9 @@ func _on_phenotype_viewer_pressed() -> void:
 
 func _on_microscope_pressed() -> void:
 	get_tree().change_scene_to_file(MICROSCOPE_SCENE)
+
+func _on_development_pressed() -> void:
+	get_tree().change_scene_to_file(DEVELOPMENT_SCENE)
 
 func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file(MAIN_MENU_SCENE)
