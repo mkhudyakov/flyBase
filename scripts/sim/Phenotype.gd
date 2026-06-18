@@ -20,6 +20,13 @@ var explanation: Array[String] = []
 ## False until the PhenotypeEngine has run on this fly.
 var computed: bool = false
 
+## Traits hidden by epistasis (e.g. eye_color when the eye failed to develop).
+## The numeric value may still exist but should be treated as not observable.
+var masked: Array[String] = []
+
+func is_masked(trait_name: String) -> bool:
+	return masked.has(trait_name)
+
 func get_trait(name: String, default: float = 0.0) -> float:
 	return float(traits.get(name, default))
 
@@ -34,6 +41,7 @@ func to_dict() -> Dictionary:
 		"traits": traits.duplicate(),
 		"explanation": explanation.duplicate(),
 		"computed": computed,
+		"masked": masked.duplicate(),
 	}
 
 static func from_dict(d: Dictionary) -> Phenotype:
@@ -43,4 +51,5 @@ static func from_dict(d: Dictionary) -> Phenotype:
 		p.traits = (t as Dictionary).duplicate()
 	p.explanation.assign(d.get("explanation", []))
 	p.computed = bool(d.get("computed", false))
+	p.masked.assign(d.get("masked", []))
 	return p

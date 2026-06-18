@@ -14,6 +14,10 @@ var generation: int = 0                 ## 0 = founder.
 var parent_ids: Array[String] = []      ## Ids of the two parents, if bred.
 var label: String = ""                  ## Optional player-facing name.
 var alive: bool = true                  ## False if development failed (set by DevelopmentEngine).
+## Per-individual stochastic seed. Two flies with the same genotype still differ
+## in penetrance/expressivity because each carries its own roll_seed. Assigned at
+## creation (FlyFactory) and saved, so a given fly is reproducible.
+var roll_seed: int = 0
 
 func _init() -> void:
 	genome = Genome.new()
@@ -32,6 +36,7 @@ func to_dict() -> Dictionary:
 		"label": label,
 		"generation": generation,
 		"alive": alive,
+		"roll_seed": roll_seed,
 		"parent_ids": parent_ids.duplicate(),
 		"genome": genome.to_dict(),
 		"phenotype": phenotype.to_dict(),
@@ -43,6 +48,7 @@ static func from_dict(d: Dictionary) -> Fly:
 	f.label = String(d.get("label", ""))
 	f.generation = int(d.get("generation", 0))
 	f.alive = bool(d.get("alive", true))
+	f.roll_seed = int(d.get("roll_seed", 0))
 	f.parent_ids.assign(d.get("parent_ids", []))
 	if d.has("genome") and d["genome"] is Dictionary:
 		f.genome = Genome.from_dict(d["genome"])

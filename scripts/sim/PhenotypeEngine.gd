@@ -21,30 +21,41 @@ extends RefCounted
 ## yields the same phenotype (spec test case 9). Pass `roll_seed` to force a
 ## specific stream.
 ##
-## Environment effects on the phenotype are introduced in Phase 4; `env` is
-## accepted here for forward compatibility but not yet applied.
+## Advanced genetics (Phase 9): modifier alleles (suppressor/enhancer) scale a
+## target gene's effect; temperature-sensitive alleles only express in a
+## temperature window (so the environment can reveal a hidden genotype); and
+## epistasis rules can mask/override traits after the fact. Body size and similar
+## traits are polygenic via additive small-effect alleles across several loci.
 
 ## Computes and stores the phenotype on `fly.phenotype` (in place).
-static func compute(fly: Fly, _env: VialEnvironment = null, roll_seed: int = -1) -> void:
+static func compute(fly: Fly, env: VialEnvironment = null, roll_seed: int = -1) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = roll_seed if roll_seed >= 0 else _derive_seed(fly)
+	var temperature: float = env.temperature_c if env != null else 25.0
 
 	var p := fly.phenotype
 	p.traits.clear()
 	p.explanation.clear()
+	p.masked.clear()
 
 	# 1. Baselines.
 	for tr: TraitRule in Catalog.all_traits():
 		p.traits[tr.id] = tr.baseline
 
+	# Modifier pre-pass: how suppressor/enhancer alleles scale each target gene.
+	var modifiers := _modifier_factors(fly, rng)
+
 	# 2-5. Per-gene allele effects.
 	var reasoning: Array[String] = []
 	for gene: Gene in Catalog.all_genes():
-		_apply_gene(fly, gene, p, rng, reasoning)
+		_apply_gene(fly, gene, p, rng, reasoning, temperature, modifiers)
 
 	# 5 (clamp).
 	for tr: TraitRule in Catalog.all_traits():
 		p.traits[tr.id] = clampf(p.traits[tr.id], tr.min_value, tr.max_value)
+
+	# Epistasis: one gene's outcome can mask/override another's (spec 13.3).
+	var epistasis: Array[String] = _apply_epistasis(p)
 
 	# 6. Assemble explanation: summary first, then genetic reasoning.
 	p.explanation.assign(_build_summary(p))
@@ -55,17 +66,41 @@ static func compute(fly: Fly, _env: VialEnvironment = null, roll_seed: int = -1)
 	else:
 		for line in reasoning:
 			p.add_explanation("  " + line)
+	if not epistasis.is_empty():
+		p.add_explanation("")
+		p.add_explanation("Epistasis:")
+		for line in epistasis:
+			p.add_explanation("  " + line)
 
 	p.computed = true
 
-## Deterministic per-genotype seed so identical genotypes reproduce under the
-## same global seed.
+## Computes a per-target-gene scaling factor from expressed modifier alleles
+## (suppressor < 1, enhancer > 1). target_gene -> factor (product of modifiers).
+static func _modifier_factors(fly: Fly, _rng: RandomNumberGenerator) -> Dictionary:
+	var factors := {}
+	for gene: Gene in Catalog.all_genes():
+		var genotype := fly.genome.genotype_at(gene.id)
+		var counts := {}
+		for aid in genotype:
+			counts[aid] = int(counts.get(aid, 0)) + 1
+		for aid: String in counts.keys():
+			var allele: Allele = Catalog.get_allele(aid)
+			if allele == null or not allele.is_modifier():
+				continue
+			if dose_factor(allele.dominance_model, int(counts[aid]), genotype.size()) <= 0.0:
+				continue
+			factors[allele.target_gene] = float(factors.get(allele.target_gene, 1.0)) * allele.modifier_factor
+	return factors
+
+## Stochastic seed when none is supplied: the fly's own per-individual roll_seed
+## (so genetically identical flies still vary), falling back to a genotype hash.
 static func _derive_seed(fly: Fly) -> int:
-	return RandomService.get_seed() ^ int(hash(JSON.stringify(fly.genome.to_dict())))
+	var base := fly.roll_seed if fly.roll_seed != 0 else int(hash(JSON.stringify(fly.genome.to_dict())))
+	return RandomService.get_seed() ^ base
 
 ## Applies one gene's mutant allele(s) to the phenotype, appending reasoning.
 static func _apply_gene(fly: Fly, gene: Gene, p: Phenotype, rng: RandomNumberGenerator,
-		reasoning: Array[String]) -> void:
+		reasoning: Array[String], temperature: float, modifiers: Dictionary) -> void:
 	var genotype := fly.genome.genotype_at(gene.id)
 	if genotype.is_empty():
 		return
@@ -77,8 +112,8 @@ static func _apply_gene(fly: Fly, gene: Gene, p: Phenotype, rng: RandomNumberGen
 
 	for allele_id: String in counts.keys():
 		var allele: Allele = Catalog.get_allele(allele_id)
-		if allele == null or allele.is_wild_type():
-			continue  # wild-type alleles contribute nothing.
+		if allele == null or allele.is_wild_type() or allele.is_modifier():
+			continue  # wild-type and pure-modifier alleles add no direct effect.
 
 		var copies := int(counts[allele_id])
 		var total := genotype.size()
@@ -91,15 +126,23 @@ static func _apply_gene(fly: Fly, gene: Gene, p: Phenotype, rng: RandomNumberGen
 				% [gene.display_name, gene.symbol, allele.display_name])
 			continue
 
+		# Temperature-sensitive gate (spec 13.x / 4.3): only expresses in-window.
+		if not allele.ts_active(temperature):
+			reasoning.append("%s (%s): %s is temperature-sensitive and inactive at %.0f°C (needs %s %.0f°C); the fly appears normal here."
+				% [gene.display_name, gene.symbol, allele.display_name, temperature,
+					allele.ts_direction, allele.ts_threshold])
+			continue
+
 		# Penetrance gate (spec 13.1).
 		if rng.randf() > allele.penetrance:
 			reasoning.append("%s (%s): %s did not manifest this time (penetrance %d%%); the fly appears normal at this locus."
 				% [gene.display_name, gene.symbol, allele.display_name, roundi(allele.penetrance * 100.0)])
 			continue
 
-		# Expressivity scaling (spec 13.2).
+		# Expressivity scaling (spec 13.2), then any suppressor/enhancer modifier.
 		var expressivity := rng.randf_range(allele.expressivity_min, allele.expressivity_max)
-		var scale := dose * expressivity
+		var mod_factor := float(modifiers.get(gene.id, 1.0))
+		var scale := dose * expressivity * mod_factor
 
 		var effects: Array[String] = []
 		for trait_name: String in allele.affected_traits.keys():
@@ -110,13 +153,48 @@ static func _apply_gene(fly: Fly, gene: Gene, p: Phenotype, rng: RandomNumberGen
 			p.traits[trait_name] += delta
 			effects.append("%s %+.2f" % [trait_name, delta])
 
-		reasoning.append("%s (%s): %s expressed %s. %s%s"
+		var mod_note := ""
+		if not is_equal_approx(mod_factor, 1.0):
+			var kind := "suppressor reduced" if mod_factor < 1.0 else "enhancer raised"
+			mod_note = " A %s this effect to %d%%." % [kind, roundi(mod_factor * 100.0)]
+		reasoning.append("%s (%s): %s expressed %s. %s%s%s"
 			% [
 				gene.display_name, gene.symbol, allele.display_name,
 				_zygosity_phrase(hemizygous, dose, copies, total),
 				_dominance_reason(gene, allele, hemizygous, copies, total),
-				(" Effect: " + ", ".join(effects) + ".") if not effects.is_empty() else ""
+				(" Effect: " + ", ".join(effects) + ".") if not effects.is_empty() else "",
+				mod_note,
 			])
+
+## Applies epistasis rules after traits are computed. A rule whose condition
+## holds can mask traits (hide them) or override them to a fixed value. Returns
+## the explanation lines produced. Data-driven via Catalog.epistasis_rules().
+static func _apply_epistasis(p: Phenotype) -> Array[String]:
+	var lines: Array[String] = []
+	for rule: Dictionary in Catalog.epistasis_rules():
+		if not _condition_holds(p, rule.get("condition", {})):
+			continue
+		var effect: Dictionary = rule.get("effect", {})
+		for t in effect.get("mask_traits", []):
+			if not p.masked.has(String(t)):
+				p.masked.append(String(t))
+		for key: String in effect.get("override", {}).keys():
+			if p.traits.has(key):
+				p.traits[key] = float(effect["override"][key])
+		lines.append(String(rule.get("explanation", rule.get("id", "epistasis rule"))))
+	return lines
+
+static func _condition_holds(p: Phenotype, condition: Dictionary) -> bool:
+	if condition.is_empty():
+		return false
+	var v := p.get_trait(String(condition.get("trait", "")), 0.0)
+	var target := float(condition.get("value", 0.0))
+	match String(condition.get("op", "lt")):
+		"lt": return v < target
+		"le": return v <= target
+		"gt": return v > target
+		"ge": return v >= target
+	return false
 
 ## Maps dominance model + dose to an expression factor in [0,1].
 ## Public so the DevelopmentEngine can gate allele effects the same way.

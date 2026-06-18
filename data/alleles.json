@@ -131,11 +131,11 @@
       "display_name": "eyeless (loss-of-function)",
       "mutation_type": "loss_of_function",
       "dominance_model": "recessive",
-      "severity": 0.85,
-      "penetrance": 0.9,
-      "expressivity_min": 0.5,
+      "severity": 0.95,
+      "penetrance": 0.95,
+      "expressivity_min": 0.85,
       "expressivity_max": 1.0,
-      "affected_traits": {"eye_size": -0.85, "vision_score": -0.7},
+      "affected_traits": {"eye_size": -0.95, "vision_score": -0.85},
       "affected_development_modules": {"eye_imaginal_disc": -0.7},
       "stage_sensitivity": ["larva_3", "pupa_early"],
       "viability_impact": -0.05,
@@ -346,6 +346,93 @@
       "fertility_impact": -0.05,
       "educational_note": "Reduces a simplified learning/courtship behavior score.",
       "risk_warning": "Behavioral; mild fertility effect."
+    },
+    {
+      "id": "vg_ts",
+      "gene_id": "vg",
+      "display_name": "vestigial temperature-sensitive",
+      "mutation_type": "temperature_sensitive",
+      "dominance_model": "recessive",
+      "severity": 0.7,
+      "penetrance": 0.95,
+      "expressivity_min": 0.7,
+      "expressivity_max": 1.0,
+      "affected_traits": {"wing_size": -0.7, "flight_ability": -0.85},
+      "temperature_sensitive": true,
+      "ts_direction": "above",
+      "ts_threshold": 28.0,
+      "educational_note": "A simplified temperature-sensitive allele: wings are normal at cool temperatures but vestigial when reared at or above 28°C.",
+      "risk_warning": "Conditional phenotype — only appears in warm conditions."
+    },
+    {
+      "id": "size_a_plus", "gene_id": "size_a", "display_name": "size A (neutral)",
+      "mutation_type": "wild_type", "dominance_model": "additive", "affected_traits": {},
+      "educational_note": "Neutral allele at body-size locus A."
+    },
+    {
+      "id": "size_a_large", "gene_id": "size_a", "display_name": "size A (large variant)",
+      "mutation_type": "regulatory_variant", "dominance_model": "additive", "penetrance": 1.0,
+      "expressivity_min": 1.0, "expressivity_max": 1.0, "affected_traits": {"body_size": 0.12},
+      "educational_note": "Adds a small amount to body size; combines additively with other size loci."
+    },
+    {
+      "id": "size_a_small", "gene_id": "size_a", "display_name": "size A (small variant)",
+      "mutation_type": "regulatory_variant", "dominance_model": "additive", "penetrance": 1.0,
+      "expressivity_min": 1.0, "expressivity_max": 1.0, "affected_traits": {"body_size": -0.12},
+      "educational_note": "Subtracts a small amount from body size."
+    },
+    {
+      "id": "size_b_plus", "gene_id": "size_b", "display_name": "size B (neutral)",
+      "mutation_type": "wild_type", "dominance_model": "additive", "affected_traits": {},
+      "educational_note": "Neutral allele at body-size locus B."
+    },
+    {
+      "id": "size_b_large", "gene_id": "size_b", "display_name": "size B (large variant)",
+      "mutation_type": "regulatory_variant", "dominance_model": "additive", "penetrance": 1.0,
+      "expressivity_min": 1.0, "expressivity_max": 1.0, "affected_traits": {"body_size": 0.12},
+      "educational_note": "Adds a small amount to body size."
+    },
+    {
+      "id": "size_b_small", "gene_id": "size_b", "display_name": "size B (small variant)",
+      "mutation_type": "regulatory_variant", "dominance_model": "additive", "penetrance": 1.0,
+      "expressivity_min": 1.0, "expressivity_max": 1.0, "affected_traits": {"body_size": -0.12},
+      "educational_note": "Subtracts a small amount from body size."
+    },
+    {
+      "id": "size_c_plus", "gene_id": "size_c", "display_name": "size C (neutral)",
+      "mutation_type": "wild_type", "dominance_model": "additive", "affected_traits": {},
+      "educational_note": "Neutral allele at body-size locus C."
+    },
+    {
+      "id": "size_c_large", "gene_id": "size_c", "display_name": "size C (large variant)",
+      "mutation_type": "regulatory_variant", "dominance_model": "additive", "penetrance": 1.0,
+      "expressivity_min": 1.0, "expressivity_max": 1.0, "affected_traits": {"body_size": 0.12},
+      "educational_note": "Adds a small amount to body size."
+    },
+    {
+      "id": "size_c_small", "gene_id": "size_c", "display_name": "size C (small variant)",
+      "mutation_type": "regulatory_variant", "dominance_model": "additive", "penetrance": 1.0,
+      "expressivity_min": 1.0, "expressivity_max": 1.0, "affected_traits": {"body_size": -0.12},
+      "educational_note": "Subtracts a small amount from body size."
+    },
+    {
+      "id": "wm_plus", "gene_id": "wing_mod", "display_name": "wing modifier (neutral)",
+      "mutation_type": "wild_type", "dominance_model": "dominant", "affected_traits": {},
+      "educational_note": "Neutral allele; does not modify other genes."
+    },
+    {
+      "id": "wm_suppressor", "gene_id": "wing_mod", "display_name": "wing-defect suppressor",
+      "mutation_type": "suppressor", "dominance_model": "dominant", "affected_traits": {},
+      "target_gene": "vg", "modifier_factor": 0.35,
+      "educational_note": "A suppressor allele: reduces the severity of vestigial wing defects (rescues wings) without causing a phenotype on its own.",
+      "risk_warning": "Modifier only."
+    },
+    {
+      "id": "wm_enhancer", "gene_id": "wing_mod", "display_name": "wing-defect enhancer",
+      "mutation_type": "enhancer", "dominance_model": "dominant", "affected_traits": {},
+      "target_gene": "vg", "modifier_factor": 1.7,
+      "educational_note": "An enhancer allele: increases the severity of vestigial wing defects.",
+      "risk_warning": "Modifier only."
     }
   ]
 }

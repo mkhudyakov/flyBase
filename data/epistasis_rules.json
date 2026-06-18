@@ -1,0 +1,18 @@
+{
+  "_comment": "Epistasis rules applied by the PhenotypeEngine after traits are computed (spec sections 13.3, 21). A rule whose 'condition' holds applies its 'effect': mask_traits hides traits (they exist but cannot be observed) or 'override' forces a trait value. ABSTRACT simulator rules.",
+  "schema_version": 1,
+  "rules": [
+    {
+      "id": "eye_development_masks_eye_pigment",
+      "condition": {"trait": "eye_size", "op": "lt", "value": 0.25},
+      "effect": {"mask_traits": ["eye_color"]},
+      "explanation": "Eye pigment is not visible because eye development failed — there is essentially no eye to show a color. The eye-color genotype is hidden by the eyeless phenotype."
+    },
+    {
+      "id": "wingless_overrides_wing_shape",
+      "condition": {"trait": "wing_size", "op": "lt", "value": 0.2},
+      "effect": {"override": {"wing_shape": 0.0, "wing_vein_quality": 0.0}, "mask_traits": ["wing_shape", "wing_vein_quality"]},
+      "explanation": "Wing shape and vein quality are moot because the wing is essentially absent; severe wing-size loss overrides the wing-shape genes."
+    }
+  ]
+}

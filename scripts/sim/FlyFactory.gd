@@ -17,11 +17,18 @@ static func _next_id() -> String:
 	_counter += 1
 	return "fly_%04d" % _counter
 
+## A unique, varied, non-zero per-individual stochastic seed derived from the
+## creation counter (deterministic; does not touch the global RNG).
+static func _fresh_roll_seed() -> int:
+	var s := (_counter * 1103515245 + 12345) & 0x7FFFFFFF
+	return s if s != 0 else 1
+
 ## A blank fly with a fresh unique id and an empty genome. The caller (e.g. the
 ## InheritanceEngine) builds the genome from inherited gametes.
 static func new_offspring() -> Fly:
 	var fly := Fly.new()
 	fly.id = _next_id()
+	fly.roll_seed = _fresh_roll_seed()
 	return fly
 
 ## Builds a fully wild-type fly of the given sex: every catalog gene receives
@@ -29,6 +36,7 @@ static func new_offspring() -> Fly:
 static func create_wild_type(for_sex: String = Genome.FEMALE) -> Fly:
 	var fly := Fly.new()
 	fly.id = _next_id()
+	fly.roll_seed = _fresh_roll_seed()
 	fly.genome.build_scaffold(for_sex)
 	for gene in Catalog.all_genes():
 		var wt: Allele = Catalog.wild_type_allele_for(gene.id)
@@ -62,4 +70,20 @@ static func create_mutant(
 	else:
 		# Override only the first copy; the second keeps its wild-type allele.
 		fly.genome.set_allele_on_copy(gene_id, allele_id, 0)
+	return fly
+
+## Builds a fly carrying several mutations at once (for polygenic / multi-locus
+## founders). `loci` is an array of {gene, allele, zyg: "hom"|"het"} dicts.
+static func create_multi(loci: Array, for_sex: String = Genome.FEMALE) -> Fly:
+	var fly := create_wild_type(for_sex)
+	for spec: Dictionary in loci:
+		var gene_id := String(spec.get("gene", ""))
+		var allele_id := String(spec.get("allele", ""))
+		if not Catalog.has_gene(gene_id) or not Catalog.has_allele(allele_id):
+			push_error("FlyFactory.create_multi: unknown gene/allele '%s'/'%s'." % [gene_id, allele_id])
+			continue
+		if String(spec.get("zyg", "hom")) == "hom":
+			fly.genome.set_allele_all_copies(gene_id, allele_id)
+		else:
+			fly.genome.set_allele_on_copy(gene_id, allele_id, 0)
 	return fly

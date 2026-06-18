@@ -171,8 +171,8 @@ static func _optimal_temp() -> float:
 	return 25.0
 
 static func _derive_seed(fly: Fly, env: VialEnvironment) -> int:
-	var sig := JSON.stringify(fly.genome.to_dict()) + JSON.stringify(env.to_dict())
-	return RandomService.get_seed() ^ int(hash(sig))
+	var base := fly.roll_seed if fly.roll_seed != 0 else int(hash(JSON.stringify(fly.genome.to_dict())))
+	return RandomService.get_seed() ^ base ^ int(hash(JSON.stringify(env.to_dict())))
 
 ## Expressed (non-masked) mutant allele effects, gated by dominance + dose, with
 ## a mid-expressivity magnitude. Shared basis for module health and impacts.

@@ -302,15 +302,8 @@ static func _build_phenotype_dist(result: CrossResult) -> void:
 		_tally(result.phenotype_dist, ", ".join(parts))
 
 static func _visible_dims(fly: Fly) -> Dictionary:
-	var p := fly.phenotype
-	var eye_color := p.get_trait("eye_color", 1.0)
-	var wing := p.get_trait("wing_size", 1.0)
-	var body := p.get_trait("body_color", 0.5)
-	return {
-		"eye": "white-eye" if eye_color < 0.3 else "red-eye",
-		"wing": "vestigial-wing" if wing < 0.4 else ("reduced-wing" if wing < 0.8 else "normal-wing"),
-		"body": "pale-body" if body < 0.35 else ("dark-body" if body > 0.65 else "tan-body"),
-	}
+	# Delegate to the shared classifier (handles epistasis-masked traits too).
+	return StatisticsEngine.visible_dims(fly)
 
 static func _build_explanation(result: CrossResult, mother: Fly, father: Fly, seg: Array) -> void:
 	var lines: Array[String] = []

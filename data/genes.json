@@ -181,6 +181,66 @@
       "educational_note": "Loss reduces a simplified learning/behavior score.",
       "is_real_gene_name": true,
       "is_simulator_abstraction": true
+    },
+    {
+      "id": "size_a",
+      "display_name": "body-size locus A",
+      "symbol": "szA",
+      "chromosome": "2L",
+      "position": 55.0,
+      "biological_category": "body_size",
+      "description": "Abstract polygenic body-size locus. Small additive effects from several such loci combine to set body size.",
+      "affected_modules": ["larval_growth_rate", "metabolic_maturation"],
+      "essentiality": "non_essential",
+      "risk_level": "cosmetic",
+      "educational_note": "Body size is polygenic: no single gene controls it.",
+      "is_real_gene_name": false,
+      "is_simulator_abstraction": true
+    },
+    {
+      "id": "size_b",
+      "display_name": "body-size locus B",
+      "symbol": "szB",
+      "chromosome": "2R",
+      "position": 40.0,
+      "biological_category": "body_size",
+      "description": "Abstract polygenic body-size locus (see locus A).",
+      "affected_modules": ["larval_growth_rate"],
+      "essentiality": "non_essential",
+      "risk_level": "cosmetic",
+      "educational_note": "Body size is polygenic: no single gene controls it.",
+      "is_real_gene_name": false,
+      "is_simulator_abstraction": true
+    },
+    {
+      "id": "size_c",
+      "display_name": "body-size locus C",
+      "symbol": "szC",
+      "chromosome": "3L",
+      "position": 25.0,
+      "biological_category": "body_size",
+      "description": "Abstract polygenic body-size locus (see locus A).",
+      "affected_modules": ["larval_growth_rate"],
+      "essentiality": "non_essential",
+      "risk_level": "cosmetic",
+      "educational_note": "Body size is polygenic: no single gene controls it.",
+      "is_real_gene_name": false,
+      "is_simulator_abstraction": true
+    },
+    {
+      "id": "wing_mod",
+      "display_name": "wing-defect modifier",
+      "symbol": "wmod",
+      "chromosome": "3L",
+      "position": 60.0,
+      "biological_category": "genetic_modifier",
+      "description": "Abstract modifier locus whose alleles suppress or enhance the severity of wing-defect genes such as vestigial.",
+      "affected_modules": ["developmental_buffering", "wing_vein_module"],
+      "essentiality": "non_essential",
+      "risk_level": "cosmetic",
+      "educational_note": "Modifier genes do not cause a phenotype alone; they change how strongly another gene is expressed.",
+      "is_real_gene_name": false,
+      "is_simulator_abstraction": true
     }
   ]
 }

@@ -59,8 +59,10 @@ static func visible_dims(fly: Fly) -> Dictionary:
 	var eye_color := p.get_trait("eye_color", 1.0)
 	var wing := p.get_trait("wing_size", 1.0)
 	var body := p.get_trait("body_color", 0.5)
+	# Epistasis can hide eye color (no eye to show it).
+	var eye := "no-eye" if p.is_masked("eye_color") else ("white-eye" if eye_color < 0.3 else "red-eye")
 	return {
-		"eye": "white-eye" if eye_color < 0.3 else "red-eye",
+		"eye": eye,
 		"wing": "vestigial-wing" if wing < 0.4 else ("reduced-wing" if wing < 0.8 else "normal-wing"),
 		"body": "pale-body" if body < 0.35 else ("dark-body" if body > 0.65 else "tan-body"),
 	}

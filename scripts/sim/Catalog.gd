@@ -14,6 +14,7 @@ var _alleles_by_id: Dictionary = {}      ## allele_id -> Allele
 var _alleles_by_gene: Dictionary = {}    ## gene_id -> Array[Allele]
 var _traits_by_id: Dictionary = {}       ## trait_id -> TraitRule
 var _trait_order: Array[String] = []     ## trait_ids in file order (stable display)
+var _epistasis_rules: Array = []         ## raw epistasis rule dicts
 
 func _ready() -> void:
 	build()
@@ -26,6 +27,7 @@ func build() -> void:
 	_alleles_by_gene.clear()
 	_traits_by_id.clear()
 	_trait_order.clear()
+	_epistasis_rules.clear()
 
 	var genes_data: Variant = DataLoader.get_data("genes")
 	if genes_data is Dictionary and genes_data.has("genes"):
@@ -55,8 +57,14 @@ func build() -> void:
 					_traits_by_id[t.id] = t
 					_trait_order.append(t.id)
 
-	print("Catalog: loaded %d genes, %d alleles, %d traits."
-		% [_genes_by_id.size(), _alleles_by_id.size(), _traits_by_id.size()])
+	var epi_data: Variant = DataLoader.get_data("epistasis_rules")
+	if epi_data is Dictionary and epi_data.has("rules"):
+		for raw in epi_data["rules"]:
+			if raw is Dictionary:
+				_epistasis_rules.append(raw)
+
+	print("Catalog: loaded %d genes, %d alleles, %d traits, %d epistasis rules."
+		% [_genes_by_id.size(), _alleles_by_id.size(), _traits_by_id.size(), _epistasis_rules.size()])
 
 ## True once at least one gene loaded (i.e. data files exist).
 func is_ready() -> bool:
@@ -80,6 +88,10 @@ func all_traits() -> Array:
 
 func get_trait_rule(trait_id: String) -> TraitRule:
 	return _traits_by_id.get(trait_id, null)
+
+## Raw epistasis rule dicts (applied by the PhenotypeEngine).
+func epistasis_rules() -> Array:
+	return _epistasis_rules
 
 func has_trait(trait_id: String) -> bool:
 	return _traits_by_id.has(trait_id)

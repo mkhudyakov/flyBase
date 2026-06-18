@@ -28,6 +28,15 @@ var behavior_impact: float              ## signed; general behavior shift.
 var educational_note: String
 var risk_warning: String
 
+# --- Advanced genetics (Phase 9) ---
+## Modifier alleles (suppressor/enhancer) scale another gene's trait effects.
+var target_gene: String = ""            ## the gene whose effect this allele modifies.
+var modifier_factor: float = 1.0        ## <1 suppresses, >1 enhances the target's effect.
+## Temperature-sensitive alleles only express within a temperature window.
+var is_temperature_sensitive: bool = false
+var ts_direction: String = "above"      ## "above" = active when temp >= threshold; "below" = active when <=.
+var ts_threshold: float = 28.0
+
 ## Builds an Allele from a parsed JSON dictionary, with safe defaults for any
 ## missing key. Wild-type alleles typically leave most numeric fields at 0.
 static func from_dict(d: Dictionary) -> Allele:
@@ -50,7 +59,23 @@ static func from_dict(d: Dictionary) -> Allele:
 	a.behavior_impact = float(d.get("behavior_impact", 0.0))
 	a.educational_note = String(d.get("educational_note", ""))
 	a.risk_warning = String(d.get("risk_warning", ""))
+	a.target_gene = String(d.get("target_gene", ""))
+	a.modifier_factor = float(d.get("modifier_factor", 1.0))
+	a.is_temperature_sensitive = bool(d.get("temperature_sensitive", false))
+	a.ts_direction = String(d.get("ts_direction", "above"))
+	a.ts_threshold = float(d.get("ts_threshold", 28.0))
 	return a
+
+## True if this allele only scales another gene's effect rather than acting itself.
+func is_modifier() -> bool:
+	return target_gene != "" and not is_equal_approx(modifier_factor, 1.0)
+
+## Whether a temperature-sensitive allele is active at the given temperature.
+## Non-TS alleles are always active.
+func ts_active(temperature_c: float) -> bool:
+	if not is_temperature_sensitive:
+		return true
+	return temperature_c >= ts_threshold if ts_direction == "above" else temperature_c <= ts_threshold
 
 ## True if this allele is the unmutated reference variant.
 func is_wild_type() -> bool:

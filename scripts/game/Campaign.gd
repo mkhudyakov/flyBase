@@ -70,7 +70,9 @@ func _seed_lab(scenario: Dictionary) -> void:
 func _build_and_develop(fspec: Dictionary, vial: Vial) -> Fly:
 	var sex: String = Genome.MALE if String(fspec.get("sex", "female")) == "male" else Genome.FEMALE
 	var fly: Fly
-	if bool(fspec.get("wild", false)) or fspec.get("gene", "") == "":
+	if fspec.has("loci"):
+		fly = FlyFactory.create_multi(fspec["loci"], sex)
+	elif bool(fspec.get("wild", false)) or fspec.get("gene", "") == "":
 		fly = FlyFactory.create_wild_type(sex)
 	else:
 		var z := FlyFactory.Zygosity.HOMOZYGOUS if String(fspec.get("zyg", "hom")) == "hom" else FlyFactory.Zygosity.HETEROZYGOUS

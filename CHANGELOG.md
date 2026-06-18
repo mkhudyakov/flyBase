@@ -3,6 +3,37 @@
 All notable changes to the Drosophila Genetics Lab Simulator are documented
 here, phase by phase (see SPECS.md section 24).
 
+## Phase 9 — Advanced genetics
+
+Added depth so Mendelian ratios can fail for explainable reasons.
+
+### Added
+- **Epistasis**: `data/epistasis_rules.json` + `PhenotypeEngine._apply_epistasis`
+  — rules mask traits (e.g. eye color when the eye fails to develop) or override
+  them; `Phenotype.masked` tracks hidden traits and the classifier shows "no-eye".
+- **Modifier alleles**: `Allele.target_gene` / `modifier_factor`; the phenotype
+  engine applies a pre-pass so suppressor/enhancer alleles scale a target gene's
+  effect. New `wing_mod` gene with suppressor (rescues vestigial) and enhancer.
+- **Polygenic body size**: three additive `size_a/b/c` loci with large/small
+  variants; body size is the sum of small contributions across loci.
+- **Temperature-sensitive alleles**: `Allele.is_temperature_sensitive` +
+  `ts_active()`; the engine uses the environment temperature so a hidden allele
+  (`vg_ts`) only expresses when reared warm.
+- **Per-individual variation**: `Fly.roll_seed` (assigned by FlyFactory, saved)
+  is the stochastic fallback, so genetically identical siblings differ in
+  expressivity/penetrance while staying reproducible.
+- 3 advanced challenge scenarios (epistasis, temperature-sensitive, polygenic),
+  gated after the intro chain; `FlyFactory.create_multi` for multi-locus founders.
+- `data/genes.json` → 16 genes, `data/alleles.json` → 37 alleles.
+- `scenes/Phase9Tests.tscn` + `scripts/tests/Phase9Tests.gd` — 13-check suite.
+
+### Definition of Done
+- Simple Mendelian ratios can fail for explainable reasons ✓ (epistasis masking,
+  lethals, modifiers)
+- Environment can reveal hidden effects ✓ (temperature-sensitive allele)
+- Complex traits depend on multiple genes ✓ (polygenic body size)
+- Player can solve at least 3 advanced challenges ✓
+
 ## Phase 8 — Campaign framework
 
 Added structured, goal-driven gameplay.

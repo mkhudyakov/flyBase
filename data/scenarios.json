@@ -107,7 +107,80 @@
         ]}
       ],
       "objectives": [
-        {"type": "vial_uniform_phenotype", "desc": "A vial with >=20 living flies, >=85% vestigial-winged", "predicate": {"trait": "wing_size", "op": "lt", "value": 0.4}, "count": 20, "min_fraction": 0.85}
+        {"type": "vial_uniform_phenotype", "desc": "A vial with >=20 living flies, >=85% flightless (reduced flight)", "predicate": {"trait": "flight_ability", "op": "lt", "value": 0.5}, "count": 20, "min_fraction": 0.85}
+      ]
+    },
+    {
+      "id": "epistasis_eye",
+      "title": "6. Epistasis: the hidden eye color",
+      "briefing": "These flies carry the recessive 'eyeless' allele. When a fly has no eyes, you cannot read its eye color at all — one gene masks another. Produce eyeless offspring and explain why eye color disappears.",
+      "requires": ["build_flightless"],
+      "unlocks": ["temperature_challenge"],
+      "tutorial": [
+        "Epistasis: one gene can hide the effect of another. If eye development fails, eye pigment has nothing to colour — so the eye-color genotype becomes invisible.",
+        "Breed the eyeless carriers. About 1/4 of offspring will be eyeless, and in those flies eye color cannot be observed.",
+        "Objective: produce eyeless offspring, then answer the question."
+      ],
+      "starting_vials": [
+        {"name": "eyeless carriers (ey/+)", "incubator": 1, "flies": [
+          {"gene": "ey", "allele": "ey_loss", "zyg": "het", "sex": "female", "count": 1},
+          {"gene": "ey", "allele": "ey_loss", "zyg": "het", "sex": "male", "count": 1}
+        ]}
+      ],
+      "objectives": [
+        {"type": "phenotype_count", "desc": "Produce at least 5 eyeless offspring", "predicate": {"trait": "eye_size", "op": "lt", "value": 0.25}, "count": 5},
+        {"type": "quiz", "desc": "Answer: why can't you tell the eye color of an eyeless fly?", "question": "An eyeless fly's eye-color genotype is unreadable because...", "options": ["Eye color genes were deleted", "There is no eye to display pigment (epistasis)", "The fly is colorblind"], "answer": 1}
+      ]
+    },
+    {
+      "id": "temperature_challenge",
+      "title": "7. The temperature-sensitive mutant",
+      "briefing": "This stock looks perfectly normal at 25°C, yet it hides a temperature-sensitive allele. Find the environmental trigger: rear the flies warm and watch the phenotype appear.",
+      "requires": ["epistasis_eye"],
+      "unlocks": ["polygenic_size"],
+      "tutorial": [
+        "Some alleles are temperature-sensitive: the phenotype only appears within a certain temperature range.",
+        "Move the vial to the 29°C incubator (or raise an incubator's temperature) before breeding. At cool temperatures the flies look normal; warm rearing reveals the defect.",
+        "Objective: produce flightless offspring by rearing warm, then answer the question."
+      ],
+      "starting_vials": [
+        {"name": "ts stock (looks normal at 25°C)", "incubator": 1, "flies": [
+          {"gene": "vg", "allele": "vg_ts", "zyg": "hom", "sex": "female", "count": 1},
+          {"gene": "vg", "allele": "vg_ts", "zyg": "hom", "sex": "male", "count": 1}
+        ]}
+      ],
+      "objectives": [
+        {"type": "phenotype_count", "desc": "Produce at least 5 flightless offspring (rear warm!)", "predicate": {"trait": "flight_ability", "op": "lt", "value": 0.5}, "count": 5},
+        {"type": "quiz", "desc": "Answer: what triggered the phenotype?", "question": "The flies were normal at 25°C but defective when reared warm. The trigger is...", "options": ["A new mutation", "High temperature (a temperature-sensitive allele)", "Crowding"], "answer": 1}
+      ]
+    },
+    {
+      "id": "polygenic_size",
+      "title": "8. Polygenic body size",
+      "briefing": "Body size is controlled by several genes at once. This stock carries 'large' variants at three body-size loci. Combine them through breeding to produce an unusually large fly.",
+      "requires": ["temperature_challenge"],
+      "unlocks": [],
+      "tutorial": [
+        "Polygenic traits depend on many genes, each contributing a small additive amount. No single gene makes a fly large.",
+        "These founders are heterozygous for 'large' variants at three loci. Breed and select to stack more large variants into one fly.",
+        "Objective: produce a fly with body size >= 1.15."
+      ],
+      "starting_vials": [
+        {"name": "large-variant stock", "incubator": 1, "flies": [
+          {"sex": "female", "count": 2, "loci": [
+            {"gene": "size_a", "allele": "size_a_large", "zyg": "het"},
+            {"gene": "size_b", "allele": "size_b_large", "zyg": "het"},
+            {"gene": "size_c", "allele": "size_c_large", "zyg": "het"}
+          ]},
+          {"sex": "male", "count": 2, "loci": [
+            {"gene": "size_a", "allele": "size_a_large", "zyg": "het"},
+            {"gene": "size_b", "allele": "size_b_large", "zyg": "het"},
+            {"gene": "size_c", "allele": "size_c_large", "zyg": "het"}
+          ]}
+        ]}
+      ],
+      "objectives": [
+        {"type": "phenotype_count", "desc": "Produce at least one fly with body size >= 1.15", "predicate": {"trait": "body_size", "op": "ge", "value": 1.15}, "count": 1}
       ]
     }
   ]

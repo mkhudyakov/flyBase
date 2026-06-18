@@ -16,28 +16,32 @@ APIs, no real genome database.
 
 ---
 
-## Current status: Phase 8 — Campaign framework
+## Current status: Phase 9 — Advanced genetics
 
-Structured, goal-driven play on top of the sandbox. What works:
+Simple Mendelian ratios can now fail for rich, explainable reasons. What works:
 
-- Everything from Phases 0–7 (simulation core, lab, statistics, notebook).
-- **Campaign** engine (`scripts/game/Campaign.gd`) loads scenarios from
-  `data/scenarios.json`, seeds the lab for a scenario, evaluates **objectives**
-  against the live lab state + notebook, and tracks completion + unlocks.
-- **5 playable scenarios** with prerequisite gating (each unlocks the next):
-  foundations (3:1) → eye-color mystery (X-linked + quiz) → hidden carriers →
-  lethal recessives (ratio deviation + quiz) → build a true-breeding line.
-- **Data-driven objective types**: produce N of a phenotype, a true-breeding
-  vial, a low-survival lethal cross, and multiple-choice **quiz** questions.
-- **Tutorial popups** introduce mechanics at scenario start; **Campaign screen**
-  (main menu → *New Campaign*, or dashboard → *Campaign*) shows briefing,
-  objective progress, quizzes, and Start/Check/Complete.
-- Progress + unlocks persist (own save slot). `Phase8Tests.tscn` (13 checks).
+- Everything from Phases 0–8 (simulation core, lab, statistics, notebook, campaign).
+- **Epistasis** (data-driven `data/epistasis_rules.json`): one gene can mask
+  another — eyeless flies hide their eye-color genotype; severe wing loss
+  overrides wing-shape genes. Masked traits show as e.g. "no-eye".
+- **Modifier alleles**: a suppressor reduces another gene's effect (rescuing
+  vestigial wings) and an enhancer worsens it — neither shows a phenotype alone.
+- **Polygenic traits**: body size is set additively by three body-size loci; you
+  stack "large" variants through breeding to grow an unusually large fly.
+- **Temperature-sensitive alleles**: a hidden allele only expresses when reared
+  warm, so the **environment reveals the genotype**.
+- **3 advanced challenge scenarios** (gated after the intro chain): epistasis
+  (hidden eye color), the temperature-sensitive mutant, and polygenic body size.
+- 16 genes / 37 alleles. `Phase9Tests.tscn` (13 checks). Each fly also carries a
+  per-individual `roll_seed`, so genetically identical siblings vary in
+  expressivity/penetrance (and stay reproducible).
 
-> Advanced genetics (epistasis, modifiers, polygenic, hidden lethals) is Phase 9.
+> Population-scale simulation (selection, drift, line stability) is Phase 10.
 
 ### Earlier phases recap
 
+- **Phase 8 — campaign**: `Campaign` engine + 8 scenarios with prerequisite
+  gating, data-driven objectives, quizzes, and tutorial popups (*Campaign* screen).
 - **Phase 7 — statistics & notebook**: `StatisticsEngine` distributions +
   histograms (*Statistics* screen); every breed auto-logged to the *Notebook*
   with expected-vs-observed tables, exportable to `user://exports/`.
@@ -100,6 +104,7 @@ GODOT=/Applications/Godot.app/Contents/MacOS/Godot
 "$GODOT" --headless --path . res://scenes/Phase6Tests.tscn --quit-after 15
 "$GODOT" --headless --path . res://scenes/Phase7Tests.tscn --quit-after 15
 "$GODOT" --headless --path . res://scenes/Phase8Tests.tscn --quit-after 15
+"$GODOT" --headless --path . res://scenes/Phase9Tests.tscn --quit-after 15
 ```
 
 The first command is only needed once after new `class_name` scripts are added
@@ -119,10 +124,12 @@ flyBase/
 ├── CONVENTIONS.md             # Coding conventions
 ├── SPECS.md                   # Full product specification
 ├── data/                      # Data-driven content (JSON). See data/README.md
-│   ├── genes.json             # 12 genes
-│   ├── alleles.json           # 24 alleles
+│   ├── genes.json             # 16 genes
+│   ├── alleles.json           # 37 alleles
 │   ├── trait_rules.json       # 21 traits (baselines + normal ranges)
-│   └── development_stages.json # 10 egg→adult stages
+│   ├── development_stages.json # 10 egg→adult stages
+│   ├── epistasis_rules.json   # gene-masking rules
+│   └── scenarios.json         # 8 campaign scenarios
 ├── scenes/                    # Godot scenes (.tscn)
 │   ├── MainMenu.tscn
 │   ├── LabDashboard.tscn
@@ -140,7 +147,8 @@ flyBase/
 │   ├── Phase5Tests.tscn
 │   ├── Phase6Tests.tscn
 │   ├── Phase7Tests.tscn
-│   └── Phase8Tests.tscn
+│   ├── Phase8Tests.tscn
+│   └── Phase9Tests.tscn
 └── scripts/
     ├── autoload/              # Singletons (registered in project.godot)
     │   ├── DataLoader.gd
@@ -175,7 +183,8 @@ flyBase/
     │   ├── Phase5Tests.gd
     │   ├── Phase6Tests.gd
     │   ├── Phase7Tests.gd
-    │   └── Phase8Tests.gd
+    │   ├── Phase8Tests.gd
+    │   └── Phase9Tests.gd
     └── ui/                    # UI controllers (kept separate from sim code)
         ├── MainMenu.gd
         ├── LabDashboard.gd
